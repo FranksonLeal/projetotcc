@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">educApoio</string>
+
+    <string name="menu_inicio">Inicio</string>
+    <string name="menu_busca">Buscar</string>
+    <string name="menu_inscricao">Inscrições</string>
+    <string name="menu_noticias">Notificações</string>
+    <string name="menu_perfil">Perfil</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

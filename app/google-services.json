@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381806569462",
+    "project_id": "educapoio",
+    "storage_bucket": "educapoio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381806569462:android:0428d55d121d5a906049d7",
+        "android_client_info": {
+          "package_name": "com.example.educapoio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDZxVv0SlgUmIxud7wvlr9b-hC1FNWvqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

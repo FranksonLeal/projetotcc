@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F5F7FB"
+    tools:context=".fragments.perfilFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="176dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="345px"
+        android:layout_marginTop="100px"
+        android:layout_marginEnd="238px"
+        android:text="Meu perfil"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imageConfig"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130px"
+        android:layout_marginStart="40px"
+        android:src="@drawable/config" />
+
+    <ImageView
+        android:id="@+id/imageEdit"
+        android:layout_width="52dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130px"
+        android:layout_marginStart="900px"
+        android:layout_marginEnd="40px"
+        android:src="@drawable/edit2" />
+
+    <ImageView
+        android:id="@+id/mudarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280px"
+        android:src="@drawable/usu" />
+
+    <TextView
+        android:id="@+id/editEmail2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="265dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364"
+        />
+
+    <TextView
+        android:id="@+id/editNome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="360dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364" />
+
+    <TextView
+        android:id="@+id/editTelefone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="440dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364" />
+
+    <TextView
+        android:id="@+id/editCurso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="510dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364" />
+
+    <TextView
+        android:id="@+id/editUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="570dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364" />
+
+</FrameLayout>
