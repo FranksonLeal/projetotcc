@@ -52,7 +52,7 @@
             android:layout_marginEnd="45dp"
             android:text="Projetos e bolsas recomendados para você:"
             android:textColor="#626364"
-            android:textSize="20sp" />
+            android:textSize="21sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAuxilios"
