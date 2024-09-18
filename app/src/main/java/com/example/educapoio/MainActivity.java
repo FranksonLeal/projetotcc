@@ -8,14 +8,10 @@ import android.text.style.UnderlineSpan;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -40,12 +36,12 @@ public class MainActivity extends AppCompatActivity {
         String text = "Cadastrar";
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-
         textCadastro.setText(content);
 
         db = FirebaseFirestore.getInstance();
         recyclerView = findViewById(R.id.recyclerViewAuxilios);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
         carregarAuxilios();
     }

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -93,25 +94,9 @@ public class inicioFragment extends Fragment {
         recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
         recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Criando uma lista de exemplos para o RecyclerView
-        List<Map<String, Object>> auxilios = new ArrayList<>();
+        // Buscar dados do Firestore
+        buscarAuxiliosDoFirestore();
 
-        Map<String, Object> auxilio1 = new HashMap<>();
-        auxilio1.put("titulo", "Auxílio 1");
-        auxilio1.put("dataInicio", "01/01/2023");
-        auxilio1.put("dataFim", "31/12/2023");
-
-        Map<String, Object> auxilio2 = new HashMap<>();
-        auxilio2.put("titulo", "Auxílio 2");
-        auxilio2.put("dataInicio", "01/02/2023");
-        auxilio2.put("dataFim", "30/11/2023");
-
-        auxilios.add(auxilio1);
-        auxilios.add(auxilio2);
-
-// Passar a lista ao adapter
-        adapter = new AuxilioAdapter(auxilios);
-        recyclerViewAuxilios.setAdapter(adapter);
 
 
         ImageView imagemTi = rootView.findViewById(R.id.imagemTi);
@@ -173,4 +158,23 @@ public class inicioFragment extends Fragment {
 
         return rootView;
     }
+    private void buscarAuxiliosDoFirestore() {
+        db.collection("auxilios").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Map<String, Object>> auxilios = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    Map<String, Object> auxilio = document.getData();
+                    auxilios.add(auxilio);
+                }
+                // Passa os dados para o Adapter
+                adapter = new AuxilioAdapter(auxilios);
+                recyclerViewAuxilios.setAdapter(adapter);
+            } else {
+                // Caso ocorra algum erro
+                Toast.makeText(getContext(), "Erro ao carregar auxílios", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
 }
