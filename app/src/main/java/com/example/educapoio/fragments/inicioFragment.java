@@ -14,12 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -27,8 +23,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,8 +91,6 @@ public class inicioFragment extends Fragment {
         // Buscar dados do Firestore
         buscarAuxiliosDoFirestore();
 
-
-
         ImageView imagemTi = rootView.findViewById(R.id.imagemTi);
         ImageView imagemSaude = rootView.findViewById(R.id.imagemSaude);
         ImageView imagemAdm = rootView.findViewById(R.id.imagemAdm);
@@ -115,7 +107,7 @@ public class inicioFragment extends Fragment {
         });
 
         imagemTi.setOnClickListener(v -> {
-            String url = "https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao?utm_medium=ppc&utm_campaign=&utm_term=&gad_source=1&gclid=CjwKCAiA0bWvBhBjEiwAtEsoW5GwNxDHSc3LSIluryHJmvVpm44-E6YIkdZcsCeWDIq5I__9IcSI1BoCqUUQAvD_BwE&gclsrc=aw.ds";
+            String url = "https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao?utm_medium=ppc&utm_campaign=&utm_term=&gad_source=1&gclsrc=aw.ds";
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
@@ -158,6 +150,7 @@ public class inicioFragment extends Fragment {
 
         return rootView;
     }
+
     private void buscarAuxiliosDoFirestore() {
         db.collection("auxilios").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -166,8 +159,8 @@ public class inicioFragment extends Fragment {
                     Map<String, Object> auxilio = document.getData();
                     auxilios.add(auxilio);
                 }
-                // Passa os dados para o Adapter
-                adapter = new AuxilioAdapter(auxilios);
+                // Passa os dados para o Adapter com o listener
+                adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
                 recyclerViewAuxilios.setAdapter(adapter);
             } else {
                 // Caso ocorra algum erro
@@ -176,5 +169,10 @@ public class inicioFragment extends Fragment {
         });
     }
 
-
+    // Método para abrir a URL
+    private void abrirUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+    }
 }

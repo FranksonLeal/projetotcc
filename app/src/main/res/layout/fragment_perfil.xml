@@ -27,7 +27,7 @@
         android:id="@+id/imageConfig"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/ic_config"
+        android:src="@drawable/ic_settin"
         android:layout_marginStart="35dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"

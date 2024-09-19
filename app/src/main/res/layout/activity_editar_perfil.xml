@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="130px"
         android:layout_marginStart="40px"
-        android:src="@drawable/config"
+        android:src="@drawable/ic_settin"
         app:layout_constraintEnd_toStartOf="@+id/textView5"
         app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <EditText
-        android:id="@+id/editEmail2"
+        android:id="@+id/editNome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="92dp"
@@ -60,12 +60,62 @@
         app:layout_constraintTop_toBottomOf="@+id/imageView8"
         tools:layout_editor_absoluteX="0dp" />
 
+    <EditText
+        android:id="@+id/editTelefone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:ems="10"
+        android:hint="Telefone"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364"
+        app:layout_constraintTop_toBottomOf="@+id/editNome"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/editCurso"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:ems="10"
+        android:hint="Curso"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364"
+        app:layout_constraintTop_toBottomOf="@+id/editTelefone"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/editUsuario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_edittext"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:ems="10"
+        android:hint="Curso"
+        android:inputType="textEmailAddress"
+        android:padding="15dp"
+        android:textColor="#626364"
+        app:layout_constraintTop_toBottomOf="@+id/editCurso"
+        tools:layout_editor_absoluteX="0dp" />
+
+
+
     <Button
         android:id="@+id/btnSalvar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="416dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_editbottom"
         android:padding="10dp"
@@ -75,6 +125,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editEmail2" />
+        app:layout_constraintTop_toBottomOf="@+id/editUsuario" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

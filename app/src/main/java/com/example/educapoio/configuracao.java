@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import androidx.fragment.app.FragmentTransaction; // Adicione essa importação
 
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 
+import com.example.educapoio.fragments.inicioFragment;
 import com.example.educapoio.fragments.perfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,6 +39,18 @@ public class configuracao extends AppCompatActivity {
         setContentView(R.layout.activity_configuracao);
 
         progressBar = findViewById(R.id.progressBar);
+
+        // Voltar para o inicioFragment
+        ImageView imageVoltar = findViewById(R.id.imageVoltar);
+        imageVoltar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Ao clicar no botão, iniciar a atividade Splash3
+                startActivity(new Intent(configuracao.this, perfilFragment.class));
+                // Finalizar a atividade atual para não retornar a ela ao pressionar o botão "voltar"
+
+            }
+        });
 
 
 

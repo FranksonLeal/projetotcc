@@ -31,11 +31,12 @@ public class Administrador extends AppCompatActivity {
             String titulo = binding.editNome.getText().toString().trim();
             String dataInicio = binding.editEmail.getText().toString().trim();
             String dataFim = binding.editSenha.getText().toString().trim();
+            String url = binding.editUrl.getText().toString().trim();
             // Adicionar lógica para upload de imagem, se necessário
             // Exemplo: String imagemUrl = uploadImagem();
 
             if (!titulo.isEmpty() && !dataInicio.isEmpty() && !dataFim.isEmpty()) {
-                adicionarAuxilio(titulo, dataInicio, dataFim);
+                adicionarAuxilio(titulo, dataInicio, dataFim, url);
             } else {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
             }
@@ -48,25 +49,47 @@ public class Administrador extends AppCompatActivity {
         });
     }
 
-    private void adicionarAuxilio(String titulo, String dataInicio, String dataFim) {
-        // Referência para a coleção 'auxilios' no Firestore
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String id = db.collection("auxilios").document().getId();
+//    private void adicionarAuxilio(String titulo, String dataInicio, String dataFim) {
+//        // Referência para a coleção 'auxilios' no Firestore
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        String id = db.collection("auxilios").document().getId();
+//
+//        // Dados para adicionar
+//        Map<String, Object> auxilio = new HashMap<>();
+//        auxilio.put("titulo", titulo);
+//        auxilio.put("dataInicio", dataInicio);
+//        auxilio.put("dataFim", dataFim);
+//
+//        // Adicionar imagem se necessário
+//
+//        // Adiciona o documento no Firestore
+//        db.collection("auxilios").document(id).set(auxilio)
+//                .addOnSuccessListener(aVoid -> {
+//                    Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
+//                })
+//                .addOnFailureListener(e -> {
+//                    Toast.makeText(Administrador.this, "Erro ao cadastrar auxílio", Toast.LENGTH_SHORT).show();
+//                });
+//    }
+private void adicionarAuxilio(String titulo, String dataInicio, String dataFim, String url) {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    String id = db.collection("auxilios").document().getId();
 
-        // Dados para adicionar
-        Map<String, Object> auxilio = new HashMap<>();
-        auxilio.put("titulo", titulo);
-        auxilio.put("dataInicio", dataInicio);
-        auxilio.put("dataFim", dataFim);
-        // Adicionar imagem se necessário
+    // Dados para adicionar
+    Map<String, Object> auxilio = new HashMap<>();
+    auxilio.put("titulo", titulo);
+    auxilio.put("dataInicio", dataInicio);
+    auxilio.put("dataFim", dataFim);
+    auxilio.put("url", url);  // Adiciona a URL
 
-        // Adiciona o documento no Firestore
-        db.collection("auxilios").document(id).set(auxilio)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(Administrador.this, "Erro ao cadastrar auxílio", Toast.LENGTH_SHORT).show();
-                });
-    }
+    // Adiciona o documento no Firestore
+    db.collection("auxilios").document(id).set(auxilio)
+            .addOnSuccessListener(aVoid -> {
+                Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
+            })
+            .addOnFailureListener(e -> {
+                Toast.makeText(Administrador.this, "Erro ao cadastrar auxílio", Toast.LENGTH_SHORT).show();
+            });
+}
+
 }

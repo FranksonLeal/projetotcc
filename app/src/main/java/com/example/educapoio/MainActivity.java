@@ -1,6 +1,8 @@
 package com.example.educapoio;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -56,11 +58,19 @@ public class MainActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             auxilios.add(document.getData());
                         }
-                        adapter = new AuxilioAdapter(auxilios);
+                        // Passar o listener para o Adapter
+                        adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
                         recyclerView.setAdapter(adapter);
                     } else {
                         Toast.makeText(MainActivity.this, "Erro ao carregar auxílios.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void abrirUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
+        // Implementar a lógica para abrir a URL aqui
     }
 }
