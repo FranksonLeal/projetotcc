@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,103 +12,228 @@
         android:id="@+id/textView5"
         android:layout_width="176dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="345px"
-        android:layout_marginTop="100px"
-        android:layout_marginEnd="238px"
         android:text="Meu perfil"
-        android:textColor="@color/black"
+        android:layout_marginTop="45dp"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imageConfig"
-        android:layout_width="52dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_config"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textViewConf"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130px"
-        android:layout_marginStart="40px"
-        android:src="@drawable/config" />
+        android:layout_marginTop="5dp"
+        android:text="Configurações"
+        android:layout_marginStart="25dp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageConfig"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imageEdit"
-        android:layout_width="52dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_edit"
+        android:layout_marginEnd="35dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/textViewEdit"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="130px"
-        android:layout_marginStart="900px"
-        android:layout_marginEnd="40px"
-        android:src="@drawable/edit2" />
+        android:text="Editar"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="8sp"
+        android:layout_marginEnd="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageEdit"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/mudarPerfil"
-        android:layout_width="match_parent"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="280px"
-        android:src="@drawable/usu" />
+        android:src="@drawable/usu"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textEmail"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_marginTop="45dp"
+        android:layout_marginStart="45dp"
+
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mudarPerfil"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/editEmail2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="265dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
+        android:layout_marginTop="15dp"
+        android:padding="20dp"
         android:textColor="#626364"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textEmail"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textNome"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:text="Nome"
+        android:layout_marginTop="15dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editEmail2"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/editNome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="360dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="#626364" />
+        android:layout_marginTop="15dp"
+        android:padding="20dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNome"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textTelefone"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Telefone"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="15dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNome"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/editTelefone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="#626364" />
+        android:padding="20dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTelefone"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textCurso"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:text="Curso"
+        android:layout_marginTop="15dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTelefone"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/editCurso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="510dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="#626364" />
+        android:layout_marginTop="15dp"
+        android:padding="20dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textCurso"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/textTipo"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:text="Usuário"
+        android:layout_marginTop="15dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editCurso"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/editUsuario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="570dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="#626364" />
+        android:layout_marginTop="15dp"
+        android:padding="20dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTipo"
+        tools:ignore="MissingConstraints" />
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

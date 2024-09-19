@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.example.educapoio.cadastro;
 import com.example.educapoio.databinding.ActivityLoginBinding;
-import com.example.educapoio.inicio;
-import com.example.educapoio.recupera;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class login extends AppCompatActivity {
     private ActivityLoginBinding binding;
@@ -56,22 +55,30 @@ public class login extends AppCompatActivity {
         }
     }
 
-    private void loginFirebase(String email, String senha){
-        mAuth.signInWithEmailAndPassword(
-                email, senha
-        ).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                // Limpa a pilha de atividades e inicia a tela inicial
-                Intent intent = new Intent(this, inicio.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish(); // Finaliza a atividade de login para evitar que o usuário volte para ela pressionando o botão "voltar"
-            } else {
-                binding.progressBar.setVisibility(View.GONE);
-                Toast.makeText(this, "Ocorreu algum erro!", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void loginFirebase(String email, String senha) {
+        mAuth.signInWithEmailAndPassword(email, senha)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null && "admin@gmail.com".equals(user.getEmail())) {
+                            // Se for o admin, redirecione para a tela de administração
+                            Intent intent = new Intent(this, Administrador.class); // Alterado para AdminActivity
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } else {
+                            // Se não for o admin, redirecione para a tela inicial comum
+                            Intent intent = new Intent(this, inicio.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        }
+                        finish(); // Finaliza a atividade de login para evitar que o usuário volte para ela pressionando o botão "voltar"
+                    } else {
+                        binding.progressBar.setVisibility(View.GONE);
+                        Toast.makeText(this, "Ocorreu algum erro!", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 
     @Override
     public void onBackPressed() {

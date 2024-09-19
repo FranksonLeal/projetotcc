@@ -1,23 +1,31 @@
 package com.example.educapoio;
 
+
+
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
+import androidx.fragment.app.FragmentTransaction; // Adicione essa importação
+
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import android.widget.ProgressBar;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.educapoio.R;
-import com.example.educapoio.login;
+
+import com.example.educapoio.fragments.perfilFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 public class configuracao extends AppCompatActivity {
 
@@ -29,6 +37,8 @@ public class configuracao extends AppCompatActivity {
         setContentView(R.layout.activity_configuracao);
 
         progressBar = findViewById(R.id.progressBar);
+
+
 
         TextView textViewApagarConta = findViewById(R.id.textView15);
         textViewApagarConta.setOnClickListener(new View.OnClickListener() {
@@ -48,6 +58,9 @@ public class configuracao extends AppCompatActivity {
             }
         });
     }
+
+
+
 
     private void exibirDialogoConfirmacaoExclusaoConta() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -140,4 +153,6 @@ public class configuracao extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         }
     }
+
+
 }
