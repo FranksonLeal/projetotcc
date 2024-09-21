@@ -1,5 +1,7 @@
 package com.example.educapoio.fragments;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,17 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import java.util.Arrays;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class inicioFragment extends Fragment {
 
@@ -65,6 +69,7 @@ public class inicioFragment extends Fragment {
         });
     }
 
+    @SuppressLint({"WrongViewCast", "MissingInflatedId"})
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,10 +89,13 @@ public class inicioFragment extends Fragment {
         recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
         recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        // Criando uma lista de exemplos para o RecyclerView
-        List<String> auxilios = Arrays.asList("Auxílio 1", "Auxílio 2", "Auxílio 3");
-        adapter = new AuxilioAdapter(auxilios);
-        recyclerViewAuxilios.setAdapter(adapter);
+        // Buscar dados do Firestore
+        buscarAuxiliosDoFirestore();
+
+        ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
+        imageAcess.setOnClickListener(v -> {
+            mostrarMensagemIndisponibilidade();
+        });
 
         ImageView imagemTi = rootView.findViewById(R.id.imagemTi);
         ImageView imagemSaude = rootView.findViewById(R.id.imagemSaude);
@@ -105,7 +113,7 @@ public class inicioFragment extends Fragment {
         });
 
         imagemTi.setOnClickListener(v -> {
-            String url = "https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao?utm_medium=ppc&utm_campaign=&utm_term=&gad_source=1&gclid=CjwKCAiA0bWvBhBjEiwAtEsoW5GwNxDHSc3LSIluryHJmvVpm44-E6YIkdZcsCeWDIq5I__9IcSI1BoCqUUQAvD_BwE&gclsrc=aw.ds";
+            String url = "https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao?utm_medium=ppc&utm_campaign=&utm_term=&gad_source=1&gclsrc=aw.ds";
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
@@ -147,5 +155,39 @@ public class inicioFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void mostrarMensagemIndisponibilidade() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Atenção")
+                .setMessage("Essa funcionalidade ainda não está disponível 😢")
+                .setCancelable(true)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    private void buscarAuxiliosDoFirestore() {
+        db.collection("auxilios").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<Map<String, Object>> auxilios = new ArrayList<>();
+                for (DocumentSnapshot document : task.getResult()) {
+                    Map<String, Object> auxilio = document.getData();
+                    auxilios.add(auxilio);
+                }
+                // Passa os dados para o Adapter com o listener
+                adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
+                recyclerViewAuxilios.setAdapter(adapter);
+            } else {
+                // Caso ocorra algum erro
+                Toast.makeText(getContext(), "Erro ao carregar auxílios", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Método para abrir a URL
+    private void abrirUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        startActivity(intent);
     }
 }

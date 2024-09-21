@@ -18,7 +18,19 @@ public class inicio extends AppCompatActivity {
         binding = ActivityInicioBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
         initNavigation();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (navController.getCurrentDestination().getId() == R.id.configuracao) {
+            // Se o usuário estiver na tela de configuração, volte para o fragmento de perfil
+            navController.navigate(R.id.perfilFragment);
+        } else {
+            // Caso contrário, utilize o comportamento padrão de voltar
+            super.onBackPressed();
+        }
     }
 
     private void initNavigation() {

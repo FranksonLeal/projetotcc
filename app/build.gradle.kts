@@ -35,22 +35,25 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.11.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+    implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment:2.7.7")
-    implementation("androidx.navigation:navigation-ui:2.7.7")
-    implementation("androidx.activity:activity:1.8.0")
+    implementation("androidx.navigation:navigation-fragment:2.8.0")
+    implementation("androidx.navigation:navigation-ui:2.8.0")
+    implementation("androidx.activity:activity:1.9.2")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation("androidx.recyclerview:recyclerview:1.2.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
 
-    implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore:24.4.2")
+    implementation("com.google.firebase:firebase-firestore:25.1.0")
+    implementation("com.google.firebase:firebase-messaging:23.1.0") // Verifique se a versão está atualizada
 
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
 
+    implementation("androidx.work:work-runtime:2.8.1")
 
+    implementation("com.google.guava:guava:30.1.1-android") // Adicione esta linha
 }

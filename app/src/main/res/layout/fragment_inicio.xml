@@ -21,6 +21,16 @@
             android:src="@drawable/logo"
             />
 
+        <ImageView
+            android:id="@+id/imageAcess"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="right"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/ic_acessi"
+            />
+
         <TextView
             android:id="@+id/texto1"
             android:layout_width="wrap_content"
@@ -52,22 +62,24 @@
             android:layout_marginEnd="45dp"
             android:text="Projetos e bolsas recomendados para você:"
             android:textColor="#626364"
-            android:textSize="20sp" />
+            android:textSize="21sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAuxilios"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="230dp"
             android:layout_marginBottom="50dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-             />
+            android:paddingStart="45dp"
+            android:orientation="horizontal"
+            android:paddingEnd="16dp" />
+
+
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="450dp">
+            android:layout_marginTop="520dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -248,7 +260,7 @@
             android:layout_height="wrap_content"
             android:text="Categorias e áreas para concursos"
             android:textColor="#626364"
-            android:layout_marginTop="450dp"
+            android:layout_marginTop="480dp"
             android:layout_marginStart="45dp"
             android:layout_marginEnd="45dp"
             android:textSize="20sp" />
