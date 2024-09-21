@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
@@ -50,7 +49,11 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore:25.1.0")
+    implementation("com.google.firebase:firebase-messaging:23.1.0") // Verifique se a versão está atualizada
 
+    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
 
+    implementation("androidx.work:work-runtime:2.8.1")
 
+    implementation("com.google.guava:guava:30.1.1-android") // Adicione esta linha
 }

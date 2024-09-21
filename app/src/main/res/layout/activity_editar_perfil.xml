@@ -23,18 +23,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="130px"
-        android:layout_marginStart="40px"
-        android:src="@drawable/ic_settin"
+        android:id="@+id/imageVoltarEditar"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="38dp"
+        android:src="@drawable/ic_voltar"
         app:layout_constraintEnd_toStartOf="@+id/textView5"
         app:layout_constraintHorizontal_bias="0.062"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView8"
+        android:id="@+id/mudarPerfil"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
@@ -44,21 +45,50 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
+    <TextView
+        android:id="@+id/textNome"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Nome"
+        android:layout_marginTop="45dp"
+        android:layout_marginStart="45dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mudarPerfil"
+        tools:ignore="MissingConstraints" />
+
     <EditText
         android:id="@+id/editNome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/bg_edittext"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
         android:ems="10"
-        android:hint="Email"
+        android:hint="Nome"
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="#626364"
-        app:layout_constraintTop_toBottomOf="@+id/imageView8"
+        app:layout_constraintTop_toBottomOf="@+id/textNome"
         tools:layout_editor_absoluteX="0dp" />
+
+
+    <TextView
+        android:id="@+id/textTele"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Telefone"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="45dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editNome"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/editTelefone"
@@ -73,14 +103,28 @@
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="#626364"
-        app:layout_constraintTop_toBottomOf="@+id/editNome"
+        app:layout_constraintTop_toBottomOf="@+id/textTele"
         tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/textCurso"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:text="Curso"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="45dp"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTelefone"
+        tools:ignore="MissingConstraints" />
 
     <EditText
         android:id="@+id/editCurso"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:background="@drawable/bg_edittext"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
@@ -89,24 +133,67 @@
         android:inputType="textEmailAddress"
         android:padding="15dp"
         android:textColor="#626364"
-        app:layout_constraintTop_toBottomOf="@+id/editTelefone"
+        app:layout_constraintTop_toBottomOf="@+id/textCurso"
         tools:layout_editor_absoluteX="0dp" />
 
-    <EditText
-        android:id="@+id/editUsuario"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/textTipoUsu"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/bg_edittext"
+        android:text="Usuário"
+        android:layout_marginTop="15dp"
         android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:ems="10"
-        android:hint="Curso"
-        android:inputType="textEmailAddress"
-        android:padding="15dp"
-        android:textColor="#626364"
+        android:textAlignment="viewStart"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editCurso"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:ignore="MissingConstraints" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/editUsuario"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:background="@drawable/bg_edittext"-->
+<!--        android:layout_marginStart="45dp"-->
+<!--        android:layout_marginEnd="45dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="Usuário"-->
+<!--        android:inputType="textEmailAddress"-->
+<!--        android:padding="15dp"-->
+<!--        android:textColor="#626364"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/textTipoUsu"-->
+<!--        tools:layout_editor_absoluteX="0dp" />-->
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp"
+
+        app:layout_constraintStart_toStartOf="@+id/textTipoUsu"
+        app:layout_constraintTop_toBottomOf="@+id/textTipoUsu"
+        tools:ignore="MissingConstraints">
+
+        <RadioButton
+            android:id="@+id/radioButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ALuno"
+            android:textColor="#0D0E0E"
+            android:textSize="15sp" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Professor"
+            android:textColor="#0D0E0E"
+            android:textSize="15sp" />
+
+    </RadioGroup>
 
 
 
@@ -125,6 +212,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editUsuario" />
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

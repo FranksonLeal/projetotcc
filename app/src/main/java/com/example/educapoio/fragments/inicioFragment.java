@@ -1,6 +1,7 @@
 package com.example.educapoio.fragments;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -91,6 +92,11 @@ public class inicioFragment extends Fragment {
         // Buscar dados do Firestore
         buscarAuxiliosDoFirestore();
 
+        ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
+        imageAcess.setOnClickListener(v -> {
+            mostrarMensagemIndisponibilidade();
+        });
+
         ImageView imagemTi = rootView.findViewById(R.id.imagemTi);
         ImageView imagemSaude = rootView.findViewById(R.id.imagemSaude);
         ImageView imagemAdm = rootView.findViewById(R.id.imagemAdm);
@@ -149,6 +155,15 @@ public class inicioFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void mostrarMensagemIndisponibilidade() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Atenção")
+                .setMessage("Essa funcionalidade ainda não está disponível 😢")
+                .setCancelable(true)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
     private void buscarAuxiliosDoFirestore() {

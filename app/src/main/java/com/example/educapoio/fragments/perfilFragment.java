@@ -5,18 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import com.example.educapoio.R;
 import com.example.educapoio.configuracao;
 import com.example.educapoio.editarPerfil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,12 +24,12 @@ public class perfilFragment extends Fragment {
     private TextView editNome, editEmail2, editTelefone, editCurso, editUsuario;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
-
 
         // Inicializa os TextViews
         editNome = view.findViewById(R.id.editNome);
@@ -65,7 +63,6 @@ public class perfilFragment extends Fragment {
         view.findViewById(R.id.imageEdit).setOnClickListener(v -> {
             startActivity(new Intent(getActivity(), editarPerfil.class));
         });
-
 
         return view;
     }
