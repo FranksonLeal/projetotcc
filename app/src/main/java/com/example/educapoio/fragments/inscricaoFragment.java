@@ -18,7 +18,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Date;
 
-public class InscricoesFragment extends Fragment {
+public class inscricaoFragment extends Fragment {
 
     private Button btnAbertos;
     private Button btnFechados;
