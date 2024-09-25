@@ -56,4 +56,7 @@ dependencies {
     implementation("androidx.work:work-runtime:2.8.1")
 
     implementation("com.google.guava:guava:30.1.1-android") // Adicione esta linha
+
+    implementation("com.jakewharton.timber:timber:5.0.1") // Dependência opcional para logging
+
 }

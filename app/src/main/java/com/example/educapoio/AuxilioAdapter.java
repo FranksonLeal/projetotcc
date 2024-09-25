@@ -1,14 +1,12 @@
 package com.example.educapoio;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.List;
 import java.util.Map;
 
@@ -41,16 +40,23 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
 
+        // Recupera os dados do auxílio
         String titulo = auxilio.get("titulo").toString();
-        holder.titulo.setText(titulo);
-        holder.dataInicio.setText("Início: " + auxilio.get("dataInicio").toString());
-        holder.dataFim.setText("Fim: " + auxilio.get("dataFim").toString());
+        String dataInicio = auxilio.get("dataInicio").toString();
+        String dataFim = auxilio.get("dataFim").toString();
+        String url = auxilio.get("url").toString();  // Supondo que exista uma URL no objeto auxilio
 
+        // Define os textos nos TextViews correspondentes
+        holder.titulo.setText(titulo);
+        holder.dataInicio.setText("Início: " + dataInicio);
+        holder.dataFim.setText("Fim: " + dataFim);
+
+        // Gera uma imagem circular com a inicial do título
         String inicial = titulo.substring(0, 1).toUpperCase();
         holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
 
+        // Configura o clique no item do RecyclerView
         holder.itemView.setOnClickListener(v -> {
-            String url = auxilio.get("url").toString(); // Supondo que a URL esteja armazenada como "url"
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(url);
             }
@@ -75,27 +81,33 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
         }
     }
 
+    // Método para gerar imagem circular com a inicial do título
     private Drawable getCircularImage(Context context, String text) {
-        Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        int size = 100;  // Tamanho do círculo
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
+        // Criação da cor de fundo (círculo)
         Paint paintBg = new Paint();
-        paintBg.setColor(Color.BLUE);
-        paintBg.setAntiAlias(true);
-        canvas.drawCircle(50, 50, 50, paintBg);
+        paintBg.setColor(Color.BLUE);  // Define a cor azul, mas pode ser personalizada
+        paintBg.setAntiAlias(true);  // Suaviza as bordas do círculo
+        canvas.drawCircle(size / 2, size / 2, size / 2, paintBg);
 
+        // Criação da letra no centro do círculo
         Paint paintText = new Paint();
-        paintText.setColor(Color.WHITE);
-        paintText.setTextSize(40);
+        paintText.setColor(Color.WHITE);  // Cor da letra branca
+        paintText.setTextSize(40);  // Tamanho do texto
         paintText.setTextAlign(Paint.Align.CENTER);
-        paintText.setAntiAlias(true);
-        canvas.drawText(text, 50, 65, paintText);
+        paintText.setAntiAlias(true);  // Suaviza as bordas da letra
+
+        // Posição da letra (ajustada verticalmente para ficar centralizada)
+        canvas.drawText(text, size / 2, size / 2 + (paintText.getTextSize() / 3), paintText);
 
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
-    // Interface para clique no item
+    // Interface para lidar com cliques em itens do RecyclerView
     public interface OnItemClickListener {
-        void onItemClick(String url);
+        void onItemClick(String url);  // Lida com a URL quando o item é clicado
     }
 }

@@ -108,30 +108,5 @@ public class cadastro extends AppCompatActivity {
                 });
     }
 
-    public static class AuxiliosAbertosFragment extends Fragment {
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_auxilios_abertos, container, false);
-
-            // Exemplo de consulta ao Firestore para exibir auxílios abertos
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("auxilios").whereEqualTo("status", "aberto")
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Aqui você exile os auxílios abertos
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Exiba os dados de cada auxílio na sua interface (RecyclerView, por exemplo)
-                            }
-                        } else {
-                            // Tratar erro de consulta
-                            task.getException().printStackTrace();
-                        }
-                    });
-
-            return view;
-        }
-    }
 }
 

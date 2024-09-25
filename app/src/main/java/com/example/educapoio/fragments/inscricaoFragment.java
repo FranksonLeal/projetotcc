@@ -3,15 +3,15 @@ package com.example.educapoio.fragments;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
-import com.example.educapoio.App;
 import com.example.educapoio.R;
-import com.example.educapoio.cadastro;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -19,15 +19,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.Date;
 
 public class inscricaoFragment extends Fragment {
-
     private Button btnAbertos;
     private Button btnFechados;
     private FrameLayout frameLayoutContent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("InscricaoFragment", "onCreateView chamado");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_inscricao, container, false);
+        Log.d("InscricaoFragment", "Layout inflado com sucesso");
 
         // Inicializa os botões e o layout onde os fragmentos serão carregados
         btnAbertos = view.findViewById(R.id.btn_abertos);
@@ -35,28 +36,24 @@ public class inscricaoFragment extends Fragment {
         frameLayoutContent = view.findViewById(R.id.frame_layout_content);
 
         // Carrega inicialmente o fragmento de auxílios abertos
-        loadFragment(new cadastro.AuxiliosAbertosFragment());
+        loadFragment(new AuxiliosAbertosFragment());
 
         // Define o comportamento dos botões de navegação
         btnAbertos.setOnClickListener(v -> {
-            // Altera a aparência dos botões (selecionado e não selecionado)
+            Log.d("InscricaoFragment", "Botão Abertos clicado");
             btnAbertos.setBackgroundTintList(getResources().getColorStateList(R.color.black));
             btnFechados.setBackgroundTintList(getResources().getColorStateList(R.color.black));
-
-            // Carrega o fragmento de auxílios abertos
-            loadFragment(new cadastro.AuxiliosAbertosFragment());
+            loadFragment(new AuxiliosAbertosFragment());
         });
 
         btnFechados.setOnClickListener(v -> {
-            // Altera a aparência dos botões (selecionado e não selecionado)
+            Log.d("InscricaoFragment", "Botão Fechados clicado");
             btnFechados.setBackgroundTintList(getResources().getColorStateList(R.color.black));
             btnAbertos.setBackgroundTintList(getResources().getColorStateList(R.color.black));
-
-            // Carrega o fragmento de auxílios fechados
-            loadFragment(new App.AuxiliosFechadosFragment());
+            loadFragment(new AuxiliosFechadosFragment());
         });
 
-        // Verifica automaticamente quando o prazo expirar e move os auxílios para fechados
+        // Verifica automaticamente quando o prazo expirar
         verificarPrazo();
 
         return view;
@@ -64,6 +61,7 @@ public class inscricaoFragment extends Fragment {
 
     // Função que carrega o fragmento correspondente
     private void loadFragment(Fragment fragment) {
+        Log.d("InscricaoFragment", "Carregando fragmento: " + fragment.getClass().getSimpleName());
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.frame_layout_content, fragment);
         transaction.commit();
@@ -82,22 +80,15 @@ public class inscricaoFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             // Atualiza o status do auxílio para "fechado"
                             document.getReference().update("status", "fechado")
-                                    .addOnSuccessListener(aVoid -> {
-                                        // Sucesso ao mover o auxílio para "fechado"
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        // Erro ao atualizar status
-                                        e.printStackTrace();
-                                    });
+                                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "Status atualizado com sucesso"))
+                                    .addOnFailureListener(e -> Log.e("Firestore", "Erro ao atualizar status", e));
                         }
-
-                        // Se a tela de auxílios fechados estiver sendo exibida, atualiza a interface
+                        // Atualiza a interface se necessário
                         if (btnFechados.isPressed()) {
-                            loadFragment(new App.AuxiliosFechadosFragment());
+                            loadFragment(new AuxiliosFechadosFragment());
                         }
                     } else {
-                        // Tratamento de erro na busca
-                        task.getException().printStackTrace();
+                        Log.e("Firestore", "Erro ao buscar auxílios: ", task.getException());
                     }
                 });
     }
