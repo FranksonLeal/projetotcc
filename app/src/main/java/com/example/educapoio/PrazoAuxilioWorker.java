@@ -24,9 +24,11 @@ import org.threeten.bp.format.DateTimeParseException;
 
 public class PrazoAuxilioWorker extends Worker {
     private static final String TAG = "PrazoAuxilioWorker";
+    private FirebaseFirestore db;
 
-    public PrazoAuxilioWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
+    public PrazoAuxilioWorker(@NonNull Context context, @NonNull WorkerParameters params) {
+        super(context, params);
+        db = FirebaseFirestore.getInstance(); // Inicializa o Firestore
     }
 
     @NonNull
@@ -44,6 +46,7 @@ public class PrazoAuxilioWorker extends Worker {
                 for (DocumentSnapshot document : task.getResult()) {
                     String dataFimString = document.getString("dataFim");
                     Log.d(TAG, "Verificando data de fim: " + dataFimString);
+
                     if (isValidDate(dataFimString)) {
                         LocalDateTime dataFim = LocalDateTime.parse(dataFimString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                         LocalDateTime agora = LocalDateTime.now(ZoneId.systemDefault());
@@ -54,6 +57,10 @@ public class PrazoAuxilioWorker extends Worker {
                             enviarNotificacao("Lembrete de Auxílio!", "O auxílio " + document.getString("titulo") + " termina em " + diasRestantes + " dias.");
                         } else if (diasRestantes == 0) {
                             enviarNotificacao("Lembrete de Auxílio!", "O auxílio " + document.getString("titulo") + " termina hoje.");
+                        } else if (diasRestantes < 0) {
+                            // O prazo expirou, mover para "fechado"
+                            atualizarStatusAuxilio(document.getId(), "fechado");
+                            enviarNotificacao("Auxílio Encerrado", "O auxílio " + document.getString("titulo") + " foi encerrado.");
                         }
                     }
                 }
@@ -61,6 +68,12 @@ public class PrazoAuxilioWorker extends Worker {
                 Log.e(TAG, "Erro ao obter auxílios: " + task.getException());
             }
         });
+    }
+    private void atualizarStatusAuxilio(String auxilioId, String novoStatus) {
+        // Atualiza o status do auxílio para "fechado"
+        db.collection("auxilios").document(auxilioId).update("status", novoStatus)
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Status do auxílio atualizado para: " + novoStatus))
+                .addOnFailureListener(e -> Log.e(TAG, "Erro ao atualizar status do auxílio", e));
     }
 
     private void enviarNotificacao(String titulo, String mensagem) {

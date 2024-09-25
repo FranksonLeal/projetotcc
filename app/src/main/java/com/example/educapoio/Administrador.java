@@ -111,6 +111,7 @@ public class Administrador extends AppCompatActivity {
         auxilio.put("dataInicio", dataInicio);
         auxilio.put("dataFim", dataFim);
         auxilio.put("url", url);
+        auxilio.put("status", "aberto");  // Adiciona status inicial como "aberto"
 
         // Adiciona o documento no Firestore
         db.collection("auxilios").document(id).set(auxilio)

@@ -17,6 +17,12 @@
         android:label="fragment_perfil"
         tools:layout="@layout/fragment_perfil"/>
 
+    <fragment
+        android:id="@+id/menu_inscrições"
+        android:name="com.example.educapoio.fragments."
+        android:label="fragment_perfil"
+        tools:layout="@layout/fragment_perfil"/>
+
 
     <fragment
         android:id="@+id/menu_notificacao"
@@ -78,4 +84,19 @@
         android:name="com.example.educapoio.recupera"
         android:label="activity_recupera"
         tools:layout="@layout/activity_recupera" />
+    <fragment
+        android:id="@+id/auxiliosFechadosFragment"
+        android:name="com.example.educapoio.App$AuxiliosFechadosFragment"
+        android:label="fragment_auxilios_fechados"
+        tools:layout="@layout/fragment_auxilios_fechados" />
+    <fragment
+        android:id="@+id/auxiliosAbertosFragment"
+        android:name="com.example.educapoio.cadastro$AuxiliosAbertosFragment"
+        android:label="fragment_auxilios_abertos"
+        tools:layout="@layout/fragment_auxilios_abertos" />
+    <activity
+        android:id="@+id/administrador"
+        android:name="com.example.educapoio.Administrador"
+        android:label="activity_administrador"
+        tools:layout="@layout/activity_administrador" />
 </navigation>

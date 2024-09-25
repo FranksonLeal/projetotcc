@@ -270,9 +270,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="45dp"
-            android:layout_marginTop="770dp"
+            android:layout_marginTop="780dp"
             android:layout_marginEnd="45dp"
-            android:text="Receba lembretes sobre vagas"
+            android:text="Quer saber sobre mais notícias? Visite nossa página."
             android:textColor="#626364"
             android:textSize="20sp" />
 

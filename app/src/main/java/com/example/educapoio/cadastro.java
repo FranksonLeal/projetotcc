@@ -1,10 +1,13 @@
 package com.example.educapoio;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -13,6 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -101,6 +106,32 @@ public class cadastro extends AppCompatActivity {
                     binding.progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Erro ao salvar dados: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
+    }
+
+    public static class AuxiliosAbertosFragment extends Fragment {
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_auxilios_abertos, container, false);
+
+            // Exemplo de consulta ao Firestore para exibir auxílios abertos
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.collection("auxilios").whereEqualTo("status", "aberto")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            // Aqui você exile os auxílios abertos
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Exiba os dados de cada auxílio na sua interface (RecyclerView, por exemplo)
+                            }
+                        } else {
+                            // Tratar erro de consulta
+                            task.getException().printStackTrace();
+                        }
+                    });
+
+            return view;
+        }
     }
 }
 

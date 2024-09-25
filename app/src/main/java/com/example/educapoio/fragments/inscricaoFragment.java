@@ -1,79 +1,104 @@
 package com.example.educapoio.fragments;
 
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
+import com.example.educapoio.App;
 import com.example.educapoio.R;
+import com.example.educapoio.cadastro;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link inscricaoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class inscricaoFragment extends Fragment implements View.OnClickListener{
+import java.util.Date;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class InscricoesFragment extends Fragment {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public inscricaoFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment inscricaoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static inscricaoFragment newInstance(String param1, String param2) {
-        inscricaoFragment fragment = new inscricaoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
-    ColorStateList def;
-    TextView item1, item2, item33, select;
+    private Button btnAbertos;
+    private Button btnFechados;
+    private FrameLayout frameLayoutContent;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_inscricao, container, false);
+        View view = inflater.inflate(R.layout.fragment_inscricao, container, false);
+
+        // Inicializa os botões e o layout onde os fragmentos serão carregados
+        btnAbertos = view.findViewById(R.id.btn_abertos);
+        btnFechados = view.findViewById(R.id.btn_fechados);
+        frameLayoutContent = view.findViewById(R.id.frame_layout_content);
+
+        // Carrega inicialmente o fragmento de auxílios abertos
+        loadFragment(new cadastro.AuxiliosAbertosFragment());
+
+        // Define o comportamento dos botões de navegação
+        btnAbertos.setOnClickListener(v -> {
+            // Altera a aparência dos botões (selecionado e não selecionado)
+            btnAbertos.setBackgroundTintList(getResources().getColorStateList(R.color.black));
+            btnFechados.setBackgroundTintList(getResources().getColorStateList(R.color.black));
+
+            // Carrega o fragmento de auxílios abertos
+            loadFragment(new cadastro.AuxiliosAbertosFragment());
+        });
+
+        btnFechados.setOnClickListener(v -> {
+            // Altera a aparência dos botões (selecionado e não selecionado)
+            btnFechados.setBackgroundTintList(getResources().getColorStateList(R.color.black));
+            btnAbertos.setBackgroundTintList(getResources().getColorStateList(R.color.black));
+
+            // Carrega o fragmento de auxílios fechados
+            loadFragment(new App.AuxiliosFechadosFragment());
+        });
+
+        // Verifica automaticamente quando o prazo expirar e move os auxílios para fechados
+        verificarPrazo();
+
+        return view;
     }
 
-    @Override
-    public void onClick(View v) {
+    // Função que carrega o fragmento correspondente
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_layout_content, fragment);
+        transaction.commit();
+    }
 
+    // Função que verifica o prazo de expiração dos auxílios e atualiza o status no Firestore
+    private void verificarPrazo() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference auxiliosRef = db.collection("auxilios");
+
+        // Busca auxílios com data de expiração passada
+        auxiliosRef.whereLessThanOrEqualTo("dataFim", new Date())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            // Atualiza o status do auxílio para "fechado"
+                            document.getReference().update("status", "fechado")
+                                    .addOnSuccessListener(aVoid -> {
+                                        // Sucesso ao mover o auxílio para "fechado"
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        // Erro ao atualizar status
+                                        e.printStackTrace();
+                                    });
+                        }
+
+                        // Se a tela de auxílios fechados estiver sendo exibida, atualiza a interface
+                        if (btnFechados.isPressed()) {
+                            loadFragment(new App.AuxiliosFechadosFragment());
+                        }
+                    } else {
+                        // Tratamento de erro na busca
+                        task.getException().printStackTrace();
+                    }
+                });
     }
 }
