@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/menu_inscrições"
-        android:name="com.example.educapoio.fragments."
-        android:label="fragment_perfil"
-        tools:layout="@layout/fragment_perfil"/>
+        android:name="com.example.educapoio.fragments.inscricaoFragment"
+        android:label="fragment_inscricao"
+        tools:layout="@layout/fragment_inscricao"/>
 
 
     <fragment
