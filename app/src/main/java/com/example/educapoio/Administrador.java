@@ -1,37 +1,25 @@
 package com.example.educapoio;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import static com.example.educapoio.fragments.notificacaoFragment.NOTIFICATION_PREFS;
-
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import java.util.concurrent.TimeUnit;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.educapoio.databinding.ActivityAdministradorBinding;
 import com.example.educapoio.fragments.notificacaoFragment;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
-import org.threeten.bp.format.DateTimeParseException;
-
 import java.util.HashMap;
 import java.util.Map;
-
-
 import android.app.DatePickerDialog;
-import android.widget.DatePicker;
 import java.util.Calendar;
 
 public class Administrador extends AppCompatActivity {
@@ -65,11 +53,17 @@ public class Administrador extends AppCompatActivity {
             }
         });
 
-        binding.btnVoltarLogin.setOnClickListener(v -> {
+        binding.btnSair.setOnClickListener(v -> {
+            // Desconectar o usuário do Firebase
+            FirebaseAuth.getInstance().signOut();
+
+            // Redirecionar para a tela de login
             Intent intent = new Intent(this, login.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
+            finish(); // Finaliza a activity atual para que o usuário não consiga voltar
         });
+
 
         // Agendar o Worker para verificar os auxílios uma vez por dia
         agendarVerificacaoAuxilios();
@@ -111,22 +105,21 @@ public class Administrador extends AppCompatActivity {
         auxilio.put("dataInicio", dataInicio);
         auxilio.put("dataFim", dataFim);
         auxilio.put("url", url);
-        auxilio.put("status", "aberto");  // Adiciona status inicial como "aberto"
+        auxilio.put("status", "aberto");
 
         // Adiciona o documento no Firestore
         db.collection("auxilios").document(id).set(auxilio)
                 .addOnSuccessListener(aVoid -> {
-                    // Captura a data e hora atuais
                     String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-                    // Mensagem para o SharedPreferences
-                    String mensagem = "Nova oportunidade " + titulo + " lançada! Aproveite a oportunidade!  [x]\nData: " + currentDateTime;
+                    String uniqueId = String.valueOf(System.currentTimeMillis()); // ID único para a notificação
+                    String mensagem = "Nova oportunidade " + titulo + " lançada! Aproveite a oportunidade!  \nData: " + currentDateTime;
 
                     // Carrega as notificações existentes
                     SharedPreferences prefs = getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
                     String existingNotifications = prefs.getString("notifications_list", "");
 
                     // Adiciona a nova notificação com um delimitador "|||"
-                    String updatedNotifications = existingNotifications.isEmpty() ? mensagem : existingNotifications + "|||" + mensagem;
+                    String updatedNotifications = existingNotifications.isEmpty() ? uniqueId + "|" + mensagem : existingNotifications + "|||" + uniqueId + "|" + mensagem;
                     prefs.edit().putString("notifications_list", updatedNotifications).apply();
 
                     Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
@@ -137,16 +130,21 @@ public class Administrador extends AppCompatActivity {
     }
 
 
-    private void salvarNotificacao(String mensagem) {
-        SharedPreferences prefs = getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+
+
+    private void salvarNotificacao(String titulo, String mensagem, long diasRestantes) {
+        Context context = getApplicationContext();
+        SharedPreferences prefs = context.getSharedPreferences(notificacaoFragment.NOTIFICATION_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
 
-        // Recuperar a lista existente de notificações
-        String notifications = prefs.getString("notifications_list", "Sem notificações");
-        // Adicionar a nova notificação
-        notifications += "\n" + mensagem;
+        // Gerar um ID único (você pode usar um contador ou um UUID)
+        String uniqueId = String.valueOf(System.currentTimeMillis()); // ou UUID.randomUUID().toString();
 
-        // Armazenar a lista atualizada
+        // Adiciona a nova notificação ao formato: "id|titulo|mensagem"
+        String notificationEntry = uniqueId + "|" + titulo + "| " + mensagem + " (faltam " + diasRestantes + " dias)";
+        String notifications = prefs.getString("notifications_list", "Sem notificações");
+        notifications += (notifications.equals("Sem notificações") ? "" : "|||") + notificationEntry;
+
         editor.putString("notifications_list", notifications);
         editor.apply();
     }

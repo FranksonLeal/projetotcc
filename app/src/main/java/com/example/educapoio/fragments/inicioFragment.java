@@ -11,12 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import com.google.android.material.snackbar.Snackbar;
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
+
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -26,6 +29,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+
+
+
 
 public class inicioFragment extends Fragment {
 
@@ -107,51 +114,37 @@ public class inicioFragment extends Fragment {
 
         textSite.setOnClickListener(v -> {
             String url = "https://www.icet.ufam.edu.br/";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemTi.setOnClickListener(v -> {
             String url = "https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao?utm_medium=ppc&utm_campaign=&utm_term=&gad_source=1&gclsrc=aw.ds";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemSaude.setOnClickListener(v -> {
             String url = "https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemAdm.setOnClickListener(v -> {
             String url = "https://jcconcursos.com.br/concursos/por-cargo/administrador";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemContabilidade.setOnClickListener(v -> {
             String url = "https://www.estrategiaconcursos.com.br/blog/concursos-contabilidade/";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemDireito.setOnClickListener(v -> {
             String url = "https://cj.estrategia.com/portal/concursos-de-direito/";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         imagemBanco.setOnClickListener(v -> {
             String url = "https://www.estrategiaconcursos.com.br/blog/concursos-bancarios/";
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
+            abrirUrl(url); // Chama o método para abrir o dialog
         });
 
         return rootView;
@@ -184,10 +177,43 @@ public class inicioFragment extends Fragment {
         });
     }
 
-    // Método para abrir a URL
     private void abrirUrl(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
+        // Cria o Dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.toast_custom_layout, null);
+        builder.setView(dialogView);
+
+        // Obtém referências para os elementos do layout
+        TextView dialogMessage = dialogView.findViewById(R.id.dialog_message);
+        dialogMessage.setText("Você está prestes a abrir: " + url);
+
+        Button buttonOpenUrl = dialogView.findViewById(R.id.button_open_url);
+        Button buttonCancel = dialogView.findViewById(R.id.button_cancel);
+
+        // Cria o Dialog
+        AlertDialog dialog = builder.create();
+
+        // Ação para abrir a URL
+        buttonOpenUrl.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(url));
+            startActivity(intent);
+            dialog.dismiss(); // Fechar o dialog após abrir a URL
+        });
+
+        // Ação para cancelar
+        buttonCancel.setOnClickListener(v -> {
+            // Fechar o dialog
+            dialog.dismiss();
+        });
+
+        // Mostra o Dialog
+        dialog.show();
     }
+
+
+
+
+
 }

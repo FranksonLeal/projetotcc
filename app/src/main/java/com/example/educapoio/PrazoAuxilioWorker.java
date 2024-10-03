@@ -2,7 +2,9 @@ package com.example.educapoio;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
@@ -39,8 +41,11 @@ public class PrazoAuxilioWorker extends Worker {
         return Result.success();
     }
 
+    private void enviarNotificacaoMotivacional() {
+        enviarNotificacao("Motivação do Dia!", "Não desista! Cada dia é uma nova oportunidade.");
+    }
+
     private void verificarDataFim() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("auxilios").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (DocumentSnapshot document : task.getResult()) {
@@ -48,27 +53,34 @@ public class PrazoAuxilioWorker extends Worker {
                     Log.d(TAG, "Verificando data de fim: " + dataFimString);
 
                     if (isValidDate(dataFimString)) {
-                        LocalDateTime dataFim = LocalDateTime.parse(dataFimString, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                        LocalDateTime dataFim = LocalDateTime.parse(dataFimString, DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+
                         LocalDateTime agora = LocalDateTime.now(ZoneId.systemDefault());
 
                         long diasRestantes = Duration.between(agora, dataFim).toDays();
 
                         if (diasRestantes > 0) {
-                            enviarNotificacao("Lembrete de Auxílio!", "O auxílio " + document.getString("titulo") + " termina em " + diasRestantes + " dias.");
+                            enviarNotificacao("Lembrete!", "O auxílio " + document.getString("titulo") + " termina em " + diasRestantes + " dias.");
+                            salvarNotificacao("Lembrete!", "O auxílio " + document.getString("titulo") + " termina em " + diasRestantes + " dias.", diasRestantes); // Atualizado aqui
                         } else if (diasRestantes == 0) {
-                            enviarNotificacao("Lembrete de Auxílio!", "O auxílio " + document.getString("titulo") + " termina hoje.");
+                            enviarNotificacao("Lembrete!", "O auxílio " + document.getString("titulo") + " termina hoje.");
+                            salvarNotificacao("Lembrete!", "O auxílio " + document.getString("titulo") + " termina hoje.", 0); // Atualizado aqui
                         } else if (diasRestantes < 0) {
                             // O prazo expirou, mover para "fechado"
                             atualizarStatusAuxilio(document.getId(), "fechado");
-                            enviarNotificacao("Auxílio Encerrado", "O auxílio " + document.getString("titulo") + " foi encerrado.");
+                            enviarNotificacao("Poxa, oportunidade Encerrada", "O " + document.getString("titulo") + " foi encerrado.");
+                            salvarNotificacao("Poxa, oportunidade Encerrada", "O " + document.getString("titulo") + " foi encerrado.", 0); // Atualizado aqui
                         }
                     }
                 }
+                // Enviar notificação motivacional diariamente
+                enviarNotificacaoMotivacional();
             } else {
                 Log.e(TAG, "Erro ao obter auxílios: " + task.getException());
             }
         });
     }
+
     private void atualizarStatusAuxilio(String auxilioId, String novoStatus) {
         // Atualiza o status do auxílio para "fechado"
         db.collection("auxilios").document(auxilioId).update("status", novoStatus)
@@ -88,21 +100,35 @@ public class PrazoAuxilioWorker extends Worker {
         LocalDateTime agora = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
         String dataHora = agora.format(formatter);
-
         String mensagemCompleta = mensagem + "\n\nEnviado em: " + dataHora;
 
+        // Intent para o BroadcastReceiver
+        Intent dismissIntent = new Intent(getApplicationContext(), NotificationDismissedReceiver.class);
+        dismissIntent.putExtra("notification_id", 1); // Define um ID único para a notificação
+
+        // PendingIntent para a exclusão
+        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(
+                getApplicationContext(),
+                1, // ID único do PendingIntent
+                dismissIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        // Criando a notificação
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
                 .setSmallIcon(R.drawable.ic_notificacao)
                 .setContentTitle(titulo)
                 .setContentText(mensagemCompleta)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(R.drawable.ic_exclusao, "Excluir", dismissPendingIntent); // Botão para excluir
 
         notificationManager.notify(1, builder.build());
 
-        salvarNotificacao(titulo, mensagemCompleta);
+        salvarNotificacao(titulo, mensagemCompleta, 0); // Salva notificação com dias restantes como 0, pois não se aplica
     }
 
-    private void salvarNotificacao(String titulo, String mensagem) {
+
+    private void salvarNotificacao(String titulo, String mensagem, long diasRestantes) {
         Context context = getApplicationContext();
         SharedPreferences prefs = context.getSharedPreferences(notificacaoFragment.NOTIFICATION_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -113,15 +139,17 @@ public class PrazoAuxilioWorker extends Worker {
         } else {
             notifications += "|||"; // Adicione o delimitador se já houver notificações
         }
-        notifications += titulo + ": " + mensagem; // Adicione a nova notificação
+
+        // Modificar a mensagem para incluir os dias restantes
+        String mensagemComDias = mensagem + " (faltam " + diasRestantes + " dias)";
+        notifications += titulo + ": " + mensagemComDias; // Adicione a nova notificação
 
         editor.putString("notifications_list", notifications);
         editor.apply();
     }
 
-
     private boolean isValidDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         try {
             LocalDateTime.parse(date, formatter);
             return true;
@@ -129,4 +157,5 @@ public class PrazoAuxilioWorker extends Worker {
             return false;
         }
     }
+
 }

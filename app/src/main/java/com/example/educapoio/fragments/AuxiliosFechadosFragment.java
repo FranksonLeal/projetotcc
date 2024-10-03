@@ -13,6 +13,8 @@ import com.example.educapoio.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.android.gms.tasks.Task;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
@@ -35,10 +37,11 @@ public class AuxiliosFechadosFragment extends Fragment {
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
+            // Verifica se o fragmento ainda está anexado e se a tarefa foi bem-sucedida
+            if (isAdded() && task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String dataFimStr = document.getString("dataFim");
-                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")); // Certifique-se de usar o formato correto
 
                     // Verifica se a data de fim é menor ou igual à data atual
                     if (dataFim.isBefore(LocalDate.now()) || dataFim.isEqual(LocalDate.now())) {
@@ -50,9 +53,30 @@ public class AuxiliosFechadosFragment extends Fragment {
     }
 
     private void adicionarAuxilioAoLayout(QueryDocumentSnapshot document) {
+        // Verifique se o fragmento está anexado
+        if (!isAdded()) {
+            return; // Não faz nada se não estiver anexado
+        }
+
         String titulo = document.getString("titulo");
-        TextView textView = new TextView(getContext());
-        textView.setText(titulo);
-        linearLayout.addView(textView); // Adiciona o título do auxílio ao LinearLayout
+        String dataInicio = document.getString("dataInicio");
+        String dataFim = document.getString("dataFim");
+
+        // Inflate o layout do item
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View itemView = inflater.inflate(R.layout.item_auxilio, linearLayout, false);
+
+        // Referenciar os TextViews do layout inflado
+        TextView textTituloAuxilio = itemView.findViewById(R.id.textTituloAuxilio);
+        TextView textDataInicio = itemView.findViewById(R.id.textDataInicio);
+        TextView textDataFim = itemView.findViewById(R.id.textDataFim);
+
+        // Definir os textos
+        textTituloAuxilio.setText(titulo);
+        textDataInicio.setText("Início: " + dataInicio);
+        textDataFim.setText("Fim: " + dataFim);
+
+        // Adicionar o itemView ao LinearLayout
+        linearLayout.addView(itemView);
     }
 }

@@ -222,7 +222,7 @@
         app:layout_constraintTop_toBottomOf="@+id/editTelefone" />
 
     <Button
-        android:id="@+id/btnVoltarLogin"
+        android:id="@+id/btnSair"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"

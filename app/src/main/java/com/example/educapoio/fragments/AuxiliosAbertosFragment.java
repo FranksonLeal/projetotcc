@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.example.educapoio.R;
@@ -39,7 +40,7 @@ public class AuxiliosAbertosFragment extends Fragment {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String dataFimStr = document.getString("dataFim");
-                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")); // Certifique-se de usar o formato correto
 
                     // Verifica se a data de fim é maior que a data atual
                     if (dataFim.isAfter(LocalDate.now())) {
@@ -50,10 +51,37 @@ public class AuxiliosAbertosFragment extends Fragment {
         });
     }
 
+
+
     private void adicionarAuxilioAoLayout(QueryDocumentSnapshot document) {
+        // Verifique se o fragmento está anexado
+        if (!isAdded()) {
+            return; // Não faz nada se não estiver anexado
+        }
+
         String titulo = document.getString("titulo");
-        TextView textView = new TextView(getContext());
-        textView.setText(titulo);
-        linearLayout.addView(textView); // Adiciona o título do auxílio ao LinearLayout
+        String dataInicio = document.getString("dataInicio");
+        String dataFim = document.getString("dataFim");
+
+        // Inflate o layout do item
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View itemView = inflater.inflate(R.layout.item_auxilio, linearLayout, false);
+
+        // Referenciar os TextViews do layout inflado
+        TextView textTituloAuxilio = itemView.findViewById(R.id.textTituloAuxilio);
+        TextView textDataInicio = itemView.findViewById(R.id.textDataInicio);
+        TextView textDataFim = itemView.findViewById(R.id.textDataFim);
+
+        // Definir os textos
+        textTituloAuxilio.setText(titulo);
+        textDataInicio.setText("Início: " + dataInicio);
+        textDataFim.setText("Fim: " + dataFim);
+
+        // Adicionar o itemView ao LinearLayout
+        linearLayout.addView(itemView);
     }
+
+
+
+
 }

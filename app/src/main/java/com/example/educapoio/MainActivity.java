@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
+
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -42,36 +44,31 @@ public class MainActivity extends AppCompatActivity {
         AndroidThreeTen.init(this);
         setContentView(R.layout.activity_main);
 
-        // Agendar o Worker para rodar diariamente
-//        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(PrazoAuxilioWorker.class, 1, TimeUnit.DAYS)
-//                .build();
-//
-//        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-//                "verificar_prazos_auxilio",
-//                ExistingPeriodicWorkPolicy.KEEP, // Mantém o trabalho já existente
-//                workRequest
-//        );
+        // Inicializar o Firestore
+        db = FirebaseFirestore.getInstance();
 
-        // Agendando o Worker para executar a cada 2 minutos
-        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(PrazoAuxilioWorker.class, 2, TimeUnit.MINUTES)
-                .build();
+        // Configurar o RecyclerView
+        recyclerView = findViewById(R.id.recyclerViewAuxilios);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(layoutManager);
 
-        WorkManager.getInstance(this).enqueue(workRequest);
+        carregarAuxilios();
 
-        Log.d("WorkManager", "Worker agendado para cada 2 minutos");
+        // Iniciar o Worker para notificações periódicas
+        iniciarNotificacoesPeriodicas();
 
         TextView textCadastro = findViewById(R.id.textCadastro);
         String text = "Cadastrar";
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textCadastro.setText(content);
+    }
 
-        db = FirebaseFirestore.getInstance();
-        recyclerView = findViewById(R.id.recyclerViewAuxilios);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        recyclerView.setLayoutManager(layoutManager);
+    private void iniciarNotificacoesPeriodicas() {
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(PrazoAuxilioWorker.class, 15, TimeUnit.MINUTES)
+                .build();
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("NotificacoesAuxilios", ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
 
-        carregarAuxilios();
     }
 
     private void carregarAuxilios() {
@@ -84,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             auxilios.add(document.getData());
                         }
-                        // Passar o listener para o Adapter
                         adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
                         recyclerView.setAdapter(adapter);
                     } else {
@@ -94,9 +90,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void abrirUrl(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        startActivity(intent);
-        // Implementar a lógica para abrir a URL aqui
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Você está prestes a abrir: " + url, Snackbar.LENGTH_LONG)
+                .setAction("OK", v -> {
+                    // Abre a URL quando o botão é clicado
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                });
+
+        snackbar.show(); // Exibe o Snackbar
     }
+
+
+
+
 }
