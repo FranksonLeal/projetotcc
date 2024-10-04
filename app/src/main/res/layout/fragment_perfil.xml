@@ -1,240 +1,225 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:id="@+id/fragment_container"
     android:layout_height="match_parent"
-    android:background="#F5F7FB"
-    tools:context=".fragments.perfilFragment">
+    android:fillViewport="true">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="176dp"
-        android:layout_height="wrap_content"
-        android:text="Meu perfil"
-        android:layout_marginTop="45dp"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/imageConfig"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_settin"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/textViewConf"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Configurações"
-        android:layout_marginStart="25dp"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="8sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageConfig"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/imageEdit"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_edit"
-        android:layout_marginEnd="35dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
-
-
-    <TextView
-        android:id="@+id/textViewEdit"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:text="Editar"
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="8sp"
-        android:layout_marginEnd="25dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageEdit"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/mudarPerfil"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/usu"
-        android:layout_marginTop="30dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/textEmail"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="Email"
-        android:layout_marginTop="45dp"
-        android:layout_marginStart="45dp"
-
-        android:textAlignment="viewStart"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mudarPerfil"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/editEmail2"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:layout_marginTop="15dp"
-        android:padding="20dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textEmail"
-        tools:ignore="MissingConstraints" />
+        android:background="#F5F7FB"
+        tools:context=".fragments.perfilFragment">
 
-    <TextView
-        android:id="@+id/textNome"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:text="Nome"
-        android:layout_marginTop="15dp"
-        android:textAlignment="viewStart"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editEmail2"
-        tools:ignore="MissingConstraints" />
+        <!-- Título "Meu perfil" -->
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meu perfil"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="45dp"/>
 
-    <TextView
-        android:id="@+id/editNome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:layout_marginTop="15dp"
-        android:padding="20dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textNome"
-        tools:ignore="MissingConstraints" />
+        <!-- Ícone de Configurações -->
+        <ImageView
+            android:id="@+id/imageConfig"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_settin"
+            android:layout_marginStart="35dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="30dp"/>
 
-    <TextView
-        android:id="@+id/textTelefone"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:text="Telefone"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="15dp"
-        android:textAlignment="viewStart"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editNome"
-        tools:ignore="MissingConstraints" />
+        <!-- Texto "Configurações" -->
+        <TextView
+            android:id="@+id/textViewConf"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="Configurações"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="8sp"
+            app:layout_constraintTop_toBottomOf="@+id/imageConfig"
+            app:layout_constraintStart_toStartOf="@+id/imageConfig"
+            android:layout_marginTop="5dp"/>
 
-    <TextView
-        android:id="@+id/editTelefone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="45dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:padding="20dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTelefone"
-        tools:ignore="MissingConstraints" />
+        <!-- Ícone de Editar -->
+        <ImageView
+            android:id="@+id/imageEdit"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_edit"
+            android:layout_marginEnd="35dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"/>
 
-    <TextView
-        android:id="@+id/textCurso"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:text="Curso"
-        android:layout_marginTop="15dp"
-        android:textAlignment="viewStart"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTelefone"
-        tools:ignore="MissingConstraints" />
+        <!-- Texto "Editar" -->
+        <TextView
+            android:id="@+id/textViewEdit"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="Editar"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="8sp"
+            app:layout_constraintTop_toBottomOf="@+id/imageEdit"
+            app:layout_constraintEnd_toEndOf="@+id/imageEdit"
+            android:layout_marginTop="5dp"/>
 
-    <TextView
-        android:id="@+id/editCurso"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:layout_marginTop="15dp"
-        android:padding="20dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textCurso"
-        tools:ignore="MissingConstraints" />
+        <!-- Imagem do perfil -->
+        <ImageView
+            android:id="@+id/mudarPerfil"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:src="@drawable/usu"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"/>
 
-    <TextView
-        android:id="@+id/textTipo"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:text="Usuário"
-        android:layout_marginTop="15dp"
-        android:textAlignment="viewStart"
-        android:textColor="@color/black"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editCurso"
-        tools:ignore="MissingConstraints" />
+        <!-- Campo de Email -->
+        <TextView
+            android:id="@+id/textEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/mudarPerfil"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="45dp"
+            android:layout_marginStart="45dp"/>
 
-    <TextView
-        android:id="@+id/editUsuario"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:layout_marginTop="15dp"
-        android:padding="20dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textTipo"
-        tools:ignore="MissingConstraints" />
+        <TextView
+            android:id="@+id/editEmail2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:padding="20dp"
+            android:textColor="#626364"
+            app:layout_constraintTop_toBottomOf="@+id/textEmail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginTop="15dp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Campo de Nome -->
+        <TextView
+            android:id="@+id/textNome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nome"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/editEmail2"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="45dp"/>
+
+        <TextView
+            android:id="@+id/editNome"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:padding="20dp"
+            android:textColor="#626364"
+            app:layout_constraintTop_toBottomOf="@+id/textNome"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginTop="15dp"/>
+
+        <!-- Campo de Telefone -->
+        <TextView
+            android:id="@+id/textTelefone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Telefone"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/editNome"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="45dp"/>
+
+        <TextView
+            android:id="@+id/editTelefone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:padding="20dp"
+            android:textColor="#626364"
+            app:layout_constraintTop_toBottomOf="@+id/textTelefone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginTop="12dp"/>
+
+        <!-- Campo de Curso -->
+        <TextView
+            android:id="@+id/textCurso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Curso"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/editTelefone"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="45dp"/>
+
+        <TextView
+            android:id="@+id/editCurso"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:padding="20dp"
+            android:textColor="#626364"
+            app:layout_constraintTop_toBottomOf="@+id/textCurso"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginTop="15dp"/>
+
+        <!-- Campo de Tipo de Usuário -->
+        <TextView
+            android:id="@+id/textTipo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Usuário"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/editCurso"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginTop="15dp"
+            android:layout_marginStart="45dp"/>
+
+        <TextView
+            android:id="@+id/editUsuario"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_edittext"
+            android:padding="20dp"
+            android:textColor="#626364"
+            app:layout_constraintTop_toBottomOf="@+id/textTipo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="45dp"
+            android:layout_marginEnd="45dp"
+            android:layout_marginTop="15dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

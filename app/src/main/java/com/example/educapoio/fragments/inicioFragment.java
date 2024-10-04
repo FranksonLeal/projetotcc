@@ -3,11 +3,16 @@ package com.example.educapoio.fragments;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +71,17 @@ public class inicioFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     String nome = document.getString("nome");
-                    textoOla.setText("Olá, " + nome);
+                    if (nome != null) {
+                        // Aplicando cor ao nome do usuário
+                        SpannableString spannable = new SpannableString("Olá, " + nome);
+                        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")),
+                                5, // Início do nome
+                                spannable.length(), // Até o final
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        textoOla.setText(spannable);
+                    } else {
+                        textoOla.setText("Olá, usuário!");
+                    }
                 } else {
                     textoOla.setText("Olá, usuário!");
                 }
@@ -75,6 +90,7 @@ public class inicioFragment extends Fragment {
             }
         });
     }
+
 
     @SuppressLint({"WrongViewCast", "MissingInflatedId"})
     @Override
