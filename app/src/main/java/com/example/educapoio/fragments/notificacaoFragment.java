@@ -6,15 +6,16 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AlertDialog; // Adicione esta importação
+import androidx.appcompat.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView; // Importando para o ícone de exclusão
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
+import android.widget.Button; // Importar para o botão de excluir todas
 
 import com.example.educapoio.R;
 
@@ -44,6 +45,15 @@ public class notificacaoFragment extends Fragment {
 
         // Obtém o LinearLayout onde as notificações serão exibidas
         notificationContainer = view.findViewById(R.id.notificationContainer);
+
+        // Botão para excluir todas as notificações
+        Button deleteAllButton = view.findViewById(R.id.deleteAllButton);
+        deleteAllButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAllNotifications();
+            }
+        });
 
         // Atualiza as notificações dinâmicas
         atualizarNotificacoes(notificationContainer);
@@ -131,7 +141,7 @@ public class notificacaoFragment extends Fragment {
                                         // Remover a notificação da interface
                                         notificationLayout.removeView(horizontalLayout);
                                         Log.d("NotificacaoFragment", "Notificação removida: " + notification);
-                                        deleteNotification(uniqueId, notificationLayout);
+                                        deleteNotification(uniqueId);
                                     }
                                 })
                                 .setNegativeButton(android.R.string.no, null)
@@ -149,7 +159,7 @@ public class notificacaoFragment extends Fragment {
                 // Adiciona a barra divisória
                 View divider = new View(getContext());
                 divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2)); // Altura da barra divisória
-                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black)); // Cor da barra divisória (crie no colors.xml)
+                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black)); // Cor da barra divisória
                 notificationLayout.addView(divider);
             } else {
                 Log.e("NotificacaoFragment", "Notificação mal formatada: " + notification);
@@ -187,6 +197,7 @@ public class notificacaoFragment extends Fragment {
                                     // Remover a notificação da interface
                                     notificationLayout.removeView(horizontalLayout);
                                     Log.d("NotificacaoFragment", "Notificação removida: " + message);
+                                    deleteNotification(message); // Chama a função para deletar a notificação
                                 }
                             })
                             .setNegativeButton(android.R.string.no, null)
@@ -209,58 +220,49 @@ public class notificacaoFragment extends Fragment {
         }
     }
 
+    private void deleteAllNotifications() {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Confirmação")
+                .setMessage("Você tem certeza que deseja excluir todas as notificações?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Limpa as notificações do SharedPreferences
+                        SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putString("notifications_list", ""); // Limpa as notificações
+                        editor.apply();
 
-
-
-    private void showDeleteConfirmationDialog(String uniqueId, LinearLayout notificationLayout) {
-        new AlertDialog.Builder(requireActivity())
-                .setTitle("Confirmar Exclusão")
-                .setMessage("Você tem certeza que deseja excluir esta notificação?")
-                .setPositiveButton("Sim", (dialog, which) -> {
-                    deleteNotification(uniqueId, notificationLayout);
+                        // Atualiza a interface
+                        notificationContainer.removeAllViews();
+                        addNoNotificationMessage(notificationContainer);
+                    }
                 })
-                .setNegativeButton("Não", null)
+                .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
-    private void deleteNotification(String uniqueId, LinearLayout notificationLayout) {
-        // Carrega as notificações existentes
+    private void deleteNotification(String notificationId) {
+        // Remove a notificação do SharedPreferences
         SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
-        String existingNotifications = prefs.getString("notifications_list", "");
+        SharedPreferences.Editor editor = prefs.edit();
 
-        // Divide as notificações em uma lista
-        String[] notifications = existingNotifications.split("\\|\\|\\|");
-        StringBuilder updatedNotifications = new StringBuilder();
-
-        // Recria a lista de notificações, excluindo a notificação selecionada
-        for (String notification : notifications) {
-            if (!notification.startsWith(uniqueId + "|")) { // Mantém as notificações que não têm o ID único
-                if (updatedNotifications.length() > 0) {
-                    updatedNotifications.append("|||");
-                }
-                updatedNotifications.append(notification);
-            }
-        }
-
-        // Atualiza o SharedPreferences com a nova lista
-        prefs.edit().putString("notifications_list", updatedNotifications.toString()).apply();
-
-        // Atualiza a exibição
-        atualizarNotificacoes(notificationLayout);
-    }
-
-    private void removeNotification(String notification, LinearLayout notificationLayout) {
-        // Atualiza a lista de notificações
-        SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+        // Obtém a lista atual de notificações
         String notifications = prefs.getString("notifications_list", "");
 
-        // Remove a notificação da string
-        String updatedNotifications = notifications.replace(notification + "|||", ""); // Remove a notificação
+        // Se a lista não estiver vazia, remove a notificação específica
+        if (!notifications.isEmpty()) {
+            String[] notificationArray = notifications.split("\\|\\|\\|");
+            StringBuilder newNotifications = new StringBuilder();
 
-        // Salva a lista de notificações atualizada
-        prefs.edit().putString("notifications_list", updatedNotifications).apply();
+            for (String notification : notificationArray) {
+                if (!notification.contains(notificationId)) { // Exclui a notificação se o ID coincidir
+                    newNotifications.append(notification).append("|||");
+                }
+            }
 
-        // Atualiza o layout
-        atualizarNotificacoes(notificationLayout);
+            // Salva a nova lista de notificações
+            editor.putString("notifications_list", newNotifications.toString());
+            editor.apply();
+        }
     }
 }

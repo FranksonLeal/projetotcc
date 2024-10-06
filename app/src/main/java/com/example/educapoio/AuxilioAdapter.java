@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 import java.util.Map;
 
@@ -45,15 +47,26 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
         String dataInicio = auxilio.get("dataInicio").toString();
         String dataFim = auxilio.get("dataFim").toString();
         String url = auxilio.get("url").toString();  // Supondo que exista uma URL no objeto auxilio
+        String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null; // Verifica se há URL de imagem
 
         // Define os textos nos TextViews correspondentes
         holder.titulo.setText(titulo);
         holder.dataInicio.setText("Início: " + dataInicio);
         holder.dataFim.setText("Fim: " + dataFim);
 
-        // Gera uma imagem circular com a inicial do título
-        String inicial = titulo.substring(0, 1).toUpperCase();
-        holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
+        // Verifica se existe uma URL de imagem
+        if (imagemUrl != null && !imagemUrl.isEmpty()) {
+            // Se houver uma URL de imagem válida, carrega a imagem do auxílio
+            Glide.with(holder.imagemInicial.getContext())
+                    .load(imagemUrl)
+                    .placeholder(R.drawable.placeholder_image)  // Imagem temporária enquanto carrega
+                    .error(R.drawable.error_image)              // Imagem padrão em caso de erro
+                    .into(holder.imagemInicial);
+        } else {
+            // Caso não haja imagem, gera uma imagem circular com a inicial do título
+            String inicial = titulo.substring(0, 1).toUpperCase();
+            holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
+        }
 
         // Configura o clique no item do RecyclerView
         holder.itemView.setOnClickListener(v -> {
@@ -61,6 +74,17 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
                 onItemClickListener.onItemClick(url);
             }
         });
+    }
+
+
+
+    // Método para carregar a imagem usando Glide ou outra biblioteca de carregamento de imagem
+    private void carregarImagem(ImageView imageView, String url) {
+        Glide.with(imageView.getContext())
+                .load(url)
+                .placeholder(R.drawable.placeholder_image) // Imagem de carregamento
+                .error(R.drawable.error_image) // Imagem em caso de erro
+                .into(imageView);
     }
 
     @Override
@@ -77,7 +101,7 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
             titulo = itemView.findViewById(R.id.textTituloAuxilio);
             dataInicio = itemView.findViewById(R.id.textDataInicio);
             dataFim = itemView.findViewById(R.id.textDataFim);
-            imagemInicial = itemView.findViewById(R.id.imagemInicial);
+            imagemInicial = itemView.findViewById(R.id.imagemAuxilio);
         }
     }
 

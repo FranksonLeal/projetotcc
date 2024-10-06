@@ -1,15 +1,22 @@
 package com.example.educapoio.fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.example.educapoio.CircleCrop;
 import com.example.educapoio.R;
 import com.example.educapoio.configuracao;
 import com.example.educapoio.editarPerfil;
@@ -24,6 +31,7 @@ public class perfilFragment extends Fragment {
     private TextView editNome, editEmail2, editTelefone, editCurso, editUsuario;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private ImageView imagemPerfil;
 
     @Nullable
     @Override
@@ -37,6 +45,7 @@ public class perfilFragment extends Fragment {
         editTelefone = view.findViewById(R.id.editTelefone);
         editCurso = view.findViewById(R.id.editCurso);
         editUsuario = view.findViewById(R.id.editUsuario);
+        imagemPerfil = view.findViewById(R.id.mudarPerfil);
 
         // Inicializa FirebaseAuth e Firestore
         mAuth = FirebaseAuth.getInstance();
@@ -68,33 +77,60 @@ public class perfilFragment extends Fragment {
     }
 
     private void carregarDadosUsuario(String userId) {
-        // Referência ao documento do usuário no Firestore
         DocumentReference docRef = db.collection("users").document(userId);
-
-        // Busca o documento do Firestore
         docRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    // Extrai os dados do Firestore
                     String nome = document.getString("nome");
                     String telefone = document.getString("telefone");
                     String curso = document.getString("curso");
                     String tipoUsuario = document.getString("tipoUsuario");
+                    String imagemUrl = document.getString("imagem"); // Usar a chave correta
 
-                    // Preenche os TextViews com os dados do Firestore
                     editNome.setText(nome);
                     editTelefone.setText(telefone);
                     editCurso.setText(curso);
                     editUsuario.setText(tipoUsuario);
+
+                    if (imagemUrl != null && !imagemUrl.isEmpty()) {
+                        Glide.with(getContext())
+                                .load(imagemUrl)
+                                .transform(new CircleCrop())
+                                .placeholder(R.drawable.placeholder_image) // Substitua pelo seu placeholder
+                                .into(imagemPerfil);
+                    } else {
+                        mostrarInicial(nome); // Se não houver imagem, mostra a inicial
+                    }
+
                 } else {
-                    // Documento não existe
                     editNome.setText("Dados não encontrados");
                 }
             } else {
-                // Erro ao acessar o Firestore
                 editNome.setText("Erro ao carregar dados");
             }
         });
+    }
+
+
+    private void mostrarInicial(String nome) {
+        // Obtém a inicial do nome
+        String inicial = nome.substring(0, 1).toUpperCase();
+        // Gera a imagem com a inicial
+        Bitmap bitmap = Bitmap.createBitmap(140, 140, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        paint.setColor(Color.BLUE); // Cor de fundo
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawCircle(70, 70, 70, paint); // Desenha um círculo
+
+        // Configura o texto
+        paint.setColor(Color.WHITE); // Cor da inicial
+        paint.setTextSize(60);
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(inicial, 70, 90, paint); // Desenha a inicial
+
+        // Define a imagem gerada no ImageView
+        imagemPerfil.setImageBitmap(bitmap);
     }
 }

@@ -50,9 +50,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore:25.1.0")
+    implementation("com.google.firebase:firebase-storage-ktx")
+
     implementation("com.google.firebase:firebase-messaging:23.1.0") // Verifique se a versão está atualizada
 
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("androidx.work:work-runtime:2.8.1")
 

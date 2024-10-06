@@ -3,7 +3,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-
     android:gravity="center_horizontal">
 
     <!-- Título do Auxílio -->
@@ -16,16 +15,15 @@
         android:text="Título do Auxílio"
         android:gravity="center" />
 
-    <!-- Imagem Circular com Inicial do Título -->
+    <!-- Imagem Circular do Auxílio -->
     <ImageView
-        android:id="@+id/imagemInicial"
+        android:id="@+id/imagemAuxilio"
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_circle"
         android:gravity="center"
-        android:text="T"
-        android:scaleType="centerInside" />
+        android:scaleType="centerCrop" /> <!-- Altere para centerCrop para melhor exibição -->
 
     <!-- Data de Início -->
     <TextView
