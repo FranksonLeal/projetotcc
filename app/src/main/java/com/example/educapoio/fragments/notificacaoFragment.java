@@ -3,6 +3,8 @@ package com.example.educapoio.fragments;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.widget.Button; // Importar para o botão de excluir todas
 
 import com.example.educapoio.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class notificacaoFragment extends Fragment {
 
@@ -132,21 +135,65 @@ public class notificacaoFragment extends Fragment {
                 deleteButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // Exibe a confirmação antes de deletar
-                        new AlertDialog.Builder(getContext())
-                                .setTitle("Confirmação")
-                                .setMessage("Você tem certeza que deseja excluir esta notificação?")
-                                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        // Remover a notificação da interface
-                                        notificationLayout.removeView(horizontalLayout);
-                                        Log.d("NotificacaoFragment", "Notificação removida: " + notification);
-                                        deleteNotification(uniqueId);
-                                    }
-                                })
-                                .setNegativeButton(android.R.string.no, null)
-                                .show();
+                        // Cria o BottomSheetDialog
+                        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+
+                        // Infla um layout simples programaticamente
+                        LinearLayout layout = new LinearLayout(getContext());
+                        layout.setOrientation(LinearLayout.VERTICAL);
+                        layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+
+                        // Cria um GradientDrawable para bordas arredondadas
+                        GradientDrawable backgroundDrawable = new GradientDrawable();
+                        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
+                        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
+                        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
+
+                        // Adiciona o texto da mensagem
+                        TextView messageText = new TextView(getContext());
+                        messageText.setText("Você tem certeza que deseja excluir esta notificação?");
+                        messageText.setTextSize(18); // Tamanho do texto
+                        messageText.setTextColor(Color.BLACK); // Cor do texto
+                        messageText.setPadding(0, 0, 0, 40); // Padding inferior
+
+                        // Adiciona o botão de confirmação
+                        Button confirmButton = new Button(getContext());
+                        confirmButton.setText("Sim");
+                        confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
+                        confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                        confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+                        // Ação do botão de confirmação
+                        confirmButton.setOnClickListener(v1 -> {
+                            // Remover a notificação da interface
+                            notificationLayout.removeView(horizontalLayout);
+                            Log.d("NotificacaoFragment", "Notificação removida: " + message);
+                            deleteNotification(message); // Chama a função para deletar a notificação
+                            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+                        });
+
+                        // Adiciona o botão de cancelamento
+                        Button cancelButton = new Button(getContext());
+                        cancelButton.setText("Não");
+                        cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
+                        cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                        cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+                        // Ação do botão de cancelamento
+                        cancelButton.setOnClickListener(v12 -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
+
+                        // Adiciona os componentes ao layout
+                        layout.addView(messageText);
+                        layout.addView(confirmButton);
+                        layout.addView(cancelButton);
+
+                        // Define o layout inflado no BottomSheetDialog
+                        bottomSheetDialog.setContentView(layout);
+
+                        // Exibe o BottomSheetDialog
+                        bottomSheetDialog.show();
                     }
+
                 });
 
                 // Adiciona o TextView e o botão ao layout horizontal
@@ -188,21 +235,65 @@ public class notificacaoFragment extends Fragment {
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Exibe a confirmação antes de deletar
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("Confirmação")
-                            .setMessage("Você tem certeza que deseja excluir esta notificação?")
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // Remover a notificação da interface
-                                    notificationLayout.removeView(horizontalLayout);
-                                    Log.d("NotificacaoFragment", "Notificação removida: " + message);
-                                    deleteNotification(message); // Chama a função para deletar a notificação
-                                }
-                            })
-                            .setNegativeButton(android.R.string.no, null)
-                            .show();
+                    // Cria o BottomSheetDialog
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+
+                    // Infla um layout simples programaticamente
+                    LinearLayout layout = new LinearLayout(getContext());
+                    layout.setOrientation(LinearLayout.VERTICAL);
+                    layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+
+                    // Cria um GradientDrawable para bordas arredondadas
+                    GradientDrawable backgroundDrawable = new GradientDrawable();
+                    backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
+                    backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
+                    layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
+
+                    // Adiciona o texto da mensagem
+                    TextView messageText = new TextView(getContext());
+                    messageText.setText("Você tem certeza que deseja excluir esta notificação?");
+                    messageText.setTextSize(18); // Tamanho do texto
+                    messageText.setTextColor(Color.BLACK); // Cor do texto
+                    messageText.setPadding(0, 0, 0, 40); // Padding inferior
+
+                    // Adiciona o botão de confirmação
+                    Button confirmButton = new Button(getContext());
+                    confirmButton.setText("Sim");
+                    confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
+                    confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                    confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+                    // Ação do botão de confirmação
+                    confirmButton.setOnClickListener(v1 -> {
+                        // Remover a notificação da interface
+                        notificationLayout.removeView(horizontalLayout);
+                        Log.d("NotificacaoFragment", "Notificação removida: " + message);
+                        deleteNotification(message); // Chama a função para deletar a notificação
+                        bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+                    });
+
+                    // Adiciona o botão de cancelamento
+                    Button cancelButton = new Button(getContext());
+                    cancelButton.setText("Não");
+                    cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
+                    cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                    cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+                    // Ação do botão de cancelamento
+                    cancelButton.setOnClickListener(v12 -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
+
+                    // Adiciona os componentes ao layout
+                    layout.addView(messageText);
+                    layout.addView(confirmButton);
+                    layout.addView(cancelButton);
+
+                    // Define o layout inflado no BottomSheetDialog
+                    bottomSheetDialog.setContentView(layout);
+
+                    // Exibe o BottomSheetDialog
+                    bottomSheetDialog.show();
                 }
+
             });
 
             // Adiciona o TextView e o botão ao layout horizontal
@@ -221,25 +312,71 @@ public class notificacaoFragment extends Fragment {
     }
 
     private void deleteAllNotifications() {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Confirmação")
-                .setMessage("Você tem certeza que deseja excluir todas as notificações?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // Limpa as notificações do SharedPreferences
-                        SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putString("notifications_list", ""); // Limpa as notificações
-                        editor.apply();
+        // Cria o BottomSheetDialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
 
-                        // Atualiza a interface
-                        notificationContainer.removeAllViews();
-                        addNoNotificationMessage(notificationContainer);
-                    }
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
+        // Infla um layout simples programaticamente
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+
+        // Cria um GradientDrawable para bordas arredondadas
+        GradientDrawable backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
+        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
+        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
+
+        // Adiciona o texto da mensagem
+        TextView messageText = new TextView(getContext());
+        messageText.setText("Você tem certeza que deseja excluir todas as notificações?");
+        messageText.setTextSize(18); // Tamanho do texto
+        messageText.setTextColor(Color.BLACK); // Cor do texto
+        messageText.setPadding(0, 0, 0, 40); // Padding inferior
+
+        // Adiciona o botão de confirmação
+        Button confirmButton = new Button(getContext());
+        confirmButton.setText("Sim");
+        confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
+        confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
+        confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+        // Ação do botão de confirmação
+        confirmButton.setOnClickListener(v -> {
+            // Limpa as notificações do SharedPreferences
+            SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("notifications_list", ""); // Limpa as notificações
+            editor.apply();
+
+            // Atualiza a interface
+            notificationContainer.removeAllViews();
+            addNoNotificationMessage(notificationContainer);
+
+            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+        });
+
+        // Adiciona o botão de cancelamento
+        Button cancelButton = new Button(getContext());
+        cancelButton.setText("Não");
+        cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
+        cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
+        cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+
+        // Ação do botão de cancelamento
+        cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
+
+        // Adiciona os componentes ao layout
+        layout.addView(messageText);
+        layout.addView(confirmButton);
+        layout.addView(cancelButton);
+
+        // Define o layout inflado no BottomSheetDialog
+        bottomSheetDialog.setContentView(layout);
+
+        // Exibe o BottomSheetDialog
+        bottomSheetDialog.show();
     }
+
 
     private void deleteNotification(String notificationId) {
         // Remove a notificação do SharedPreferences

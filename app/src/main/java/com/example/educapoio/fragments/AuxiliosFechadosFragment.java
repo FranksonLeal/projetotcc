@@ -4,79 +4,92 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.educapoio.AuxilioAdapterInscricao;
 import com.example.educapoio.R;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.android.gms.tasks.Task;
+
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class AuxiliosFechadosFragment extends Fragment {
 
-    private LinearLayout linearLayout;
+    private RecyclerView recyclerView;
+    private AuxilioAdapterInscricao adapter;
+    private List<QueryDocumentSnapshot> auxiliosFechados;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_auxilios_fechados, container, false);
-        linearLayout = view.findViewById(R.id.linearLayoutAuxilios); // Certifique-se de ter esse LinearLayout no XML
+        recyclerView = view.findViewById(R.id.recyclerViewAuxiliosFechados);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        buscarAuxiliosFechados();
+        // Buscando o TextView dentro da view inflada
+        TextView txtNoAuxiliosFechados = view.findViewById(R.id.txtNoAuxiliosFechados);
+
+        buscarAuxiliosFechados(view, txtNoAuxiliosFechados); // Passando a view e o TextView para o método buscarAuxiliosFechados
         return view;
     }
 
-    private void buscarAuxiliosFechados() {
+    private void buscarAuxiliosFechados(View view, TextView txtNoAuxiliosFechados) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
-            // Verifica se o fragmento ainda está anexado e se a tarefa foi bem-sucedida
-            if (isAdded() && task.isSuccessful()) {
+            if (task.isSuccessful()) {
+                List<QueryDocumentSnapshot> documentosFechados = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String dataFimStr = document.getString("dataFim");
-                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")); // Certifique-se de usar o formato correto
+                    LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                    // Verifica se a data de fim é menor ou igual à data atual
                     if (dataFim.isBefore(LocalDate.now()) || dataFim.isEqual(LocalDate.now())) {
-                        adicionarAuxilioAoLayout(document);
+                        documentosFechados.add(document);
                     }
                 }
+
+                // Converte para Map<String, Object> e cria o adapter
+                List<Map<String, Object>> auxiliosFechadosMap = converterParaMap(documentosFechados);
+                adapter = new AuxilioAdapterInscricao(auxiliosFechadosMap, this::abrirUrl);
+                recyclerView.setAdapter(adapter);
+
+                // Verifica se há auxílios fechados e atualiza a visibilidade do TextView
+                if (auxiliosFechadosMap.isEmpty()) {
+                    recyclerView.setVisibility(View.GONE);
+                    txtNoAuxiliosFechados.setVisibility(View.VISIBLE);
+                } else {
+                    recyclerView.setVisibility(View.VISIBLE);
+                    txtNoAuxiliosFechados.setVisibility(View.GONE);
+                }
+            } else {
+                Toast.makeText(getContext(), "Erro ao carregar auxílios fechados", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void adicionarAuxilioAoLayout(QueryDocumentSnapshot document) {
-        // Verifique se o fragmento está anexado
-        if (!isAdded()) {
-            return; // Não faz nada se não estiver anexado
+    private List<Map<String, Object>> converterParaMap(List<QueryDocumentSnapshot> auxilios) {
+        List<Map<String, Object>> listaAuxilios = new ArrayList<>();
+        for (QueryDocumentSnapshot document : auxilios) {
+            listaAuxilios.add(document.getData()); // Adiciona o Map do documento à lista
         }
+        return listaAuxilios;
+    }
 
-        String titulo = document.getString("titulo");
-        String dataInicio = document.getString("dataInicio");
-        String dataFim = document.getString("dataFim");
-
-        // Inflate o layout do item
-        LayoutInflater inflater = LayoutInflater.from(requireContext());
-        View itemView = inflater.inflate(R.layout.item_auxilio, linearLayout, false);
-
-        // Referenciar os TextViews do layout inflado
-        TextView textTituloAuxilio = itemView.findViewById(R.id.textTituloAuxilio);
-        TextView textDataInicio = itemView.findViewById(R.id.textDataInicio);
-        TextView textDataFim = itemView.findViewById(R.id.textDataFim);
-
-        // Definir os textos
-        textTituloAuxilio.setText(titulo);
-        textDataInicio.setText("Início: " + dataInicio);
-        textDataFim.setText("Fim: " + dataFim);
-
-        // Adicionar o itemView ao LinearLayout
-        linearLayout.addView(itemView);
+    private void abrirUrl(String url) {
+        // Implementação para abrir a URL
     }
 }

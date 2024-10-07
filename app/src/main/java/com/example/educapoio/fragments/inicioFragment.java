@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
@@ -18,11 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -128,15 +131,50 @@ public class inicioFragment extends Fragment {
         rootView.findViewById(R.id.imagemBanco).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-bancarios/"));
     }
 
-    // Método para mostrar um aviso de funcionalidade indisponível
     private void mostrarMensagemIndisponibilidade() {
-        new AlertDialog.Builder(getContext())
-                .setTitle("Atenção")
-                .setMessage("Essa funcionalidade ainda não está disponível 😢")
-                .setCancelable(true)
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .show();
+        // Cria o BottomSheetDialog
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+
+        // Infla um layout simples programaticamente
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(90, 90, 90, 90); // Ajuste o padding conforme necessário
+
+        // Cria um GradientDrawable para bordas arredondadas
+        GradientDrawable backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
+        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
+        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
+
+        // Adiciona o texto da mensagem
+        TextView messageText = new TextView(getContext());
+        messageText.setText("Essa funcionalidade ainda não está disponível 😢");
+        messageText.setTextSize(18); // Tamanho do texto
+        messageText.setTextColor(Color.BLACK); // Cor do texto
+        messageText.setPadding(0, 0, 0, 80); // Padding inferior
+
+        // Adiciona o botão de OK
+        Button okButton = new Button(getContext());
+        okButton.setText("Entendi");
+        okButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
+        okButton.setTextColor(Color.WHITE); // Cor do texto do botão
+        okButton.setPadding(20, 20, 20, 20); // Padding do botão
+
+        // Ação do botão OK
+        okButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        // Adiciona os componentes ao layout
+        layout.addView(messageText);
+        layout.addView(okButton);
+
+        // Define o layout inflado no BottomSheetDialog
+        bottomSheetDialog.setContentView(layout);
+
+        // Exibe o BottomSheetDialog
+        bottomSheetDialog.show();
     }
+
+
 
     // Buscar auxílios do Firestore e exibir no RecyclerView
     private void buscarAuxiliosDoFirestore() {
@@ -158,28 +196,30 @@ public class inicioFragment extends Fragment {
 
     // Método para abrir uma URL após confirmação no Dialog
     private void abrirUrl(String url) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.toast_custom_layout, null);
-        builder.setView(dialogView);
+        // Infla o layout do BottomSheetDialog
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
 
-        TextView dialogMessage = dialogView.findViewById(R.id.dialog_message);
+        // Configura a mensagem a ser exibida
+        TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
         dialogMessage.setText("Você está prestes a abrir: " + url);
 
-        Button buttonOpenUrl = dialogView.findViewById(R.id.button_open_url);
-        Button buttonCancel = dialogView.findViewById(R.id.button_cancel);
-
-        AlertDialog dialog = builder.create();
-
+        // Botão para abrir a URL
+        Button buttonOpenUrl = bottomSheetView.findViewById(R.id.button_open_url);
         buttonOpenUrl.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(url));
             startActivity(intent);
-            dialog.dismiss();
+            bottomSheetDialog.dismiss();
         });
 
-        buttonCancel.setOnClickListener(v -> dialog.dismiss());
+        // Botão para cancelar
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        dialog.show();
+        // Exibe o BottomSheetDialog
+        bottomSheetDialog.show();
     }
+
 }
