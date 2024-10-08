@@ -1,51 +1,114 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center"
-    android:layout_gravity="center_horizontal">
+    android:background="@drawable/bg_circle"
+    android:elevation="4dp"
+    android:layout_margin="15dp">
 
-    <!-- Título do Auxílio -->
-<TextView
-android:id="@+id/textTituloAuxilio"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textSize="20sp"
-android:textColor="#626364"
-android:text="Título do Auxílio"
-android:gravity="center" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <!-- Imagem Circular do Auxílio -->
-<ImageView
-android:id="@+id/imagemAuxilio"
-android:layout_width="130dp"
-android:layout_height="130dp"
-android:layout_marginTop="10dp"
-android:background="@drawable/bg_circle"
-android:gravity="center"
-android:scaleType="centerCrop" />
+        <!-- Selo "Fechado" -->
+        <TextView
+            android:id="@+id/seloFechado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fechado"
+            android:textColor="#FF0000"
+        android:padding="4dp"
+        android:layout_margin="8dp"
+        android:layout_gravity="end|top"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
-    <!-- Data de Início -->
-<TextView
-android:id="@+id/textDataInicio"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textColor="#626364"
-android:text="Início: xxxxxxx"
-android:layout_marginTop="10dp"
-android:textSize="16sp"
-android:gravity="center" />
+        <!-- Selo "Aberto" -->
+        <TextView
+            android:id="@+id/seloAberto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aberto"
+            android:textColor="#4CAF50"
+            android:padding="4dp"
+            android:layout_margin="8dp"
+            android:layout_gravity="end|top"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <!-- Data de Fim -->
-<TextView
-android:id="@+id/textDataFim"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Fim: xxxxxxx"
-android:layout_marginTop="5dp"
-android:textColor="#626364"
-android:textSize="16sp"
-android:gravity="center" />
+        <!-- Imagem Circular do Auxílio -->
+        <ImageView
+            android:id="@+id/imagemAuxilio"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_circle"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            android:layout_margin="5dp"
+            tools:ignore="MissingConstraints" />
 
-    </LinearLayout>
+        <!-- Título do Auxílio -->
+        <TextView
+            android:id="@+id/textTituloAuxilio"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Título do Auxílio"
+            android:layout_marginStart="50dp"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imagemAuxilio"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Datas do Auxílio -->
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imagemAuxilio"
+            app:layout_constraintTop_toBottomOf="@id/textTituloAuxilio">
+
+            <TextView
+                android:id="@+id/textDataInicio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="15dp"
+                android:text="Início: 01/01/2024"
+                android:textColor="#841FFD"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textDataFim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="50dp"
+                android:text="Fim: 01/02/2024"
+                android:textColor="#841FFD"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Botão de Ação -->
+        <Button
+            android:id="@+id/botaoInscricao"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#841FFD"
+            android:text="Inscrever-se"
+            android:layout_marginStart="50dp"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imagemAuxilio"
+            app:layout_constraintTop_toBottomOf="@id/linearLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

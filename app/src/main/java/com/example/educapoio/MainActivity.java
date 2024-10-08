@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.UnderlineSpan;
 
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,11 +66,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void iniciarNotificacoesPeriodicas() {
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(PrazoAuxilioWorker.class, 15, TimeUnit.MINUTES)
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(com.example.educapoio.PrazoAuxilioWorker.class, 1, TimeUnit.HOURS) // Aumentado para uma hora
                 .build();
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork("NotificacoesAuxilios", ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
-
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork("notifications_list", ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
+        Log.d("MainActivity", "Worker de notificações agendado."); // Log adicionado
     }
+
 
     private void carregarAuxilios() {
         db.collection("aids")
@@ -84,22 +86,28 @@ public class MainActivity extends AppCompatActivity {
                         adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
                         recyclerView.setAdapter(adapter);
                     } else {
-                        Toast.makeText(MainActivity.this, "Erro ao carregar auxílios.", Toast.LENGTH_SHORT).show();
+                        // Exibir mensagem de erro e tentar novamente, se necessário
+                        Toast.makeText(MainActivity.this, "Erro ao carregar auxílios: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        // Você pode implementar uma lógica de retry aqui, se desejado
                     }
                 });
     }
 
-    private void abrirUrl(String url) {
-        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Você está prestes a abrir: " + url, Snackbar.LENGTH_LONG)
-                .setAction("OK", v -> {
-                    // Abre a URL quando o botão é clicado
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(url));
-                    startActivity(intent);
-                });
 
-        snackbar.show(); // Exibe o Snackbar
+    private void abrirUrl(String url) {
+        if (url != null && !url.isEmpty()) {
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "Você está prestes a abrir: " + url, Snackbar.LENGTH_LONG)
+                    .setAction("OK", v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(url));
+                        startActivity(intent);
+                    });
+            snackbar.show();
+        } else {
+            Toast.makeText(this, "URL inválida!", Toast.LENGTH_SHORT).show();
+        }
     }
+
 
 
 

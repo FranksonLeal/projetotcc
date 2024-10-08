@@ -1,51 +1,55 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="280dp"
+    android:layout_height="280dp"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
-    android:layout_gravity="center_horizontal">
+    android:layout_gravity="center_horizontal"
+    android:elevation="4dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/bg_circle">
 
     <!-- Título do Auxílio -->
-<TextView
-android:id="@+id/textTituloAuxilio"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textSize="20sp"
-android:textColor="#626364"
-android:text="Título do Auxílio"
-android:gravity="center" />
+    <TextView
+        android:id="@+id/textTituloAuxilio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#626364"
+        android:text="Título do Auxílio"
+        android:gravity="center" />
 
     <!-- Imagem Circular do Auxílio -->
-<ImageView
-android:id="@+id/imagemAuxilio"
-android:layout_width="130dp"
-android:layout_height="130dp"
-android:layout_marginTop="10dp"
-android:background="@drawable/bg_circle"
-android:gravity="center"
-android:scaleType="centerCrop" />
+    <ImageView
+        android:id="@+id/imagemAuxilio"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_circle"
+        android:gravity="center"
+        android:scaleType="centerCrop" />
 
     <!-- Data de Início -->
-<TextView
-android:id="@+id/textDataInicio"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textColor="#626364"
-android:text="Início: xxxxxxx"
-android:layout_marginTop="10dp"
-android:textSize="16sp"
-android:gravity="center" />
+    <TextView
+        android:id="@+id/textDataInicio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#841FFD"
+        android:text="Início: xxxxxxx"
+        android:layout_marginTop="10dp"
+        android:textSize="16sp"
+        android:gravity="center" />
 
     <!-- Data de Fim -->
-<TextView
-android:id="@+id/textDataFim"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Fim: xxxxxxx"
-android:layout_marginTop="5dp"
-android:textColor="#626364"
-android:textSize="16sp"
-android:gravity="center" />
+    <TextView
+        android:id="@+id/textDataFim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fim: xxxxxxx"
+        android:layout_marginTop="5dp"
+        android:textColor="#841FFD"
+        android:textSize="16sp"
+        android:gravity="center" />
 
-    </LinearLayout>
+</LinearLayout>

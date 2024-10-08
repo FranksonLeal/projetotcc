@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +44,7 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
         return new AuxilioViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
@@ -46,8 +53,8 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
         String titulo = auxilio.get("titulo").toString();
         String dataInicio = auxilio.get("dataInicio").toString();
         String dataFim = auxilio.get("dataFim").toString();
-        String url = auxilio.get("url").toString();  // Supondo que exista uma URL no objeto auxilio
-        String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null; // Verifica se há URL de imagem
+        String url = auxilio.get("url").toString();
+        String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null;
 
         // Define os textos nos TextViews correspondentes
         holder.titulo.setText(titulo);
@@ -56,16 +63,23 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
 
         // Verifica se existe uma URL de imagem
         if (imagemUrl != null && !imagemUrl.isEmpty()) {
-            // Se houver uma URL de imagem válida, carrega a imagem do auxílio
             Glide.with(holder.imagemInicial.getContext())
                     .load(imagemUrl)
-                    .placeholder(R.drawable.placeholder_image)  // Imagem temporária enquanto carrega
-                    .error(R.drawable.error_image)              // Imagem padrão em caso de erro
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
                     .into(holder.imagemInicial);
         } else {
-            // Caso não haja imagem, gera uma imagem circular com a inicial do título
             String inicial = titulo.substring(0, 1).toUpperCase();
             holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
+        }
+
+        // Verifica se o auxílio está aberto ou fechado e atualiza a visibilidade dos selos
+        if (isAuxilioAberto(auxilio)) {
+            holder.seloAberto.setVisibility(View.VISIBLE);
+            holder.seloFechado.setVisibility(View.GONE);  // Garante que o selo "Fechado" esteja invisível
+        } else {
+            holder.seloFechado.setVisibility(View.VISIBLE);  // Torna visível o selo "Fechado"
+            holder.seloAberto.setVisibility(View.GONE);  // Garante que o selo "Aberto" esteja invisível
         }
 
         // Configura o clique no item do RecyclerView
@@ -77,15 +91,23 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
     }
 
 
+    private boolean isAuxilioAberto(Map<String, Object> auxilio) {
+        String dataFimStr = auxilio.get("dataFim").toString();
+        String dataInicioStr = auxilio.get("dataInicio").toString();
 
-    // Método para carregar a imagem usando Glide ou outra biblioteca de carregamento de imagem
-    private void carregarImagem(ImageView imageView, String url) {
-        Glide.with(imageView.getContext())
-                .load(url)
-                .placeholder(R.drawable.placeholder_image) // Imagem de carregamento
-                .error(R.drawable.error_image) // Imagem em caso de erro
-                .into(imageView);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date dataFim = sdf.parse(dataFimStr);
+            Date dataInicio = sdf.parse(dataInicioStr);
+            Date hoje = new Date();
+
+            return !dataFim.before(hoje) && !dataInicio.after(hoje); // Verifica se está entre as datas
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false; // Em caso de erro, você pode decidir como tratar
+        }
     }
+
 
     @Override
     public int getItemCount() {
@@ -93,7 +115,7 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
     }
 
     public static class AuxilioViewHolder extends RecyclerView.ViewHolder {
-        TextView titulo, dataInicio, dataFim;
+        TextView titulo, dataInicio, dataFim, seloAberto, seloFechado;
         ImageView imagemInicial;
 
         public AuxilioViewHolder(View itemView) {
@@ -102,6 +124,8 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
             dataInicio = itemView.findViewById(R.id.textDataInicio);
             dataFim = itemView.findViewById(R.id.textDataFim);
             imagemInicial = itemView.findViewById(R.id.imagemAuxilio);
+            seloAberto = itemView.findViewById(R.id.seloAberto);
+            seloFechado = itemView.findViewById(R.id.seloFechado);
         }
     }
 

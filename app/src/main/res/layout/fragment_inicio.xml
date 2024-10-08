@@ -125,7 +125,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/vector1" />
 
@@ -150,7 +150,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/vector2" />
 
@@ -175,7 +175,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/vector3" />
 
@@ -200,14 +200,14 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/vector4" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Administração"
+                        android:text="Contabilidade"
                         android:textColor="#527D43"
                         android:textSize="16sp" />
 
@@ -225,14 +225,14 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/balanca" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Administração"
+                        android:text="Direito"
                         android:textColor="#527D43"
                         android:textSize="16sp" />
 
@@ -251,14 +251,14 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"
-                        android:background="@drawable/bg_circle"
+                        android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
                         android:src="@drawable/ic_banco" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Administração"
+                        android:text="Bancário"
                         android:textColor="#527D43"
                         android:textSize="16sp" />
 

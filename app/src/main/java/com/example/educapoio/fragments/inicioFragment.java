@@ -44,6 +44,8 @@ public class inicioFragment extends Fragment {
     private RecyclerView recyclerViewAuxilios;
     private AuxilioAdapter adapter;
 
+
+
     public inicioFragment() {
         // Required empty public constructor
     }
@@ -54,6 +56,8 @@ public class inicioFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,6 +110,21 @@ public class inicioFragment extends Fragment {
             carregarNomeUsuario(userId);
         }
 
+        // Configura o TextView para exibir 'educApoio' com cores diferentes
+        TextView textoAppName = rootView.findViewById(R.id.texto1);
+        String appName = "educApoio";
+        SpannableString spannableAppName = new SpannableString(appName);
+
+// Aplicar cor preta para "educ"
+        spannableAppName.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+// Aplicar cor roxa para "Apoio"
+        spannableAppName.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 4, appName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+// Definir o texto formatado no TextView
+        textoAppName.setText(spannableAppName);
+
+
         recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
         recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -122,6 +141,10 @@ public class inicioFragment extends Fragment {
     private void configurarImagemClique(View rootView) {
         ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
         imageAcess.setOnClickListener(v -> mostrarMensagemIndisponibilidade());
+
+        TextView textSite = rootView.findViewById(R.id.textSite);
+        textSite.setOnClickListener(v -> abrirUrl("https://www.icet.ufam.edu.br/"));
+
 
         rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao"));
         rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));

@@ -189,7 +189,7 @@ public class Administrador extends AppCompatActivity {
 
     private void agendarVerificacaoAuxilios() {
         PeriodicWorkRequest prazoAuxilioRequest = new PeriodicWorkRequest.Builder(
-                PrazoAuxilioWorker.class, 1, TimeUnit.DAYS) // Executa uma vez por dia
+                com.example.educapoio.PrazoAuxilioWorker.class, 1, TimeUnit.DAYS) // Executa uma vez por dia
                 .build();
 
         // Agendar o Worker

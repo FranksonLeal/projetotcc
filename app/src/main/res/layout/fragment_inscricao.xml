@@ -78,7 +78,7 @@
         <FrameLayout
             android:id="@+id/frame_layout_content"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
             android:layout_height="wrap_content">
 
             <!-- Adicionando o RecyclerView para exibir os auxílios -->

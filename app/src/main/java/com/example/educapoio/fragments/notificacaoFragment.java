@@ -1,7 +1,6 @@
 package com.example.educapoio.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -13,11 +12,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
-import android.widget.Button; // Importar para o botão de excluir todas
+import android.widget.Button;
 
 import com.example.educapoio.R;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -168,7 +166,7 @@ public class notificacaoFragment extends Fragment {
                             // Remover a notificação da interface
                             notificationLayout.removeView(horizontalLayout);
                             Log.d("NotificacaoFragment", "Notificação removida: " + message);
-                            deleteNotification(message); // Chama a função para deletar a notificação
+                            deleteNotification(uniqueId); // Chama a função para deletar a notificação
                             bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
                         });
 
@@ -225,75 +223,70 @@ public class notificacaoFragment extends Fragment {
             TextView notificationView = new TextView(getContext());
             notificationView.setText(message);
             notificationView.setTextSize(18); // Define o tamanho da fonte
-            notificationView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+            notificationView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // Para ocupar o espaço
 
             // ImageButton para deletar
             ImageButton deleteButton = new ImageButton(getContext());
-            deleteButton.setImageResource(R.drawable.ic_exclusao);
-            deleteButton.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent));
+            deleteButton.setImageResource(R.drawable.ic_exclusao); // Ícone de deletar
+            deleteButton.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.transparent)); // Remove fundo do botão
 
-            deleteButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // Cria o BottomSheetDialog
-                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+            deleteButton.setOnClickListener(v -> {
+                // Cria o BottomSheetDialog
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
 
-                    // Infla um layout simples programaticamente
-                    LinearLayout layout = new LinearLayout(getContext());
-                    layout.setOrientation(LinearLayout.VERTICAL);
-                    layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+                // Infla um layout simples programaticamente
+                LinearLayout layout = new LinearLayout(getContext());
+                layout.setOrientation(LinearLayout.VERTICAL);
+                layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
 
-                    // Cria um GradientDrawable para bordas arredondadas
-                    GradientDrawable backgroundDrawable = new GradientDrawable();
-                    backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
-                    backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
-                    layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
+                // Cria um GradientDrawable para bordas arredondadas
+                GradientDrawable backgroundDrawable = new GradientDrawable();
+                backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
+                backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
+                layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
 
-                    // Adiciona o texto da mensagem
-                    TextView messageText = new TextView(getContext());
-                    messageText.setText("Você tem certeza que deseja excluir esta notificação?");
-                    messageText.setTextSize(18); // Tamanho do texto
-                    messageText.setTextColor(Color.BLACK); // Cor do texto
-                    messageText.setPadding(0, 0, 0, 40); // Padding inferior
+                // Adiciona o texto da mensagem
+                TextView messageText = new TextView(getContext());
+                messageText.setText("Você tem certeza que deseja excluir esta notificação?");
+                messageText.setTextSize(18); // Tamanho do texto
+                messageText.setTextColor(Color.BLACK); // Cor do texto
+                messageText.setPadding(0, 0, 0, 40); // Padding inferior
 
-                    // Adiciona o botão de confirmação
-                    Button confirmButton = new Button(getContext());
-                    confirmButton.setText("Sim");
-                    confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
-                    confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
-                    confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
+                // Adiciona o botão de confirmação
+                Button confirmButton = new Button(getContext());
+                confirmButton.setText("Sim");
+                confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
+                confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
 
-                    // Ação do botão de confirmação
-                    confirmButton.setOnClickListener(v1 -> {
-                        // Remover a notificação da interface
-                        notificationLayout.removeView(horizontalLayout);
-                        Log.d("NotificacaoFragment", "Notificação removida: " + message);
-                        deleteNotification(message); // Chama a função para deletar a notificação
-                        bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
-                    });
+                // Ação do botão de confirmação
+                confirmButton.setOnClickListener(v1 -> {
+                    notificationLayout.removeView(horizontalLayout);
+                    Log.d("NotificacaoFragment", "Notificação motivacional removida: " + message);
+                    deleteNotification(message); // Chama a função para deletar a notificação
+                    bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+                });
 
-                    // Adiciona o botão de cancelamento
-                    Button cancelButton = new Button(getContext());
-                    cancelButton.setText("Não");
-                    cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
-                    cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
-                    cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+                // Adiciona o botão de cancelamento
+                Button cancelButton = new Button(getContext());
+                cancelButton.setText("Não");
+                cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
+                cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
+                cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
 
-                    // Ação do botão de cancelamento
-                    cancelButton.setOnClickListener(v12 -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
+                // Ação do botão de cancelamento
+                cancelButton.setOnClickListener(v12 -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
 
-                    // Adiciona os componentes ao layout
-                    layout.addView(messageText);
-                    layout.addView(confirmButton);
-                    layout.addView(cancelButton);
+                // Adiciona os componentes ao layout
+                layout.addView(messageText);
+                layout.addView(confirmButton);
+                layout.addView(cancelButton);
 
-                    // Define o layout inflado no BottomSheetDialog
-                    bottomSheetDialog.setContentView(layout);
+                // Define o layout inflado no BottomSheetDialog
+                bottomSheetDialog.setContentView(layout);
 
-                    // Exibe o BottomSheetDialog
-                    bottomSheetDialog.show();
-                }
-
+                // Exibe o BottomSheetDialog
+                bottomSheetDialog.show();
             });
 
             // Adiciona o TextView e o botão ao layout horizontal
@@ -302,104 +295,38 @@ public class notificacaoFragment extends Fragment {
 
             // Adiciona o layout horizontal ao layout principal
             notificationLayout.addView(horizontalLayout);
-
-            // Adiciona a barra divisória
-            View divider = new View(getContext());
-            divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2)); // Altura da barra divisória
-            divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
-            notificationLayout.addView(divider);
         }
+    }
+
+    private void deleteNotification(String uniqueId) {
+        // Função para deletar a notificação, atualize conforme necessário
+        SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+        String notifications = prefs.getString("notifications_list", "");
+
+        // Divida as notificações em um array
+        String[] notificationArray = notifications.split("\\|\\|\\|");
+        StringBuilder updatedNotifications = new StringBuilder();
+
+        for (String notification : notificationArray) {
+            if (!notification.startsWith(uniqueId + "|")) {
+                // Adiciona notificações que não são a que está sendo removida
+                updatedNotifications.append(notification).append("|||");
+            }
+        }
+
+        // Atualiza o SharedPreferences
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("notifications_list", updatedNotifications.toString());
+        editor.apply();
     }
 
     private void deleteAllNotifications() {
-        // Cria o BottomSheetDialog
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-
-        // Infla um layout simples programaticamente
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
-
-        // Cria um GradientDrawable para bordas arredondadas
-        GradientDrawable backgroundDrawable = new GradientDrawable();
-        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
-        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
-        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
-
-        // Adiciona o texto da mensagem
-        TextView messageText = new TextView(getContext());
-        messageText.setText("Você tem certeza que deseja excluir todas as notificações?");
-        messageText.setTextSize(18); // Tamanho do texto
-        messageText.setTextColor(Color.BLACK); // Cor do texto
-        messageText.setPadding(0, 0, 0, 40); // Padding inferior
-
-        // Adiciona o botão de confirmação
-        Button confirmButton = new Button(getContext());
-        confirmButton.setText("Sim");
-        confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
-        confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
-
-        // Ação do botão de confirmação
-        confirmButton.setOnClickListener(v -> {
-            // Limpa as notificações do SharedPreferences
-            SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("notifications_list", ""); // Limpa as notificações
-            editor.apply();
-
-            // Atualiza a interface
-            notificationContainer.removeAllViews();
-            addNoNotificationMessage(notificationContainer);
-
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
-        });
-
-        // Adiciona o botão de cancelamento
-        Button cancelButton = new Button(getContext());
-        cancelButton.setText("Não");
-        cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
-        cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
-
-        // Ação do botão de cancelamento
-        cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
-
-        // Adiciona os componentes ao layout
-        layout.addView(messageText);
-        layout.addView(confirmButton);
-        layout.addView(cancelButton);
-
-        // Define o layout inflado no BottomSheetDialog
-        bottomSheetDialog.setContentView(layout);
-
-        // Exibe o BottomSheetDialog
-        bottomSheetDialog.show();
-    }
-
-
-    private void deleteNotification(String notificationId) {
-        // Remove a notificação do SharedPreferences
+        // Função para deletar todas as notificações
         SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-
-        // Obtém a lista atual de notificações
-        String notifications = prefs.getString("notifications_list", "");
-
-        // Se a lista não estiver vazia, remove a notificação específica
-        if (!notifications.isEmpty()) {
-            String[] notificationArray = notifications.split("\\|\\|\\|");
-            StringBuilder newNotifications = new StringBuilder();
-
-            for (String notification : notificationArray) {
-                if (!notification.contains(notificationId)) { // Exclui a notificação se o ID coincidir
-                    newNotifications.append(notification).append("|||");
-                }
-            }
-
-            // Salva a nova lista de notificações
-            editor.putString("notifications_list", newNotifications.toString());
-            editor.apply();
-        }
+        editor.putString("notifications_list", "Sem notificações");
+        editor.apply();
+        atualizarNotificacoes(notificationContainer);
+        Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
     }
 }
