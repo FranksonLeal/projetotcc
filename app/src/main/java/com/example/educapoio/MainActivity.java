@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.Snackbar;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +30,7 @@ import java.util.Map;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-
+import com.example.educapoio.fragments.perfilFragment;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +45,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AndroidThreeTen.init(this);
         setContentView(R.layout.activity_main);
+
+        // Adiciona o perfilFragment na MainActivity
+        if (savedInstanceState == null) {
+            Fragment perfilFragment = new perfilFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, perfilFragment) // Certifique-se de ter um contêiner de fragmento no layout
+                    .commit();
+        }
 
         // Inicializar o Firestore
         db = FirebaseFirestore.getInstance();

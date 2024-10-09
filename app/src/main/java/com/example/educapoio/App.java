@@ -13,7 +13,7 @@ import androidx.work.WorkManager;
 
 import com.google.firebase.FirebaseApp;
 import com.jakewharton.threetenabp.AndroidThreeTen;
-
+import com.example.educapoio.fragments.perfilFragment;
 import java.util.concurrent.TimeUnit;
 
 public class App extends Application {
