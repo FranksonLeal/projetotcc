@@ -7,17 +7,21 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.UnderlineSpan;
-
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.jakewharton.threetenabp.AndroidThreeTen;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -30,8 +34,10 @@ import java.util.Map;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-import com.example.educapoio.fragments.perfilFragment;
+
 import java.util.concurrent.TimeUnit;
+
+import com.example.educapoio.fragments.perfilFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             Fragment perfilFragment = new perfilFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, perfilFragment) // Certifique-se de ter um contêiner de fragmento no layout
+                    .replace(R.id.fragment_container, perfilFragment) // Certifique-se de que o container existe
                     .commit();
         }
 
@@ -72,15 +78,32 @@ public class MainActivity extends AppCompatActivity {
         SpannableString content = new SpannableString(text);
         content.setSpan(new UnderlineSpan(), 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         textCadastro.setText(content);
+
+        // Configurando o ViewPager e o adapter
+        ViewPager2 viewPager = findViewById(R.id.view_pager);
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this); // Certifique-se de passar o contexto correto
+        viewPager.setAdapter(sectionsPagerAdapter);
+
+        // Configurando o TabLayout
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        new TabLayoutMediator(tabLayout, viewPager,
+                (tab, position) -> {
+                    if (position == 0) {
+                        tab.setCustomView(R.layout.tab_item);
+                        ((Button) tab.getCustomView().findViewById(R.id.tab_button)).setText("Abertos");
+                    } else {
+                        tab.setCustomView(R.layout.tab_item);
+                        ((Button) tab.getCustomView().findViewById(R.id.tab_button)).setText("Fechados");
+                    }
+                }).attach();
     }
 
     private void iniciarNotificacoesPeriodicas() {
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(com.example.educapoio.PrazoAuxilioWorker.class, 1, TimeUnit.HOURS) // Aumentado para uma hora
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(com.example.educapoio.PrazoAuxilioWorker.class, 1, TimeUnit.HOURS)
                 .build();
         WorkManager.getInstance(this).enqueueUniquePeriodicWork("notifications_list", ExistingPeriodicWorkPolicy.KEEP, periodicWorkRequest);
-        Log.d("MainActivity", "Worker de notificações agendado."); // Log adicionado
+        Log.d("MainActivity", "Worker de notificações agendado.");
     }
-
 
     private void carregarAuxilios() {
         db.collection("aids")
@@ -95,13 +118,10 @@ public class MainActivity extends AppCompatActivity {
                         adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
                         recyclerView.setAdapter(adapter);
                     } else {
-                        // Exibir mensagem de erro e tentar novamente, se necessário
                         Toast.makeText(MainActivity.this, "Erro ao carregar auxílios: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        // Você pode implementar uma lógica de retry aqui, se desejado
                     }
                 });
     }
-
 
     private void abrirUrl(String url) {
         if (url != null && !url.isEmpty()) {
@@ -116,9 +136,4 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "URL inválida!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
-
-
 }

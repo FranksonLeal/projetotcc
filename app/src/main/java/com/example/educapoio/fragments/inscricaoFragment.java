@@ -26,13 +26,15 @@ public class inscricaoFragment extends Fragment {
         // Infla o layout do fragmento
         View view = inflater.inflate(R.layout.fragment_inscricao, container, false);
 
-        // Inicializa o ViewPager2 e TabLayout
+        // Inicializa o ViewPager2 e o TabLayout
         viewPager = view.findViewById(R.id.viewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this);
+
+        // Cria o SectionsPagerAdapter passando a atividade que contém o fragmento
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(requireActivity()); // Altere para requireActivity()
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        // Conecta o TabLayout com o ViewPager2
+        // Conecta o TabLayout ao ViewPager2
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             if (position == 0) {
                 tab.setText("Abertos");
