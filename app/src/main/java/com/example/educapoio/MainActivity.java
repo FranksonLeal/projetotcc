@@ -86,16 +86,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Configurando o TabLayout
         TabLayout tabLayout = findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager,
-                (tab, position) -> {
-                    if (position == 0) {
-                        tab.setCustomView(R.layout.tab_item);
-                        ((Button) tab.getCustomView().findViewById(R.id.tab_button)).setText("Abertos");
-                    } else {
-                        tab.setCustomView(R.layout.tab_item);
-                        ((Button) tab.getCustomView().findViewById(R.id.tab_button)).setText("Fechados");
-                    }
-                }).attach();
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            // Definir o layout customizado para cada aba
+            tab.setCustomView(R.layout.tab_item);  // Certifique-se de que tab_item.xml é usado como layout
+
+            Button tabButton = tab.getCustomView().findViewById(R.id.tab_button);
+            if (position == 0) {
+                tabButton.setText("Abertos");
+            } else if (position == 1) {
+                tabButton.setText("Fechados");
+            }
+        }).attach();
+
+
     }
 
     private void iniciarNotificacoesPeriodicas() {
