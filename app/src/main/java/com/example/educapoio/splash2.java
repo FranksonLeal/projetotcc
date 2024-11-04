@@ -17,10 +17,10 @@ public class splash2 extends AppCompatActivity {
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ao clicar no botão, iniciar a atividade Splash3
-                startActivity(new Intent(splash2.this, splash3.class));
-                // Finalizar a atividade atual para não retornar a ela ao pressionar o botão "voltar"
+                Intent intent = new Intent(splash2.this, splash3.class);
+                TransitionUtil.startActivityWithAnimation(splash2.this, intent);
             }
         });
+
     }
 }

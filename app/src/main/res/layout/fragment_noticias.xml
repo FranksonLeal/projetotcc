@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Título fixo Notícias -->
+    <TextView
+        android:id="@+id/textViewNoticias"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Notícias"
+        android:textColor="@color/black"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <!-- RecyclerView para exibir as notícias -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewNoticias"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

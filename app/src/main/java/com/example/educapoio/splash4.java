@@ -1,7 +1,6 @@
 package com.example.educapoio;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +12,15 @@ public class splash4 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash4);
+
         Button continuar = findViewById(R.id.continuar);
         continuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ao clicar no botão, iniciar a atividade Splash3
-                startActivity(new Intent(splash4.this, login.class));
-                // Finalizar a atividade atual para não retornar a ela ao pressionar o botão "voltar"
+                // Ao clicar no botão, iniciar a atividade de login com animação
+                Intent intent = new Intent(splash4.this, login.class);
+                TransitionUtil.startActivityWithAnimation(splash4.this, intent);
+                finish(); // Finalizar a atividade atual para evitar o retorno
             }
         });
 
@@ -27,9 +28,10 @@ public class splash4 extends AppCompatActivity {
         voltar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ao clicar no botão, iniciar a atividade Splash3
-                startActivity(new Intent(splash4.this, splash3.class));
-                // Finalizar a atividade atual para não retornar a ela ao pressionar o botão "voltar"
+                // Ao clicar no botão, iniciar a atividade Splash3 com animação
+                Intent intent = new Intent(splash4.this, splash3.class);
+                TransitionUtil.startActivityWithAnimation(splash4.this, intent);
+                finish(); // Finalizar a atividade atual para evitar o retorno
             }
         });
     }

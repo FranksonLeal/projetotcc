@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.educapoio"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -33,6 +33,18 @@ android {
     }
 
     viewBinding.isEnabled = true
+
+    packaging {
+        resources {
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "rome.properties" // Ignorar arquivos duplicados
+            excludes += "rome-utils-0.0.0-SNAPSHOT.jar" // Excluir arquivo duplicado
+        }
+    }
+
+
+
+
 }
 
 dependencies {
@@ -64,5 +76,18 @@ dependencies {
     implementation("com.google.guava:guava:30.1.1-android") // Adicione esta linha
 
     implementation("com.jakewharton.timber:timber:5.0.1") // Dependência opcional para logging
+
+
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+//    implementation("com.github.KwabenBerko:News-API-Java:1.0.0")
+    implementation("com.github.rometools:rome:1.18.0")
+
+
+
+
+
+
 
 }

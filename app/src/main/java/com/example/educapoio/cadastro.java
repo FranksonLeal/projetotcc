@@ -34,16 +34,21 @@ public class cadastro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();  // Inicializa o Firestore
+
         binding.btnCriarConta.setOnClickListener(v -> validaDados());
 
+        // Botão para voltar à tela de login
         Button btnVoltarLogin = findViewById(R.id.btnVoltarLogin);
         btnVoltarLogin.setOnClickListener(v -> {
-            startActivity(new Intent(cadastro.this, login.class));
-            finish();
+            Intent intent = new Intent(cadastro.this, login.class);
+            TransitionUtil.startActivityWithAnimation(cadastro.this, intent);
+            finish();  // Finaliza a tela de cadastro para evitar retorno
         });
     }
+
 
     private void validaDados() {
         String nome = binding.editNome.getText().toString().trim();

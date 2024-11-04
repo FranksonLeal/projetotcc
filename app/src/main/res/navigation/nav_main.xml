@@ -23,6 +23,12 @@
         android:label="fragment_inscricao"
         tools:layout="@layout/fragment_inscricao"/>
 
+    <fragment
+        android:id="@+id/menu_noticias"
+        android:name="com.example.educapoio.fragments.noticias"
+        android:label="fragment_noticias"
+        tools:layout="@layout/fragment_noticias"/>
+
 
     <fragment
         android:id="@+id/menu_notificacao"

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- skeleton_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#E0E0E0" /> <!-- Cor cinza claro -->
+    <corners android:radius="8dp" /> <!-- Cantos arredondados -->
+</shape>

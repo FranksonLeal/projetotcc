@@ -43,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:textColor="#626364"
             android:contentDescription="Conteúdo das notificações"> <!-- Adicionado para acessibilidade -->
         </LinearLayout>
     </ScrollView>

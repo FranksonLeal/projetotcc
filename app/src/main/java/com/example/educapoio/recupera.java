@@ -34,11 +34,13 @@ public class recupera extends AppCompatActivity {
         btnVoltarLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Ao clicar no botão, iniciar a atividade Splash3
-                startActivity(new Intent(recupera.this, login.class));
-                // Finalizar a atividade atual para não retornar a ela ao pressionar o botão "voltar"
+                // Ao clicar no botão, iniciar a atividade de login com animação
+                Intent intent = new Intent(recupera.this, login.class);
+                TransitionUtil.startActivityWithAnimation(recupera.this, intent);
+                finish(); // Finalizar a atividade atual para evitar que o usuário volte para ela
             }
         });
+
     }
 
     private void validaDados() {

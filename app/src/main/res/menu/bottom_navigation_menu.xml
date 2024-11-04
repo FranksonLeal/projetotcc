@@ -13,6 +13,12 @@
         android:title="Inscrições"/>
 
     <item
+        android:id="@+id/menu_noticias"
+        android:enabled="true"
+        android:icon="@drawable/ic_noticia"
+        android:title="Noticias"/>
+
+    <item
         android:id="@+id/menu_notificacao"
         android:enabled="true"
         android:icon="@drawable/ic_notificacao"

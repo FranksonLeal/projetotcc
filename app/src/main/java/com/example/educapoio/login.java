@@ -30,19 +30,27 @@ public class login extends AppCompatActivity {
         // Verifica se o usuário está autenticado
         if (mAuth.getCurrentUser() != null) {
             // Se estiver autenticado, redirecione-o diretamente para a tela de menu
-            startActivity(new Intent(this, inicio.class));
+            Intent intent = new Intent(this, inicio.class);
+            TransitionUtil.startActivityWithAnimation(this, intent);
             finish(); // Finaliza a atividade de login para evitar que o usuário volte para ela pressionando o botão "voltar"
         }
 
+        // Clique no texto para ir para a tela de cadastro
         binding.textCadastro.setOnClickListener(view -> {
-            startActivity(new Intent(this, cadastro.class));
+            Intent intent = new Intent(this, cadastro.class);
+            TransitionUtil.startActivityWithAnimation(this, intent);
         });
 
-        binding.textRecuperaConta.setOnClickListener(v ->
-                startActivity(new Intent(this, recupera.class)));
+        // Clique no texto para ir para a tela de recuperação de conta
+        binding.textRecuperaConta.setOnClickListener(v -> {
+            Intent intent = new Intent(this, recupera.class);
+            TransitionUtil.startActivityWithAnimation(this, intent);
+        });
 
+        // Botão de login com validação
         binding.btnLogin.setOnClickListener(v -> validaDados());
     }
+
 
     private void validaDados() {
         String email = binding.editEmail.getText().toString().trim();
@@ -88,24 +96,27 @@ public class login extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
+                        Intent intent;
+
                         if (user != null && "admin@gmail.com".equals(user.getEmail())) {
                             // Se for o admin, redirecione para a tela de administração
-                            Intent intent = new Intent(this, Administrador.class); // Alterado para AdminActivity
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            intent = new Intent(this, Administrador.class); // Alterado para AdminActivity
                         } else {
                             // Se não for o admin, redirecione para a tela inicial comum
-                            Intent intent = new Intent(this, inicio.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
+                            intent = new Intent(this, inicio.class);
                         }
-                        finish(); // Finaliza a atividade de login para evitar que o usuário volte para ela pressionando o botão "voltar"
+
+                        // Limpa a pilha de atividades e inicia a nova atividade com animação
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        TransitionUtil.startActivityWithAnimation(this, intent);
+                        finish(); // Finaliza a atividade de login
                     } else {
                         binding.progressBar.setVisibility(View.GONE);
                         mostrarMensagem("Ocorreu algum erro!");
                     }
                 });
     }
+
 
     private void mostrarMensagem(String mensagem) {
         // Cria o BottomSheetDialog

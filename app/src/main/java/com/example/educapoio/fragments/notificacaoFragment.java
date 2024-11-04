@@ -121,7 +121,8 @@ public class notificacaoFragment extends Fragment {
 
                 // TextView para a notificação
                 TextView notificationView = new TextView(getContext());
-                notificationView.setText("ID: " + uniqueId + "\nMensagem: " + message);
+                notificationView.setText("Mensagem: " + message);
+                notificationView.setTextColor(Color.parseColor("#626364"));
                 notificationView.setTextSize(18); // Define o tamanho da fonte
                 notificationView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // Para ocupar o espaço
 
@@ -223,6 +224,7 @@ public class notificacaoFragment extends Fragment {
             TextView notificationView = new TextView(getContext());
             notificationView.setText(message);
             notificationView.setTextSize(18); // Define o tamanho da fonte
+            notificationView.setTextColor(Color.parseColor("#626364"));
             notificationView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // Para ocupar o espaço
 
             // ImageButton para deletar
@@ -321,12 +323,38 @@ public class notificacaoFragment extends Fragment {
     }
 
     private void deleteAllNotifications() {
-        // Função para deletar todas as notificações
-        SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("notifications_list", "Sem notificações");
-        editor.apply();
-        atualizarNotificacoes(notificationContainer);
-        Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
+        // Infla o layout do BottomSheetDialog
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Configura a mensagem de confirmação
+        TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
+        dialogMessage.setText("Você tem certeza que deseja excluir todas as notificações?");
+
+        // Botão para confirmar a exclusão
+        Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
+        buttonConfirm.setText("Sim");
+        buttonConfirm.setOnClickListener(v -> {
+            // Ação para deletar todas as notificações
+            SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString("notifications_list", "Sem notificações");
+            editor.apply();
+            atualizarNotificacoes(notificationContainer);
+            Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
+
+            // Fecha o dialog após a ação
+            bottomSheetDialog.dismiss();
+        });
+
+        // Botão para cancelar a exclusão
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setText("Não");
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        // Exibe o BottomSheetDialog
+        bottomSheetDialog.show();
     }
+
 }
