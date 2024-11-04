@@ -20,6 +20,7 @@
 
     <item
         android:id="@+id/menu_notificacao"
+
         android:enabled="true"
         android:icon="@drawable/ic_notificacao"
         android:title="@string/menu_noticias"/>

@@ -18,20 +18,6 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <!-- Botão para excluir todas as notificações -->
-    <Button
-        android:id="@+id/deleteAllButton"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="Excluir tudo"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#C81D25"
-    android:textColor="@android:color/white"
-    android:textSize="18sp"
-    android:contentDescription="Excluir todas as notificações" />
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -47,4 +33,19 @@
             android:contentDescription="Conteúdo das notificações"> <!-- Adicionado para acessibilidade -->
         </LinearLayout>
     </ScrollView>
+
+    <!-- Botão para excluir todas as notificações -->
+    <Button
+        android:id="@+id/deleteAllButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Excluir tudo"
+        android:layout_gravity="center"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#C81D25"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:contentDescription="Excluir todas as notificações" />
+
 </LinearLayout>

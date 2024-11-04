@@ -12,6 +12,19 @@
         android:background="#F5F7FB"
         tools:context=".fragments.perfilFragment">
 
+        <!-- Adicionando a ProgressBar com constraints -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_gravity="center" />
+
         <!-- Título "Meu perfil" -->
         <TextView
             android:id="@+id/textView5"

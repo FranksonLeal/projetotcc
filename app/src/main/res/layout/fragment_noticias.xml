@@ -17,9 +17,20 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <!-- RecyclerView para exibir as notícias -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewNoticias"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayoutNoticias"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="#F5F7FB"
+        android:contentDescription="Categorias de notícias" />
+
+
+    <!-- ViewPager2 para trocar entre os fragmentos de categoria -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPagerNoticias"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.educapoio.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,13 @@ public class inscricaoFragment extends Fragment {
                 tab.setText("Fechados");
             }
         }).attach();
+
+        // Define as cores do texto do TabLayout
+        tabLayout.setTabTextColors(
+                Color.parseColor("#B0B0B0"),  // Cor do texto não selecionado (exemplo: cinza)
+                Color.parseColor("#841FFD")   // Cor do texto selecionado
+        );
+
 
         return view; // Retorna a View inflada
     }

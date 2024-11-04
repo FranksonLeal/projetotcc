@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ public class perfilFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ImageView imagemPerfil;
+    private ProgressBar progressBar; // Adicionado
 
     @Nullable
     @Override
@@ -46,6 +48,7 @@ public class perfilFragment extends Fragment {
         editCurso = view.findViewById(R.id.editCurso);
         editUsuario = view.findViewById(R.id.editUsuario);
         imagemPerfil = view.findViewById(R.id.mudarPerfil);
+        progressBar = view.findViewById(R.id.progressBar); // Inicializa o ProgressBar
 
         // Inicializa FirebaseAuth e Firestore
         mAuth = FirebaseAuth.getInstance();
@@ -60,7 +63,7 @@ public class perfilFragment extends Fragment {
             String email = user.getEmail();
             editEmail2.setText(email);
 
-            // Busca os dados adicionais no Firestore
+            // Carregar os dados do usuário
             carregarDadosUsuario(userId);
         }
 
@@ -77,8 +80,12 @@ public class perfilFragment extends Fragment {
     }
 
     private void carregarDadosUsuario(String userId) {
+        progressBar.setVisibility(View.VISIBLE); // Mostra a barra de progresso
+
         DocumentReference docRef = db.collection("users").document(userId);
         docRef.get().addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE); // Esconde a barra de progresso
+
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
@@ -93,11 +100,13 @@ public class perfilFragment extends Fragment {
                     editCurso.setText(curso);
                     editUsuario.setText(tipoUsuario);
 
+                    // Carregar a imagem de forma assíncrona
                     if (imagemUrl != null && !imagemUrl.isEmpty()) {
                         Glide.with(getContext())
                                 .load(imagemUrl)
                                 .transform(new CircleCrop())
                                 .placeholder(R.drawable.placeholder_image) // Substitua pelo seu placeholder
+                                .error(R.drawable.error_image) // Imagem de erro
                                 .into(imagemPerfil);
                     } else {
                         mostrarInicial(nome); // Se não houver imagem, mostra a inicial
@@ -111,7 +120,6 @@ public class perfilFragment extends Fragment {
             }
         });
     }
-
 
     private void mostrarInicial(String nome) {
         // Obtém a inicial do nome
