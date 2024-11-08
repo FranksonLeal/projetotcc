@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -40,6 +42,7 @@ public class editarPerfil extends AppCompatActivity {
     private String userId;
     private Uri imagemUri;
     private TextView removerImagem;
+    private ProgressBar progressBarCarregar, progressBarSalvar, progressBarRemover;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,11 @@ public class editarPerfil extends AppCompatActivity {
         mudarPerfil = findViewById(R.id.mudarPerfil);
         ImageView imageVoltar = findViewById(R.id.imageVoltarEditar);
         removerImagem = findViewById(R.id.removerImagem);
+
+        // Progress bars
+        progressBarCarregar = findViewById(R.id.progressBar);
+        progressBarSalvar = findViewById(R.id.progressBar);
+        progressBarRemover = findViewById(R.id.progressBar);
 
         // Configurar o clique no TextView "Remover"
         removerImagem.setOnClickListener(v -> {
@@ -96,34 +104,39 @@ public class editarPerfil extends AppCompatActivity {
                 .setTitle("Remover Imagem")
                 .setMessage("Tem certeza que deseja remover a imagem?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-        // Primeiro, atualize o Firestore para remover a URL da imagem
-        Map<String, Object> userData = new HashMap<>();
-        userData.put("imagem", null); // Remover a imagem (definindo como null)
+                    progressBarRemover.setVisibility(View.VISIBLE); // Exibir ProgressBar ao remover imagem
+                    // Primeiro, atualize o Firestore para remover a URL da imagem
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("imagem", null); // Remover a imagem (definindo como null)
 
-        db.collection("users").document(userId)
-                .update(userData)
-                .addOnSuccessListener(aVoid -> {
-                    // Agora, remova a imagem do Firebase Storage
-                    StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
-                    filePath.delete().addOnSuccessListener(aVoid1 -> {
-                        Toast.makeText(editarPerfil.this, "Imagem removida com sucesso", Toast.LENGTH_SHORT).show();
-                        mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder após remoção
-                    }).addOnFailureListener(e -> {
-                        Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Storage", Toast.LENGTH_SHORT).show();
-                    });
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Firestore", Toast.LENGTH_SHORT).show();
-                });
+                    db.collection("users").document(userId)
+                            .update(userData)
+                            .addOnSuccessListener(aVoid -> {
+                                // Agora, remova a imagem do Firebase Storage
+                                StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
+                                filePath.delete().addOnSuccessListener(aVoid1 -> {
+                                    Toast.makeText(editarPerfil.this, "Imagem removida com sucesso", Toast.LENGTH_SHORT).show();
+                                    mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder após remoção
+                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após remoção
+                                }).addOnFailureListener(e -> {
+                                    Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Storage", Toast.LENGTH_SHORT).show();
+                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
+                                });
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Firestore", Toast.LENGTH_SHORT).show();
+                                progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
+                            });
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
     }
 
-
     private void carregarDadosUsuario() {
+        progressBarCarregar.setVisibility(View.VISIBLE); // Exibir ProgressBar ao carregar dados
         db.collection("users").document(userId).get()
                 .addOnCompleteListener(task -> {
+                    progressBarCarregar.setVisibility(View.GONE); // Esconder ProgressBar após carregar dados
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
@@ -139,7 +152,6 @@ public class editarPerfil extends AppCompatActivity {
 
                             // Carregar a imagem do perfil se disponível
                             if (imagem != null) {
-                                // Use uma biblioteca como Glide para carregar a imagem com transformação circular
                                 Glide.with(this)
                                         .load(imagem)
                                         .transform(new CircleCrop()) // Aplicar transformação circular
@@ -159,8 +171,6 @@ public class editarPerfil extends AppCompatActivity {
                 });
     }
 
-
-
     private void escolherImagem() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -173,7 +183,6 @@ public class editarPerfil extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
             imagemUri = data.getData();
-            // Usar Glide para exibir a imagem selecionada com transformação circular
             Glide.with(this)
                     .load(imagemUri)
                     .transform(new CircleCrop()) // Aplicar transformação circular
@@ -182,8 +191,8 @@ public class editarPerfil extends AppCompatActivity {
         }
     }
 
-
     private void atualizarDadosUsuario(String nome, String telefone, String curso) {
+        progressBarSalvar.setVisibility(View.VISIBLE); // Exibir ProgressBar ao salvar dados
         Map<String, Object> userData = new HashMap<>();
         userData.put("nome", nome);
         userData.put("telefone", telefone);
@@ -198,6 +207,7 @@ public class editarPerfil extends AppCompatActivity {
                 });
             }).addOnFailureListener(e -> {
                 Toast.makeText(editarPerfil.this, "Erro ao fazer upload da imagem", Toast.LENGTH_SHORT).show();
+                progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após erro
             });
         } else {
             salvarDadosNoFirestore(userData);
@@ -207,7 +217,13 @@ public class editarPerfil extends AppCompatActivity {
     private void salvarDadosNoFirestore(Map<String, Object> userData) {
         db.collection("users").document(userId)
                 .update(userData)
-                .addOnSuccessListener(aVoid -> Toast.makeText(editarPerfil.this, "Dados atualizados com sucesso", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(editarPerfil.this, "Erro ao atualizar dados", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(editarPerfil.this, "Dados atualizados com sucesso", Toast.LENGTH_SHORT).show();
+                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após sucesso
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(editarPerfil.this, "Erro ao salvar dados", Toast.LENGTH_SHORT).show();
+                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após erro
+                });
     }
 }

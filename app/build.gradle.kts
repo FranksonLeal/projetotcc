@@ -69,6 +69,8 @@ dependencies {
 
     implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    androidTestImplementation("org.testng:testng:6.9.6")
+    androidTestImplementation("junit:junit:4.12")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
 
     implementation("androidx.work:work-runtime:2.8.1")

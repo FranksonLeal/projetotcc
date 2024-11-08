@@ -51,41 +51,19 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="30dp"/>
 
-        <!-- Texto "Configurações" -->
-        <TextView
-            android:id="@+id/textViewConf"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:text="Configurações"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="8sp"
-            app:layout_constraintStart_toStartOf="@+id/imageConfig"
-            app:layout_constraintTop_toBottomOf="@+id/imageConfig" />
 
         <!-- Ícone de Editar -->
         <ImageView
             android:id="@+id/imageEdit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:src="@drawable/ic_edit"
             android:layout_marginEnd="35dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="30dp"/>
 
-        <!-- Texto "Editar" -->
-        <TextView
-            android:id="@+id/textViewEdit"
-            android:layout_width="60dp"
-            android:layout_height="wrap_content"
-            android:text="Editar"
-            android:textAlignment="center"
-            android:textColor="@color/black"
-            android:textSize="8sp"
-            app:layout_constraintTop_toBottomOf="@+id/imageEdit"
-            app:layout_constraintEnd_toEndOf="@+id/imageEdit"
-            android:layout_marginTop="5dp"/>
+
 
         <!-- Imagem do perfil -->
         <ImageView

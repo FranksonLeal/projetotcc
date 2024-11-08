@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -25,9 +27,9 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
     private List<Map<String, Object>> auxilios;
     private OnItemClickListener onItemClickListener;
 
-    // Construtor atualizado
+    // Construtor atualizado para garantir que 'auxilios' nunca seja nulo
     public AuxilioAdapter(List<Map<String, Object>> auxilios, OnItemClickListener listener) {
-        this.auxilios = auxilios;
+        this.auxilios = auxilios != null ? auxilios : new ArrayList<>();  // Evita NullPointerException
         this.onItemClickListener = listener;
     }
 
@@ -42,11 +44,11 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
 
-        // Recupera os dados do auxílio
-        String titulo = auxilio.get("titulo").toString();
-        String dataInicio = auxilio.get("dataInicio").toString();
-        String dataFim = auxilio.get("dataFim").toString();
-        String url = auxilio.get("url").toString();  // Supondo que exista uma URL no objeto auxilio
+        // Recupera os dados do auxílio com segurança
+        String titulo = auxilio.get("titulo") != null ? auxilio.get("titulo").toString() : "Título indisponível";
+        String dataInicio = auxilio.get("dataInicio") != null ? auxilio.get("dataInicio").toString() : "Data de início não disponível";
+        String dataFim = auxilio.get("dataFim") != null ? auxilio.get("dataFim").toString() : "Data de fim não disponível";
+        String url = auxilio.get("url") != null ? auxilio.get("url").toString() : "";  // URL pode estar vazia
         String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null; // Verifica se há URL de imagem
 
         // Define os textos nos TextViews correspondentes
@@ -56,7 +58,7 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
 
         // Verifica se existe uma URL de imagem
         if (imagemUrl != null && !imagemUrl.isEmpty()) {
-            // Se houver uma URL de imagem válida, carrega a imagem do auxílio
+            // Carrega a imagem do auxílio com Glide
             Glide.with(holder.imagemInicial.getContext())
                     .load(imagemUrl)
                     .placeholder(R.drawable.placeholder_image)  // Imagem temporária enquanto carrega
@@ -71,20 +73,9 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
         // Configura o clique no item do RecyclerView
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(url);
+                onItemClickListener.onItemClick(url);  // Passa a URL quando o item é clicado
             }
         });
-    }
-
-
-
-    // Método para carregar a imagem usando Glide ou outra biblioteca de carregamento de imagem
-    private void carregarImagem(ImageView imageView, String url) {
-        Glide.with(imageView.getContext())
-                .load(url)
-                .placeholder(R.drawable.placeholder_image) // Imagem de carregamento
-                .error(R.drawable.error_image) // Imagem em caso de erro
-                .into(imageView);
     }
 
     @Override
@@ -133,5 +124,11 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
     // Interface para lidar com cliques em itens do RecyclerView
     public interface OnItemClickListener {
         void onItemClick(String url);  // Lida com a URL quando o item é clicado
+    }
+
+    // Método para atualizar a lista de auxílios no adapter
+    public void updateAuxilios(List<Map<String, Object>> newAuxilios) {
+        auxilios = newAuxilios != null ? newAuxilios : new ArrayList<>();
+        notifyDataSetChanged();
     }
 }

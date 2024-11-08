@@ -86,15 +86,22 @@ public class notificacaoFragment extends Fragment {
             // Divide as notificações usando o delimitador "|||"
             String[] notificationArray = notifications.split("\\|\\|\\|");
 
+            boolean isEmpty = true;
             for (String notification : notificationArray) {
                 notification = notification.trim(); // Remove espaços
-
-                if (!notification.isEmpty()) { // Verifica se não está vazio
+                if (!notification.isEmpty()) {
+                    isEmpty = false;
                     addNotificationItem(notificationLayout, notification);
                 }
             }
+
+            // Se todas as notificações foram removidas
+            if (isEmpty) {
+                addNoNotificationMessage(notificationLayout);
+            }
         }
     }
+
 
     private void addNoNotificationMessage(LinearLayout notificationLayout) {
         TextView noNotificationText = new TextView(requireActivity());

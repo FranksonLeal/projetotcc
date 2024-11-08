@@ -1,7 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="280dp"
-    android:layout_height="280dp"
+    android:layout_width="250dp"
+    android:layout_height="250dp"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
@@ -23,8 +23,8 @@
     <!-- Imagem Circular do Auxílio -->
     <ImageView
         android:id="@+id/imagemAuxilio"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_circle"
         android:gravity="center"

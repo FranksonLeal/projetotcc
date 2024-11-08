@@ -2,26 +2,31 @@ package com.example.educapoio.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.os.Handler;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSmoothScroller;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
@@ -44,7 +49,8 @@ public class inicioFragment extends Fragment {
     private RecyclerView recyclerViewAuxilios;
     private AuxilioAdapter adapter;
 
-
+    private Handler handler = new Handler();
+    private Runnable runnable;
 
     public inicioFragment() {
         // Required empty public constructor
@@ -56,8 +62,6 @@ public class inicioFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,18 +116,17 @@ public class inicioFragment extends Fragment {
 
         // Configura o TextView para exibir 'educApoio' com cores diferentes
         TextView textoAppName = rootView.findViewById(R.id.texto1);
-        String appName = "educApoio";
+        String appName = "educNews";
         SpannableString spannableAppName = new SpannableString(appName);
 
-// Aplicar cor preta para "educ"
+        // Aplicar cor preta para "educ"
         spannableAppName.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-// Aplicar cor roxa para "Apoio"
+        // Aplicar cor roxa para "Apoio"
         spannableAppName.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 4, appName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
-// Definir o texto formatado no TextView
+        // Definir o texto formatado no TextView
         textoAppName.setText(spannableAppName);
-
 
         recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
         recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -137,6 +140,59 @@ public class inicioFragment extends Fragment {
         return rootView;
     }
 
+    private void iniciarSlideAutomatico() {
+        if (adapter == null) {
+            return;  // Não iniciar o slide se o adapter não estiver pronto
+        }
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                int position = ((LinearLayoutManager) recyclerViewAuxilios.getLayoutManager()).findFirstVisibleItemPosition();
+                int nextPosition = position + 1;
+
+                if (nextPosition >= adapter.getItemCount()) {
+                    nextPosition = 0;  // Voltar para o início da lista após o final
+                }
+
+                // Criar um scroller suave para a rolagem
+                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+                    @Override
+                    protected int getHorizontalSnapPreference() {
+                        return SNAP_TO_START;  // Se você precisar alinhar à esquerda, utilize isso
+                    }
+
+                    @Override
+                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                        // Ajuste a velocidade da rolagem, menor valor = rolagem mais lenta
+                        float inchesPerPixel = super.calculateSpeedPerPixel(displayMetrics);
+                        return inchesPerPixel * 10;  // Aumente esse valor para desacelerar a rolagem
+                    }
+                };
+
+                smoothScroller.setTargetPosition(nextPosition);
+                recyclerViewAuxilios.getLayoutManager().startSmoothScroll(smoothScroller);
+
+                // Aguardar 3 segundos antes de mover para o próximo item
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.post(runnable);  // Iniciar o slide automático
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        iniciarSlideAutomatico();  // Iniciar o slide quando o fragmento for visível
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        handler.removeCallbacks(runnable);  // Parar o slide quando o fragmento for pausado
+    }
+
     // Configurar eventos de clique nas imagens
     private void configurarImagemClique(View rootView) {
         ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
@@ -145,104 +201,145 @@ public class inicioFragment extends Fragment {
         TextView textSite = rootView.findViewById(R.id.textSite);
         textSite.setOnClickListener(v -> abrirUrl("https://www.icet.ufam.edu.br/"));
 
-
         rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao"));
         rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));
         rootView.findViewById(R.id.imagemAdm).setOnClickListener(v -> abrirUrl("https://jcconcursos.com.br/concursos/por-cargo/administrador"));
-        rootView.findViewById(R.id.imagemContabilidade).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-contabilidade/"));
-        rootView.findViewById(R.id.imagemDireito).setOnClickListener(v -> abrirUrl("https://cj.estrategia.com/portal/concursos-de-direito/"));
-        rootView.findViewById(R.id.imagemBanco).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-bancarios/"));
+        rootView.findViewById(R.id.imagemContabilidade).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-contabilidade"));
     }
 
-    private void mostrarMensagemIndisponibilidade() {
-        // Cria o BottomSheetDialog
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
-
-        // Infla um layout simples programaticamente
-        LinearLayout layout = new LinearLayout(getContext());
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(90, 90, 90, 90); // Ajuste o padding conforme necessário
-
-        // Cria um GradientDrawable para bordas arredondadas
-        GradientDrawable backgroundDrawable = new GradientDrawable();
-        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
-        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
-        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
-
-        // Adiciona o texto da mensagem
-        TextView messageText = new TextView(getContext());
-        messageText.setText("Essa funcionalidade ainda não está disponível 😢");
-        messageText.setTextSize(18); // Tamanho do texto
-        messageText.setTextColor(Color.BLACK); // Cor do texto
-        messageText.setPadding(0, 0, 0, 80); // Padding inferior
-
-        // Adiciona o botão de OK
-        Button okButton = new Button(getContext());
-        okButton.setText("Entendi");
-        okButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
-        okButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        okButton.setPadding(20, 20, 20, 20); // Padding do botão
-
-        // Ação do botão OK
-        okButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
-
-        // Adiciona os componentes ao layout
-        layout.addView(messageText);
-        layout.addView(okButton);
-
-        // Define o layout inflado no BottomSheetDialog
-        bottomSheetDialog.setContentView(layout);
-
-        // Exibe o BottomSheetDialog
-        bottomSheetDialog.show();
-    }
-
-
-
-    // Buscar auxílios do Firestore e exibir no RecyclerView
-    private void buscarAuxiliosDoFirestore() {
-        db.collection("auxilios").get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                List<Map<String, Object>> auxilios = new ArrayList<>();
-                for (DocumentSnapshot document : task.getResult()) {
-                    Map<String, Object> auxilio = document.getData();
-                    auxilios.add(auxilio);
-                }
-                // Passa os dados para o Adapter com o listener para abrir URL
-                adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
-                recyclerViewAuxilios.setAdapter(adapter);
-            } else {
-                Toast.makeText(getContext(), "Erro ao carregar auxílios", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    // Método para abrir uma URL após confirmação no Dialog
     private void abrirUrl(String url) {
+        if (url != null && !url.isEmpty()) {
+            // Adiciona http:// caso não tenha o prefixo adequado
+            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                url = "http://" + url;  // ou "https://", dependendo da URL
+            }
+
+            // Exibe a confirmação antes de abrir o link
+            showConfirmationDialog(url);
+        } else {
+            // Se a URL for inválida
+            showCustomMessage("URL inválida");
+        }
+    }
+
+    private void showConfirmationDialog(final String url) {
         // Infla o layout do BottomSheetDialog
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Configura a mensagem a ser exibida
+        // Configura a mensagem de confirmação
         TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
-        dialogMessage.setText("Você está prestes a abrir: " + url);
+        dialogMessage.setText("Você tem certeza que deseja abrir o link?");
 
-        // Botão para abrir a URL
-        Button buttonOpenUrl = bottomSheetView.findViewById(R.id.button_open_url);
-        buttonOpenUrl.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
-            bottomSheetDialog.dismiss();
+        // Configura os botões de confirmação
+        Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
+        buttonConfirm.setOnClickListener(v -> {
+            // Tenta abrir o link quando confirmado
+            abrirUrlIntent(url);
+            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
         });
 
-        // Botão para cancelar
         Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        buttonCancel.setOnClickListener(v -> {
+            // Fecha o dialog sem fazer nada
+            bottomSheetDialog.dismiss();
+        });
 
         // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
+
+    private void abrirUrlIntent(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            // Se não for possível abrir a URL
+            showCustomMessage("Não foi possível abrir o link.");
+        }
+    }
+
+    private void showCustomMessage(String message) {
+        // Infla o layout do BottomSheetDialog para exibir a mensagem
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        // Configura a mensagem de erro
+        TextView toastMessage = bottomSheetView.findViewById(R.id.dialog_message);
+        toastMessage.setText(message);
+
+        // Exibe o BottomSheetDialog
+        bottomSheetDialog.show();
+    }
+
+
+
+    public void onItemClick(String url) {
+        if (url != null && !url.isEmpty()) {
+            abrirUrl(url);
+        } else {
+            Toast.makeText(getContext(), "URL não disponível", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void mostrarMensagemIndisponibilidade() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        LinearLayout layout = new LinearLayout(getContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(90, 90, 90, 90);
+
+        GradientDrawable backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setColor(Color.WHITE);
+        backgroundDrawable.setCornerRadius(20f);
+        layout.setBackground(backgroundDrawable);
+
+        TextView messageText = new TextView(getContext());
+        messageText.setText("Essa funcionalidade ainda não está disponível 😢");
+        messageText.setTextSize(18);
+        messageText.setTextColor(Color.BLACK);
+        messageText.setPadding(0, 0, 0, 80);
+
+        Button okButton = new Button(getContext());
+        okButton.setText("OK");
+        okButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        layout.addView(messageText);
+        layout.addView(okButton);
+
+        bottomSheetDialog.setContentView(layout);
+        bottomSheetDialog.show();
+    }
+
+    private void buscarAuxiliosDoFirestore() {
+        db.collection("auxilios")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<Map<String, Object>> auxiliosList = new ArrayList<>();
+                        for (DocumentSnapshot document : task.getResult()) {
+                            auxiliosList.add(document.getData());
+                        }
+
+                        // Adiciona o listener de clique ao adapter
+                        adapter = new AuxilioAdapter(auxiliosList, new AuxilioAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(String url) {
+                                // Implementa a ação desejada ao clicar no item (exemplo: abrir URL)
+                                abrirUrl(url);
+                            }
+                        });
+
+                        recyclerViewAuxilios.setAdapter(adapter);
+                        iniciarSlideAutomatico();  // Iniciar o slide automático após os dados carregados
+                    }
+                });
+    }
+
+
 
 }
