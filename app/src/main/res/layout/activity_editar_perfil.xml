@@ -64,6 +64,21 @@
         android:visibility="gone"
         tools:ignore="MissingConstraints" />
 
+    <TextView
+        android:id="@+id/adicionarImagem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:text="Adicionar imagem"
+        android:textColor="#841FFD"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mudarPerfil"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
+
 
 
 

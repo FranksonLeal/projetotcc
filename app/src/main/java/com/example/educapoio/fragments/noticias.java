@@ -23,7 +23,7 @@ public class noticias extends Fragment {
     private TabLayout tabLayoutNoticias;
     private ViewPager2 viewPagerNoticias;
     private ProgressBar progressBar;  // ProgressBar para exibir enquanto carrega
-    private final String[] tabTitles = {"Todas", "Esportes", "Tecnologia", "Entretenimento", "Saúde"};
+    private final String[] tabTitles = {"Educação", "Esportes", "Tecnologia", "Entretenimento", "Saúde"};
 
     @Nullable
     @Override

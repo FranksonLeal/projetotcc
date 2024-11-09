@@ -18,17 +18,17 @@ public class NoticiasPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return NoticiasCategoriaFragment.newInstance("todas");
+                return NoticiasCategoriaFragment.newInstance("education");
             case 1:
-                return NoticiasCategoriaFragment.newInstance("esportes");
+                return NoticiasCategoriaFragment.newInstance("sport");
             case 2:
-                return NoticiasCategoriaFragment.newInstance("tecnologia");
+                return NoticiasCategoriaFragment.newInstance("tech");
             case 3:
-                return NoticiasCategoriaFragment.newInstance("entretenimento");
+                return NoticiasCategoriaFragment.newInstance("entertainment");
             case 4:
-                return NoticiasCategoriaFragment.newInstance("saúde");
+                return NoticiasCategoriaFragment.newInstance("health");
             default:
-                return NoticiasCategoriaFragment.newInstance("todas");
+                return NoticiasCategoriaFragment.newInstance("news");
         }
     }
 

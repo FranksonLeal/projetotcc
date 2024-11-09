@@ -41,7 +41,7 @@ public class editarPerfil extends AppCompatActivity {
     private StorageReference storageRef;
     private String userId;
     private Uri imagemUri;
-    private TextView removerImagem;
+    private TextView adicionarImagem, removerImagem;
     private ProgressBar progressBarCarregar, progressBarSalvar, progressBarRemover;
 
     @Override
@@ -49,25 +49,25 @@ public class editarPerfil extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
 
+        // Iniciando os componentes da interface
         editNome = findViewById(R.id.editNome);
         editTelefone = findViewById(R.id.editTelefone);
         editCurso = findViewById(R.id.editCurso);
         btnSalvar = findViewById(R.id.btnSalvar);
         mudarPerfil = findViewById(R.id.mudarPerfil);
         ImageView imageVoltar = findViewById(R.id.imageVoltarEditar);
-        removerImagem = findViewById(R.id.removerImagem);
+        adicionarImagem = findViewById(R.id.adicionarImagem); // TextView para adicionar imagem
+        removerImagem = findViewById(R.id.removerImagem); // TextView para remover imagem
 
-        // Progress bars
+        // ProgressBars
         progressBarCarregar = findViewById(R.id.progressBar);
         progressBarSalvar = findViewById(R.id.progressBar);
         progressBarRemover = findViewById(R.id.progressBar);
 
-        // Configurar o clique no TextView "Remover"
-        removerImagem.setOnClickListener(v -> {
-            removerImagemPerfil();
-        });
+        // Configurar clique no TextView "Adicionar imagem"
+        adicionarImagem.setOnClickListener(v -> escolherImagem());
 
-        // Configurar o clique do ícone de voltar
+        // Configurar clique do ícone de voltar
         imageVoltar.setOnClickListener(v -> finish());
 
         // Inicializar Firestore e Firebase Storage
@@ -83,9 +83,7 @@ public class editarPerfil extends AppCompatActivity {
             Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show();
         }
 
-        // Configurar clique na imagem de perfil
-        mudarPerfil.setOnClickListener(v -> escolherImagem());
-
+        // Configurar clique no botão de salvar
         btnSalvar.setOnClickListener(v -> {
             String nome = editNome.getText().toString();
             String telefone = editTelefone.getText().toString();
@@ -97,39 +95,6 @@ public class editarPerfil extends AppCompatActivity {
                 Toast.makeText(editarPerfil.this, "Preencha todos os campos", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void removerImagemPerfil() {
-        new AlertDialog.Builder(this)
-                .setTitle("Remover Imagem")
-                .setMessage("Tem certeza que deseja remover a imagem?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    progressBarRemover.setVisibility(View.VISIBLE); // Exibir ProgressBar ao remover imagem
-                    // Primeiro, atualize o Firestore para remover a URL da imagem
-                    Map<String, Object> userData = new HashMap<>();
-                    userData.put("imagem", null); // Remover a imagem (definindo como null)
-
-                    db.collection("users").document(userId)
-                            .update(userData)
-                            .addOnSuccessListener(aVoid -> {
-                                // Agora, remova a imagem do Firebase Storage
-                                StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
-                                filePath.delete().addOnSuccessListener(aVoid1 -> {
-                                    Toast.makeText(editarPerfil.this, "Imagem removida com sucesso", Toast.LENGTH_SHORT).show();
-                                    mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder após remoção
-                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após remoção
-                                }).addOnFailureListener(e -> {
-                                    Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Storage", Toast.LENGTH_SHORT).show();
-                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
-                                });
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Firestore", Toast.LENGTH_SHORT).show();
-                                progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
-                            });
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
     }
 
     private void carregarDadosUsuario() {
@@ -150,17 +115,26 @@ public class editarPerfil extends AppCompatActivity {
                             editTelefone.setText(telefone);
                             editCurso.setText(curso);
 
-                            // Carregar a imagem do perfil se disponível
+                            // Verificar se a imagem existe e configurar a visibilidade dos TextViews
                             if (imagem != null) {
+                                // Exibir a imagem do perfil
                                 Glide.with(this)
                                         .load(imagem)
                                         .transform(new CircleCrop()) // Aplicar transformação circular
                                         .placeholder(R.drawable.placeholder_image) // Substitua pelo seu placeholder
                                         .into(mudarPerfil);
-                                removerImagem.setVisibility(View.VISIBLE); // Mostrar o TextView "Remover"
+
+                                // Mostrar o texto "Remover" e ocultar "Adicionar imagem"
+                                adicionarImagem.setVisibility(View.GONE); // Esconder "Adicionar imagem"
+                                removerImagem.setVisibility(View.VISIBLE); // Mostrar "Remover"
+                                removerImagem.setOnClickListener(v -> removerImagemPerfil());
                             } else {
-                                mudarPerfil.setImageResource(R.drawable.placeholder_image); // Defina um placeholder se não houver imagem
-                                removerImagem.setVisibility(View.GONE); // Esconder o TextView "Remover"
+                                mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder
+
+                                // Mostrar o texto "Adicionar imagem" e ocultar "Remover"
+                                adicionarImagem.setVisibility(View.VISIBLE); // Mostrar "Adicionar imagem"
+                                removerImagem.setVisibility(View.GONE); // Esconder "Remover"
+                                adicionarImagem.setOnClickListener(v -> escolherImagem());
                             }
                         } else {
                             Toast.makeText(editarPerfil.this, "Usuário não encontrado", Toast.LENGTH_SHORT).show();
@@ -188,7 +162,44 @@ public class editarPerfil extends AppCompatActivity {
                     .transform(new CircleCrop()) // Aplicar transformação circular
                     .placeholder(R.drawable.placeholder_image) // Substitua pelo seu placeholder
                     .into(mudarPerfil);
+            adicionarImagem.setText("Remover"); // Alterar o texto para "Remover" após a imagem ser selecionada
+            adicionarImagem.setOnClickListener(v -> removerImagemPerfil());
         }
+    }
+
+    private void removerImagemPerfil() {
+        new AlertDialog.Builder(this)
+                .setTitle("Remover Imagem")
+                .setMessage("Tem certeza que deseja remover a imagem?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    progressBarRemover.setVisibility(View.VISIBLE); // Exibir ProgressBar ao remover imagem
+                    // Atualizar Firestore para remover a URL da imagem
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("imagem", null); // Remover a imagem (definindo como null)
+
+                    db.collection("users").document(userId)
+                            .update(userData)
+                            .addOnSuccessListener(aVoid -> {
+                                // Remover imagem do Firebase Storage
+                                StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
+                                filePath.delete().addOnSuccessListener(aVoid1 -> {
+                                    Toast.makeText(editarPerfil.this, "Imagem removida com sucesso", Toast.LENGTH_SHORT).show();
+                                    mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder após remoção
+                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após remoção
+                                    adicionarImagem.setText("Adicionar imagem"); // Alterar texto para "Adicionar imagem"
+                                    adicionarImagem.setOnClickListener(v -> escolherImagem());
+                                }).addOnFailureListener(e -> {
+                                    Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Storage", Toast.LENGTH_SHORT).show();
+                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
+                                });
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Firestore", Toast.LENGTH_SHORT).show();
+                                progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
+                            });
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
     }
 
     private void atualizarDadosUsuario(String nome, String telefone, String curso) {
@@ -215,15 +226,15 @@ public class editarPerfil extends AppCompatActivity {
     }
 
     private void salvarDadosNoFirestore(Map<String, Object> userData) {
-        db.collection("users").document(userId)
-                .update(userData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(editarPerfil.this, "Dados atualizados com sucesso", Toast.LENGTH_SHORT).show();
-                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após sucesso
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(editarPerfil.this, "Erro ao salvar dados", Toast.LENGTH_SHORT).show();
-                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após erro
+        db.collection("users").document(userId).update(userData)
+                .addOnCompleteListener(task -> {
+                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após salvar dados
+                    if (task.isSuccessful()) {
+                        Toast.makeText(editarPerfil.this, "Dados atualizados com sucesso", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(editarPerfil.this, "Erro ao atualizar os dados", Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 }
+

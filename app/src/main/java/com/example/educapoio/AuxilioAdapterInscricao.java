@@ -11,6 +11,7 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,8 +21,6 @@ import com.bumptech.glide.Glide;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -44,24 +43,29 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
         return new AuxilioViewHolder(view);
     }
 
-
     @Override
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
 
-        // Recupera os dados do auxílio
+        String url = (String) auxilio.get("url");
+
+        // Configura o clique no botão para abrir a URL
+        holder.botaoInscricao.setOnClickListener(v -> {
+            if (url != null && onItemClickListener != null) {
+                onItemClickListener.onItemClick(url);
+            }
+        });
+
         String titulo = auxilio.get("titulo").toString();
         String dataInicio = auxilio.get("dataInicio").toString();
         String dataFim = auxilio.get("dataFim").toString();
-        String url = auxilio.get("url").toString();
         String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null;
 
-        // Define os textos nos TextViews correspondentes
         holder.titulo.setText(titulo);
         holder.dataInicio.setText("Início: " + dataInicio);
         holder.dataFim.setText("Fim: " + dataFim);
 
-        // Verifica se existe uma URL de imagem
+        // Carrega a imagem ou define a inicial
         if (imagemUrl != null && !imagemUrl.isEmpty()) {
             Glide.with(holder.imagemInicial.getContext())
                     .load(imagemUrl)
@@ -73,23 +77,15 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
             holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
         }
 
-        // Verifica se o auxílio está aberto ou fechado e atualiza a visibilidade dos selos
+        // Verifica se está "Aberto" ou "Fechado"
         if (isAuxilioAberto(auxilio)) {
             holder.seloAberto.setVisibility(View.VISIBLE);
-            holder.seloFechado.setVisibility(View.GONE);  // Garante que o selo "Fechado" esteja invisível
+            holder.seloFechado.setVisibility(View.GONE);
         } else {
-            holder.seloFechado.setVisibility(View.VISIBLE);  // Torna visível o selo "Fechado"
-            holder.seloAberto.setVisibility(View.GONE);  // Garante que o selo "Aberto" esteja invisível
+            holder.seloFechado.setVisibility(View.VISIBLE);
+            holder.seloAberto.setVisibility(View.GONE);
         }
-
-        // Configura o clique no item do RecyclerView
-        holder.itemView.setOnClickListener(v -> {
-            if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(url);
-            }
-        });
     }
-
 
     private boolean isAuxilioAberto(Map<String, Object> auxilio) {
         String dataFimStr = auxilio.get("dataFim").toString();
@@ -108,15 +104,16 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
         }
     }
 
-
     @Override
     public int getItemCount() {
         return auxilios.size();
     }
 
+    // Modifique a classe AuxilioViewHolder para incluir o botão
     public static class AuxilioViewHolder extends RecyclerView.ViewHolder {
         TextView titulo, dataInicio, dataFim, seloAberto, seloFechado;
         ImageView imagemInicial;
+        Button botaoInscricao; // Adicione esta linha
 
         public AuxilioViewHolder(View itemView) {
             super(itemView);
@@ -126,6 +123,7 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
             imagemInicial = itemView.findViewById(R.id.imagemAuxilio);
             seloAberto = itemView.findViewById(R.id.seloAberto);
             seloFechado = itemView.findViewById(R.id.seloFechado);
+            botaoInscricao = itemView.findViewById(R.id.botaoInscricao); // Inicialize o botão
         }
     }
 

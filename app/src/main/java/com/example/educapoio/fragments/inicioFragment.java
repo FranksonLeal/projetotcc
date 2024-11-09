@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +52,7 @@ public class inicioFragment extends Fragment {
 
     private Handler handler = new Handler();
     private Runnable runnable;
+    private ProgressBar progressBar;  // Adiciona a ProgressBar
 
     public inicioFragment() {
         // Required empty public constructor
@@ -107,6 +109,7 @@ public class inicioFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         textoOla = rootView.findViewById(R.id.texto2);
+        progressBar = rootView.findViewById(R.id.progressBar);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -131,6 +134,9 @@ public class inicioFragment extends Fragment {
         recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
         recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+
+        // Mostrar a ProgressBar antes de iniciar o carregamento dos dados
+        progressBar.setVisibility(View.VISIBLE);
         // Buscar dados do Firestore
         buscarAuxiliosDoFirestore();
 
@@ -325,17 +331,21 @@ public class inicioFragment extends Fragment {
                             auxiliosList.add(document.getData());
                         }
 
-                        // Adiciona o listener de clique ao adapter
-                        adapter = new AuxilioAdapter(auxiliosList, new AuxilioAdapter.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(String url) {
-                                // Implementa a ação desejada ao clicar no item (exemplo: abrir URL)
+                        adapter = new AuxilioAdapter(auxiliosList, url -> {
+                            if (url != null && !url.isEmpty()) {
                                 abrirUrl(url);
+                            } else {
+                                Toast.makeText(getContext(), "URL não disponível", Toast.LENGTH_SHORT).show();
                             }
                         });
-
                         recyclerViewAuxilios.setAdapter(adapter);
-                        iniciarSlideAutomatico();  // Iniciar o slide automático após os dados carregados
+
+                        // Oculta a ProgressBar após o carregamento dos dados
+                        progressBar.setVisibility(View.GONE);
+                    } else {
+                        // Em caso de falha, ocultar a ProgressBar e mostrar uma mensagem
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Erro ao carregar auxílios.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

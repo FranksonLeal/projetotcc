@@ -21,12 +21,10 @@
             android:layout_height="wrap_content"
             android:text="Fechado"
             android:textColor="#FF0000"
-        android:padding="4dp"
-        android:layout_margin="8dp"
-        android:layout_gravity="end|top"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+            android:padding="4dp"
+            android:layout_margin="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Selo "Aberto" -->
         <TextView
@@ -36,10 +34,9 @@
             android:text="Aberto"
             android:textColor="#4CAF50"
             android:padding="4dp"
-            android:layout_margin="8dp"
-            android:layout_gravity="end|top"
+            android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Imagem Circular do Auxílio -->
         <ImageView
@@ -47,8 +44,7 @@
             android:layout_width="130dp"
             android:layout_height="130dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bg_circle"
-            android:gravity="center"
+            android:background="@drawable/bg_circle2"
             android:scaleType="centerCrop"
             android:layout_margin="5dp"
             tools:ignore="MissingConstraints" />
@@ -104,7 +100,7 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:backgroundTint="#841FFD"
-            android:text="Inscrever-se"
+            android:text="Visualizar"
             android:layout_marginStart="50dp"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
