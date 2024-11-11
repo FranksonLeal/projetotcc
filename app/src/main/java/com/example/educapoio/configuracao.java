@@ -157,7 +157,7 @@ public class configuracao extends AppCompatActivity {
 
         // Adiciona o texto da mensagem
         TextView messageText = new TextView(this);
-        messageText.setText("Tem certeza de que deseja sair?");
+        messageText.setText("Tem certeza de que deseja sair? Você precisará fazer login novamente.");
         messageText.setTextSize(18); // Tamanho do texto
         messageText.setTextColor(Color.BLACK); // Cor do texto
         messageText.setPadding(0, 0, 0, 40); // Padding inferior

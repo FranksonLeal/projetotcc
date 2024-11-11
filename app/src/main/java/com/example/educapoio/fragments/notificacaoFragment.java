@@ -117,9 +117,10 @@ public class notificacaoFragment extends Fragment {
                 horizontalLayout.setPadding(16, 16, 16, 16);
 
                 TextView notificationView = new TextView(getContext());
-                notificationView.setText("Mensagem: " + message);
+                notificationView.setText(message);
                 notificationView.setTextColor(Color.parseColor("#626364"));
                 notificationView.setTextSize(18);
+
                 notificationView.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
 
                 ImageButton deleteButton = new ImageButton(getContext());
@@ -128,7 +129,7 @@ public class notificacaoFragment extends Fragment {
 
                 View divider = new View(getContext());
                 divider.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
-                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.black));
+                divider.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.barra_divisoria));
 
                 deleteButton.setOnClickListener(v -> {
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());

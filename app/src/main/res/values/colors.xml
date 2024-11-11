@@ -4,4 +4,12 @@
     <color name="white">#FFFFFFFF</color>
     <color name="active_button_color">#841FFD</color>
     <color name="inactive_button_color">#E0B3FF</color>
+    <color name="barra_divisoria">#A9A8A8</color>
+    <color name="purple_500">#841FFD</color>
+
+
+
+    <color name="dark_gray">#A9A9A9</color> <!-- Cor do fundo da barra -->
 </resources>
+
+
