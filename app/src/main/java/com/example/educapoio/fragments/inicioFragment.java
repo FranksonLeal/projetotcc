@@ -147,32 +147,34 @@ public class inicioFragment extends Fragment {
     }
 
     private void iniciarSlideAutomatico() {
-        if (adapter == null) {
-            return;  // Não iniciar o slide se o adapter não estiver pronto
+        if (adapter == null || recyclerViewAuxilios.getLayoutManager() == null) {
+            return;  // Não iniciar o slide se o adapter ou o layout manager não estiverem prontos
         }
 
         runnable = new Runnable() {
             @Override
             public void run() {
+                // Verifica a posição atual
                 int position = ((LinearLayoutManager) recyclerViewAuxilios.getLayoutManager()).findFirstVisibleItemPosition();
                 int nextPosition = position + 1;
 
+                // Se a próxima posição ultrapassar o número de itens, reinicia o slide
                 if (nextPosition >= adapter.getItemCount()) {
-                    nextPosition = 0;  // Voltar para o início da lista após o final
+                    nextPosition = 0;
                 }
 
-                // Criar um scroller suave para a rolagem
+                // Cria o scroller suave para a rolagem
                 LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
                     @Override
                     protected int getHorizontalSnapPreference() {
-                        return SNAP_TO_START;  // Se você precisar alinhar à esquerda, utilize isso
+                        return SNAP_TO_START; // Se você precisar alinhar à esquerda
                     }
 
                     @Override
                     protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                        // Ajuste a velocidade da rolagem, menor valor = rolagem mais lenta
+                        // Ajuste a velocidade da rolagem
                         float inchesPerPixel = super.calculateSpeedPerPixel(displayMetrics);
-                        return inchesPerPixel * 10;  // Aumente esse valor para desacelerar a rolagem
+                        return inchesPerPixel * 10; // Aumente esse valor para desacelerar a rolagem
                     }
                 };
 
@@ -184,8 +186,9 @@ public class inicioFragment extends Fragment {
             }
         };
 
-        handler.post(runnable);  // Iniciar o slide automático
+        handler.post(runnable); // Iniciar o slide automático
     }
+
 
     @Override
     public void onResume() {

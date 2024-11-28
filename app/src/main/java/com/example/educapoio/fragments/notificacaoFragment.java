@@ -188,59 +188,54 @@ public class notificacaoFragment extends Fragment {
         }
     }
     private void deleteNotification(String uniqueId) {
-        // Função para deletar a notificação, atualize conforme necessário
         SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
         String notifications = prefs.getString("notifications_list", "");
 
-        // Divida as notificações em um array
         String[] notificationArray = notifications.split("\\|\\|\\|");
         StringBuilder updatedNotifications = new StringBuilder();
 
         for (String notification : notificationArray) {
             if (!notification.startsWith(uniqueId + "|")) {
-                // Adiciona notificações que não são a que está sendo removida
                 updatedNotifications.append(notification).append("|||");
             }
         }
 
-        // Atualiza o SharedPreferences
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("notifications_list", updatedNotifications.toString());
         editor.apply();
+
+        // Atualizar a lista de notificações
+        atualizarNotificacoes(notificationContainer);
     }
 
+
     private void deleteAllNotifications() {
-        // Infla o layout do BottomSheetDialog
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Configura a mensagem de confirmação
         TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
         dialogMessage.setText("Você tem certeza que deseja excluir todas as notificações?");
 
-        // Botão para confirmar a exclusão
         Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
         buttonConfirm.setText("Sim");
         buttonConfirm.setOnClickListener(v -> {
-            // Ação para deletar todas as notificações
             SharedPreferences prefs = requireActivity().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("notifications_list", "Sem notificações");
+            editor.putString("notifications_list", "");
             editor.apply();
-            atualizarNotificacoes(notificationContainer);
-            Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
 
-            // Fecha o dialog após a ação
+            // Atualizar a lista de notificações após a exclusão
+            atualizarNotificacoes(notificationContainer);
+
+            Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
             bottomSheetDialog.dismiss();
         });
 
-        // Botão para cancelar a exclusão
         Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
         buttonCancel.setText("Não");
         buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
 

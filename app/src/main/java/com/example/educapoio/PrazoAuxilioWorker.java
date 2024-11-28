@@ -82,16 +82,16 @@ public class PrazoAuxilioWorker extends Worker {
         // Define a mensagem dependendo da situação do prazo
         String mensagem;
         if (diasRestantes > 0) {
-            mensagem = "O auxílio \"" + titulo + "\" expira em " + diasRestantes + " dias. Não perca a oportunidade!";
+            mensagem = "A oportunidade \"" + titulo + "\" expira em " + diasRestantes + " dias. Não perca!";
         } else if (diasRestantes == 0) {
-            mensagem = "O auxílio \"" + titulo + "\" expira hoje! Aproveite antes que seja tarde!";
+            mensagem = "A oportunidade \"" + titulo + "\" expira hoje! Aproveite antes que seja tarde!";
         } else {
-            mensagem = "O auxílio \"" + titulo + "\" já expirou. Fique de olho nas próximas oportunidades!";
+            mensagem = "A oportunidade \"" + titulo + "\" já expirou. Fique de olho nas próximas!";
         }
 
         // Formata a data e hora atuais
         String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-        mensagem += "\nVerificação feita em: " + currentDateTime;
+        mensagem += "\n\nData: " + currentDateTime;
 
         // Salva a notificação
         salvarNotificacao(titulo, mensagem);

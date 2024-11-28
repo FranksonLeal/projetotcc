@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
@@ -10,28 +11,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="20dp"
-    app:cardElevation="4dp">
+        app:cardElevation="4dp">
 
-    <ImageView
-        android:id="@+id/noticia_imagem"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop" />
+        <ImageView
+            android:id="@+id/noticia_imagem"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-<TextView
-android:id="@+id/noticia_titulo"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textColor="#626364"
-android:textStyle="bold"
-android:textSize="18sp" />
+    <TextView
+        android:id="@+id/noticia_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#626364"
+        android:fontFamily="@font/poppins_regular"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginTop="8dp" /> <!-- Margem superior para separar do CardView -->
 
-<TextView
-android:id="@+id/noticia_descricao"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:textColor="#626364"
-android:textSize="14sp" />
-    </LinearLayout>
+    <TextView
+        android:id="@+id/noticia_descricao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#626364"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="14sp"
+        android:layout_marginTop="4dp" /> <!-- Margem superior para separar do título -->
+
+</LinearLayout>

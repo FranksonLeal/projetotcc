@@ -40,6 +40,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="45dp"
+        android:fontFamily="@font/poppins_regular"
         android:text="educApoio é um aplicativo de suporte ao acesso as novidades de bolsas de projetos, concursos, estágios e auxílios dentro da universidade para os acadêmicos."
         android:textColor="#2E2E2E"
         android:textAlignment="center"

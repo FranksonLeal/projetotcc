@@ -6,6 +6,9 @@
     <color name="inactive_button_color">#E0B3FF</color>
     <color name="barra_divisoria">#A9A8A8</color>
     <color name="purple_500">#841FFD</color>
+    <color name="background">#FFFFFF</color>
+    <color name="primary">#841FFD</color>
+    <color name="onPrimary">#FFFFFF</color>
 
 
 

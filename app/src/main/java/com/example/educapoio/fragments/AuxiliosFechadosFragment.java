@@ -61,12 +61,16 @@ public class AuxiliosFechadosFragment extends Fragment {
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
+            // Ao finalizar a busca
+            progressBar.setVisibility(View.GONE);  // Sempre escondemos a ProgressBar aqui
+
             if (task.isSuccessful()) {
                 List<QueryDocumentSnapshot> documentosFechados = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String dataFimStr = document.getString("dataFim");
                     LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
+                    // Verifica se o auxílio está fechado
                     if (dataFim.isBefore(LocalDate.now()) || dataFim.isEqual(LocalDate.now())) {
                         documentosFechados.add(document);
                     }
@@ -81,14 +85,11 @@ public class AuxiliosFechadosFragment extends Fragment {
                 if (auxiliosFechadosMap.isEmpty()) {
                     recyclerView.setVisibility(View.GONE);
                     txtNoAuxiliosFechados.setVisibility(View.VISIBLE);
-                    // Esconde a ProgressBar após carregar os dados
-                    progressBar.setVisibility(View.GONE);
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     txtNoAuxiliosFechados.setVisibility(View.GONE);
                 }
-                // Esconde a ProgressBar após carregar os dados
-                progressBar.setVisibility(View.GONE);
+
             } else {
                 Toast.makeText(getContext(), "Erro ao carregar auxílios fechados", Toast.LENGTH_SHORT).show();
             }

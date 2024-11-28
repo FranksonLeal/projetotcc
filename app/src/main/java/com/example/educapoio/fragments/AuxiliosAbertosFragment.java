@@ -69,11 +69,24 @@ public class AuxiliosAbertosFragment extends Fragment {
                     }
                 }
 
-                // Converte para Map<String, Object> e cria o adapter
-                List<Map<String, Object>> auxiliosAbertosMap = converterParaMap(documentosAbertos);
-                adapter = new AuxilioAdapterInscricao(auxiliosAbertosMap, this::abrirUrl);
+                // Verifica se existem auxílios abertos
+                if (documentosAbertos.isEmpty()) {
+                    // Se não houver auxílios, exibe a mensagem
+                    TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
+                    noAuxiliosMessage.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE); // Esconde o RecyclerView
+                } else {
+                    // Se houver auxílios, oculta a mensagem e exibe o RecyclerView
+                    TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
+                    noAuxiliosMessage.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
 
-                recyclerView.setAdapter(adapter);
+                    // Converte para Map<String, Object> e cria o adapter
+                    List<Map<String, Object>> auxiliosAbertosMap = converterParaMap(documentosAbertos);
+                    adapter = new AuxilioAdapterInscricao(auxiliosAbertosMap, this::abrirUrl);
+                    recyclerView.setAdapter(adapter);
+                }
+
                 // Esconde a ProgressBar após carregar os dados
                 progressBar.setVisibility(View.GONE);
             } else {

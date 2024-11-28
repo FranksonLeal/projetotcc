@@ -1,7 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="250dp"
-    android:layout_height="250dp"
+    android:layout_height="260dp"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
@@ -16,6 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:fontFamily="@font/poppins_regular"
         android:textColor="#626364"
         android:text="Título do Auxílio"
         android:gravity="center" />
@@ -28,7 +29,8 @@
         android:layout_marginTop="10dp"
         android:background="@drawable/bg_circle"
         android:gravity="center"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:clipToOutline="true" />
 
     <!-- Data de Início -->
     <TextView
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:textColor="#841FFD"
         android:text="Início: xxxxxxx"
+        android:fontFamily="@font/poppins_regular"
         android:layout_marginTop="10dp"
         android:textSize="16sp"
         android:gravity="center" />
@@ -48,6 +51,7 @@
         android:layout_height="wrap_content"
         android:text="Fim: xxxxxxx"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/poppins_regular"
         android:textColor="#841FFD"
         android:textSize="16sp"
         android:gravity="center" />

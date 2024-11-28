@@ -4,22 +4,26 @@
         android:id="@+id/menu_inicio"
         android:enabled="true"
         android:icon="@drawable/ic_home"
+        android:fontFamily="@font/poppins_regular"
         android:title="@string/menu_inicio"/>
 
     <item
         android:id="@+id/menu_inscrições"
+        android:fontFamily="@font/poppins_regular"
         android:enabled="true"
         android:icon="@drawable/ic_inscri"
         android:title="Inscrições"/>
 
     <item
         android:id="@+id/menu_noticias"
+        android:fontFamily="@font/poppins_regular"
         android:enabled="true"
         android:icon="@drawable/ic_noticia"
         android:title="Noticias"/>
 
     <item
         android:id="@+id/menu_notificacao"
+        android:fontFamily="@font/poppins_regular"
 
         android:enabled="true"
         android:icon="@drawable/ic_notificacao"
@@ -27,6 +31,7 @@
     <item
         android:id="@+id/menu_perfil"
         android:enabled="true"
+        android:fontFamily="@font/poppins_regular"
         android:icon="@drawable/perfil"
         android:title="@string/menu_perfil"/>
 

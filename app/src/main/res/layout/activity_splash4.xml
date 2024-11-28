@@ -41,6 +41,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="72dp"
         android:layout_marginEnd="45dp"
+        android:fontFamily="@font/poppins_regular"
         android:text="Receba notificações sobre concursos e oportunidades de estágios que podem lhe proporcionar uma grande capacitação e experiência."
         android:textColor="#2E2E2E"
         android:textAlignment="center"
