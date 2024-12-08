@@ -17,13 +17,15 @@ import com.example.educapoio.NoticiasPagerAdapter;
 import com.example.educapoio.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class noticias extends Fragment {
 
     private TabLayout tabLayoutNoticias;
     private ViewPager2 viewPagerNoticias;
-    private ProgressBar progressBar;  // ProgressBar para exibir enquanto carrega
-    private final String[] tabTitles = {"Educação", "Esportes", "Tecnologia", "Entretenimento", "Saúde"};
+    private ProgressBar progressBar;
+    private final String[] tabTitles = {"Recomendado","Educação", "Tecnologia", "Saúde", "Entretenimento", "Esporte" };
 
     @Nullable
     @Override
@@ -32,26 +34,54 @@ public class noticias extends Fragment {
 
         tabLayoutNoticias = rootView.findViewById(R.id.tabLayoutNoticias);
         viewPagerNoticias = rootView.findViewById(R.id.viewPagerNoticias);
-        progressBar = rootView.findViewById(R.id.progressBar);  // Inicia a ProgressBar
+        progressBar = rootView.findViewById(R.id.progressBar);
 
-        NoticiasPagerAdapter adapter = new NoticiasPagerAdapter(requireActivity());
+        // Buscar o curso do usuário antes de inicializar o adapter
+        carregarCursoUsuario();
+        carregarNoticias(); // Chamada aqui
+
+        return rootView;
+    }
+
+    private void carregarCursoUsuario() {
+        progressBar.setVisibility(View.VISIBLE);
+
+        // Simulação de consulta ao Firebase para obter o curso do usuário
+        FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String cursoUsuario = documentSnapshot.getString("curso");
+                        if (cursoUsuario != null) {
+                            inicializarViewPager(cursoUsuario);
+                        } else {
+                            Toast.makeText(requireContext(), "Curso não encontrado!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(requireContext(), "Erro ao carregar o curso!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                });
+    }
+
+    private void inicializarViewPager(String cursoUsuario) {
+        NoticiasPagerAdapter adapter = new NoticiasPagerAdapter(requireActivity(), cursoUsuario);
         viewPagerNoticias.setAdapter(adapter);
 
-        // Definindo as cores do texto usando valores hexadecimais
+        // Configurar as cores do TabLayout
         tabLayoutNoticias.setTabTextColors(
-                Color.parseColor("#B0B0B0"),  // Cor do texto não selecionado (exemplo: cinza)
-                Color.parseColor("#841FFD")   // Cor do texto selecionado
+                Color.parseColor("#B0B0B0"), // Cinza
+                Color.parseColor("#841FFD") // Roxo
         );
 
-        // Associando o TabLayout com o ViewPager2
+        // Conectar o TabLayout ao ViewPager
         new TabLayoutMediator(tabLayoutNoticias, viewPagerNoticias,
                 (tab, position) -> tab.setText(tabTitles[position])
         ).attach();
-
-        // Simulando o carregamento das notícias
-        carregarNoticias();
-
-        return rootView;
     }
 
     private void carregarNoticias() {

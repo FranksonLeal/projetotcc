@@ -16,6 +16,9 @@ import com.example.educapoio.NewsApiService;
 import com.example.educapoio.NewsResponse;
 import com.example.educapoio.NoticiasAdapter;
 import com.example.educapoio.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,7 +26,7 @@ import retrofit2.Response;
 
 public class NoticiasCategoriaFragment extends Fragment {
 
-    private static final String ARG_CATEGORIA = "categoria";
+    private static final String ARG_CATEGORIA = "category";
     private RecyclerView recyclerViewNoticias;
     private NoticiasAdapter noticiasAdapter;
 
@@ -44,9 +47,39 @@ public class NoticiasCategoriaFragment extends Fragment {
         recyclerViewNoticias.setLayoutManager(new LinearLayoutManager(getContext()));
 
         String categoria = getArguments() != null ? getArguments().getString(ARG_CATEGORIA) : "todas";
-        buscarNoticiasDaAPI(categoria);
+
+        if ("recomendado".equalsIgnoreCase(categoria)) {
+            buscarCursoDoUsuario();
+        } else {
+            buscarNoticiasDaAPI(categoria);
+        }
 
         return rootView;
+    }
+
+    private void buscarCursoDoUsuario() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        FirebaseFirestore.getInstance().collection("usuarios")
+                .document(userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document != null && document.exists()) {
+                            String curso = document.getString("curso");
+                            if (curso != null) {
+                                buscarNoticiasDaAPI(curso); // Usa o curso do usuário como filtro
+                            } else {
+                                Toast.makeText(getContext(), "Curso não encontrado", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getContext(), "Usuário não encontrado", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getContext(), "Erro ao buscar dados do usuário", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void buscarNoticiasDaAPI(String query) {

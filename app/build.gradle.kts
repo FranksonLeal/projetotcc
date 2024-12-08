@@ -85,6 +85,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 //    implementation("com.github.KwabenBerko:News-API-Java:1.0.0")
     implementation("com.github.rometools:rome:1.18.0")
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+
 
 
 

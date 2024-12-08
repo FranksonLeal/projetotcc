@@ -152,7 +152,7 @@ public class Administrador extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
                     String uniqueId = String.valueOf(System.currentTimeMillis()); // ID único para a notificação
-                    String mensagem = "Nova oportunidade " + titulo + " lançada! Aproveite a oportunidade!  \nData: " + currentDateTime;
+                    String mensagem = "Nova oportunidade " + titulo + " lançada! Aproveite!  \n\nData: " + currentDateTime;
 
                     // Carrega as notificações existentes
                     SharedPreferences prefs = getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);

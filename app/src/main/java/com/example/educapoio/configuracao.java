@@ -103,7 +103,6 @@ public class configuracao extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Compartilhar com"));
     }
 
-
     private void exibirDialogoConfirmacaoExclusaoConta() {
         // Cria o BottomSheetDialog
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -160,7 +159,6 @@ public class configuracao extends AppCompatActivity {
         // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
-
 
     private void exibirDialogoConfirmacaoSair() {
         // Cria o BottomSheetDialog
@@ -222,7 +220,6 @@ public class configuracao extends AppCompatActivity {
         bottomSheetDialog.show();
     }
 
-
     private void excluirConta() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -237,13 +234,10 @@ public class configuracao extends AppCompatActivity {
                                 startActivity(new Intent(configuracao.this, login.class));
                                 finish();
                             } else {
-                                Toast.makeText(configuracao.this, "Falha ao excluir a conta: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(configuracao.this, "Erro ao excluir a conta", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
-        } else {
-            Toast.makeText(configuracao.this, "Usuário não autenticado", Toast.LENGTH_SHORT).show();
-            progressBar.setVisibility(View.GONE);
         }
     }
 }

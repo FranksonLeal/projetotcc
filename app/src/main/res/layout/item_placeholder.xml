@@ -1,0 +1,55 @@
+<com.facebook.shimmer.ShimmerFrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="250dp"
+    android:layout_height="260dp"
+    app:shimmer_auto_start="true"
+    app:shimmer_duration="1500"
+    android:gravity="center"
+    android:elevation="4dp"
+    android:layout_margin="10dp"
+    android:background="@drawable/bg_circle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal">
+
+        <!-- Título do Auxílio (placeholder) -->
+        <View
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"
+            android:layout_gravity="center" />
+
+        <!-- Imagem Circular do Auxílio (placeholder) -->
+        <View
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"
+            android:layout_gravity="center"
+            android:clipToOutline="true" />
+
+        <!-- Data de Início (placeholder) -->
+        <View
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"
+            android:layout_gravity="center" />
+
+        <!-- Data de Fim (placeholder) -->
+        <View
+            android:layout_width="100dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"
+            android:layout_gravity="center" />
+
+    </LinearLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>
