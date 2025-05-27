@@ -40,40 +40,51 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
         return new AuxilioViewHolder(view);
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
 
-        // Recupera os dados do auxílio com segurança
         String titulo = auxilio.get("titulo") != null ? auxilio.get("titulo").toString() : "Título indisponível";
         String dataInicio = auxilio.get("dataInicio") != null ? auxilio.get("dataInicio").toString() : "Data de início não disponível";
         String dataFim = auxilio.get("dataFim") != null ? auxilio.get("dataFim").toString() : "Data de fim não disponível";
-        String url = auxilio.get("url") != null ? auxilio.get("url").toString() : "";  // URL pode estar vazia
-        String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null; // Verifica se há URL de imagem
+        String url = auxilio.get("url") != null ? auxilio.get("url").toString() : "";
 
-        // Define os textos nos TextViews correspondentes
+        // ADICIONE ESSA LINHA:
+        String imagemUrl = auxilio.get("imagem") != null ? auxilio.get("imagem").toString() : "";
+
+        // Atualiza os TextViews e imagem
         holder.titulo.setText(titulo);
         holder.dataInicio.setText("Início: " + dataInicio);
         holder.dataFim.setText("Fim: " + dataFim);
 
-        // Verifica se existe uma URL de imagem
         if (imagemUrl != null && !imagemUrl.isEmpty()) {
-            // Carrega a imagem do auxílio com Glide
             Glide.with(holder.imagemInicial.getContext())
                     .load(imagemUrl)
-                    .placeholder(R.drawable.placeholder_image)  // Imagem temporária enquanto carrega
-                    .error(R.drawable.error_image)              // Imagem padrão em caso de erro
+                    .placeholder(R.drawable.placeholder_image)
+                    .error(R.drawable.error_image)
                     .into(holder.imagemInicial);
         } else {
-            // Caso não haja imagem, gera uma imagem circular com a inicial do título
             String inicial = titulo.substring(0, 1).toUpperCase();
             holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
         }
 
-        // Configura o clique no item do RecyclerView
+        // Clique para abrir URL
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                onItemClickListener.onItemClick(url);  // Passa a URL quando o item é clicado
+                onItemClickListener.onItemClick(url);
+            }
+        });
+
+        // Clique para compartilhar
+        holder.buttonCompartilhar.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                String textoParaCompartilhar = "Auxílio: " + titulo +
+                        "\nInício: " + dataInicio +
+                        "\nFim: " + dataFim +
+                        (url.isEmpty() ? "" : "\nSaiba mais: " + url);
+                onItemClickListener.onShareClick(textoParaCompartilhar);
             }
         });
     }
@@ -85,7 +96,7 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
 
     public static class AuxilioViewHolder extends RecyclerView.ViewHolder {
         TextView titulo, dataInicio, dataFim;
-        ImageView imagemInicial;
+        ImageView imagemInicial, buttonCompartilhar;
 
         public AuxilioViewHolder(View itemView) {
             super(itemView);
@@ -93,8 +104,10 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
             dataInicio = itemView.findViewById(R.id.textDataInicio);
             dataFim = itemView.findViewById(R.id.textDataFim);
             imagemInicial = itemView.findViewById(R.id.imagemAuxilio);
+            buttonCompartilhar = itemView.findViewById(R.id.buttonCompartilhar);  // Aqui
         }
     }
+
 
     // Método para gerar imagem circular com a inicial do título
     private Drawable getCircularImage(Context context, String text) {
@@ -123,12 +136,40 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
 
     // Interface para lidar com cliques em itens do RecyclerView
     public interface OnItemClickListener {
-        void onItemClick(String url);  // Lida com a URL quando o item é clicado
+        void onItemClick(String url);
+        void onShareClick(String textoParaCompartilhar);
+
     }
 
+
     // Método para atualizar a lista de auxílios no adapter
+    // Método para atualizar a lista de auxílios e notificar o adapter
+    // Método para atualizar a lista de auxílios e notificar o adapter
     public void updateAuxilios(List<Map<String, Object>> newAuxilios) {
-        auxilios = newAuxilios != null ? newAuxilios : new ArrayList<>();
-        notifyDataSetChanged();
+        this.auxilios.clear();  // Limpa a lista existente
+        this.auxilios.addAll(newAuxilios);  // Adiciona os novos auxílios
+        notifyDataSetChanged();  // Notifica o adapter sobre a mudança
     }
+
+    private String gerarTextoCompartilhamento(Map<String, Object> auxilio) {
+        String titulo = (String) auxilio.get("titulo");
+        String dataInicio = (String) auxilio.get("dataInicio");
+        String dataFim = (String) auxilio.get("dataFim");
+        String url = (String) auxilio.get("url");
+
+        String texto = "🚀 *Oportunidade Acadêmica Disponível!*\n\n"
+                + "📌 *Título:* " + titulo + "\n"
+                + "🗓️ *Período:* " + dataInicio + " até " + dataFim + "\n";
+
+        if (url != null && !url.isEmpty()) {
+            texto += "🔗 *Acesse mais informações:* " + url + "\n";
+        }
+
+        texto += "\n💡 *Compartilhado via EducNews* - Fique sempre por dentro das melhores oportunidades acadêmicas!";
+        return texto;
+    }
+
+
+
+
 }

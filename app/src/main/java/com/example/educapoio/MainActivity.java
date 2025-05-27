@@ -2,6 +2,7 @@ package com.example.educapoio;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -18,6 +19,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,6 +50,19 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Recupera o estado salvo antes de definir o layout
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("DarkMode", false);
+
+        if (isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
         AndroidThreeTen.init(this);
         setContentView(R.layout.activity_main);
@@ -118,13 +133,33 @@ public class MainActivity extends AppCompatActivity {
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             auxilios.add(document.getData());
                         }
-                        adapter = new AuxilioAdapter(auxilios, this::abrirUrl);
+                        adapter = new AuxilioAdapter(auxilios, new AuxilioAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(String url) {
+                                abrirUrl(url);
+                            }
+
+                            @Override
+                            public void onShareClick(String textoParaCompartilhar) {
+                                // Implementar ação de compartilhar, por exemplo:
+                                compartilharTexto(textoParaCompartilhar);
+                            }
+                        });
+
                         recyclerView.setAdapter(adapter);
                     } else {
                         Toast.makeText(MainActivity.this, "Erro ao carregar auxílios: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
+    private void compartilharTexto(String texto) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, texto);
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio"));
+    }
+
 
     private void abrirUrl(String url) {
         if (url != null && !url.isEmpty()) {

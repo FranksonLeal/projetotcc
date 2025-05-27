@@ -1,6 +1,9 @@
 package com.example.educapoio.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,9 +15,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.educapoio.CircleCrop;
@@ -33,22 +40,42 @@ public class perfilFragment extends Fragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ImageView imagemPerfil;
-    private ProgressBar progressBar; // Adicionado
+    private ProgressBar progressBar;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_perfil, container, false);
 
-        // Inicializa os TextViews
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshInicio);
+        View rootView = view.findViewById(R.id.rootLayoutPerfil);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            atualizarTela();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
+
+        if (isDarkMode) {
+            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else {
+            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+        }
+
+        // Inicializa os TextViews e outros componentes da UI
         editNome = view.findViewById(R.id.editNome);
         editEmail2 = view.findViewById(R.id.editEmail2);
         editTelefone = view.findViewById(R.id.editTelefone);
         editCurso = view.findViewById(R.id.editCurso);
         editUsuario = view.findViewById(R.id.editUsuario);
         imagemPerfil = view.findViewById(R.id.mudarPerfil);
-        progressBar = view.findViewById(R.id.progressBar); // Inicializa o ProgressBar
+        progressBar = view.findViewById(R.id.progressBar);
 
         // Inicializa FirebaseAuth e Firestore
         mAuth = FirebaseAuth.getInstance();
@@ -58,8 +85,6 @@ public class perfilFragment extends Fragment {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
-
-            // Mostra o e-mail diretamente
             String email = user.getEmail();
             editEmail2.setText(email);
 
@@ -68,77 +93,124 @@ public class perfilFragment extends Fragment {
         }
 
         // Configuração e edição de perfil
-        view.findViewById(R.id.imageConfig).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), configuracao.class));
-        });
+        view.findViewById(R.id.imageConfig).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), configuracao.class))
+        );
 
-        view.findViewById(R.id.imageEdit).setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), editarPerfil.class));
-        });
+        view.findViewById(R.id.imageEdit).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), editarPerfil.class))
+        );
 
         return view;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            carregarDadosUsuario(user.getUid());
+        }
+    }
+
+
+    private void atualizarTela() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            carregarDadosUsuario(user.getUid());
+        }
+        // Exemplo simples de ação:
+        Toast.makeText(getContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
+    }
+
 
     private void carregarDadosUsuario(String userId) {
-        progressBar.setVisibility(View.VISIBLE); // Mostra a barra de progresso
+        if (!isAdded()) return; // Fragment não está anexado, cancela a execução.
+
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
 
         DocumentReference docRef = db.collection("users").document(userId);
         docRef.get().addOnCompleteListener(task -> {
-            progressBar.setVisibility(View.GONE); // Esconde a barra de progresso
+            if (!isAdded()) return; // Verifica novamente quando o listener retorna.
 
-            if (task.isSuccessful()) {
-                DocumentSnapshot document = task.getResult();
-                if (document.exists()) {
-                    String nome = document.getString("nome");
-                    String telefone = document.getString("telefone");
-                    String curso = document.getString("curso");
-                    String tipoUsuario = document.getString("tipoUsuario");
-                    String imagemUrl = document.getString("imagem"); // Usar a chave correta
+            if (!task.isSuccessful()) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                editNome.setText("Erro ao carregar dados");
+                return;
+            }
 
-                    editNome.setText(nome);
-                    editTelefone.setText(telefone);
-                    editCurso.setText(curso);
-                    editUsuario.setText(tipoUsuario);
+            DocumentSnapshot document = task.getResult();
+            if (document == null || !document.exists()) {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                editNome.setText("Dados não encontrados");
+                return;
+            }
 
-                    // Carregar a imagem de forma assíncrona
-                    if (imagemUrl != null && !imagemUrl.isEmpty()) {
-                        Glide.with(getContext())
-                                .load(imagemUrl)
-                                .transform(new CircleCrop())
-                                .placeholder(R.drawable.placeholder_image) // Substitua pelo seu placeholder
-                                .error(R.drawable.error_image) // Imagem de erro
-                                .into(imagemPerfil);
-                    } else {
-                        mostrarInicial(nome); // Se não houver imagem, mostra a inicial
-                    }
+            String nome = document.getString("nome");
+            String telefone = document.getString("telefone");
+            String curso = document.getString("curso");
+            String tipoUsuario = document.getString("tipoUsuario");
+            String imagemUrl = document.getString("imagem");
 
-                } else {
-                    editNome.setText("Dados não encontrados");
+            if (nome != null) editNome.setText(nome);
+            if (telefone != null) editTelefone.setText(telefone);
+            if (curso != null) editCurso.setText(curso);
+            if (tipoUsuario != null) editUsuario.setText(tipoUsuario);
+
+            if (imagemUrl != null && !imagemUrl.isEmpty()) {
+                if (isAdded()) {
+                    Glide.with(requireContext())
+                            .load(imagemUrl)
+                            .transform(new CircleCrop())
+                            .placeholder(R.drawable.placeholder_image)
+                            .error(R.drawable.error_image)
+                            .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, boolean isFirstResource) {
+                                    if (isAdded() && progressBar != null) {
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                                    if (isAdded() && progressBar != null) {
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                    return false;
+                                }
+                            })
+                            .into(imagemPerfil);
                 }
             } else {
-                editNome.setText("Erro ao carregar dados");
+                if (nome != null) {
+                    mostrarInicial(nome);
+                }
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
     }
 
+
     private void mostrarInicial(String nome) {
-        // Obtém a inicial do nome
         String inicial = nome.substring(0, 1).toUpperCase();
-        // Gera a imagem com a inicial
+
         Bitmap bitmap = Bitmap.createBitmap(140, 140, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
-        paint.setColor(Color.BLUE); // Cor de fundo
+        paint.setColor(Color.BLUE);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(70, 70, 70, paint); // Desenha um círculo
+        canvas.drawCircle(70, 70, 70, paint);
 
-        // Configura o texto
-        paint.setColor(Color.WHITE); // Cor da inicial
+        paint.setColor(Color.WHITE);
         paint.setTextSize(60);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(inicial, 70, 90, paint); // Desenha a inicial
+        canvas.drawText(inicial, 70, 90, paint);
 
-        // Define a imagem gerada no ImageView
         imagemPerfil.setImageBitmap(bitmap);
     }
 }

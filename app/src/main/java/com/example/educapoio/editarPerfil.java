@@ -1,5 +1,7 @@
 package com.example.educapoio;
 
+import static java.security.AccessController.getContext;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
@@ -44,10 +47,17 @@ public class editarPerfil extends AppCompatActivity {
     private TextView adicionarImagem, removerImagem;
     private ProgressBar progressBarCarregar, progressBarSalvar, progressBarRemover;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil);
+
+
+
 
         // Iniciando os componentes da interface
         editNome = findViewById(R.id.editNome);
@@ -96,6 +106,7 @@ public class editarPerfil extends AppCompatActivity {
             }
         });
     }
+
 
     private void carregarDadosUsuario() {
         progressBarCarregar.setVisibility(View.VISIBLE); // Exibir ProgressBar ao carregar dados

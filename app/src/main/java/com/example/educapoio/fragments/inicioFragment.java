@@ -1,9 +1,12 @@
 package com.example.educapoio.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -13,6 +16,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +32,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
+import com.example.educapoio.WebViewActivity;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -52,7 +59,11 @@ public class inicioFragment extends Fragment {
 
     private Handler handler = new Handler();
     private Runnable runnable;
+
+    private View rootView;  // Adicionado aqui
     private ProgressBar progressBar;  // Adiciona a ProgressBar
+
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public inicioFragment() {
         // Required empty public constructor
@@ -68,6 +79,8 @@ public class inicioFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
     }
 
     // Método para carregar o nome do usuário a partir do Firestore
@@ -79,13 +92,25 @@ public class inicioFragment extends Fragment {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     String nome = document.getString("nome");
+                    String tipoUsuario = document.getString("tipoUsuario"); // Corrigido para "tipoUsuario"
+
+                    // Log para depuração
+                    Log.d("UserInfo", "Nome: " + nome + ", Tipo: " + tipoUsuario);
+
                     if (nome != null) {
+                        // Garantindo que a comparação ignore maiúsculas e minúsculas
+                        String saudacao = "Olá, ";
+                        if (tipoUsuario != null && tipoUsuario.equalsIgnoreCase("Professor")) {
+                            saudacao = "Olá, Professor ";
+                        }
+
                         // Aplicando cor ao nome do usuário
-                        SpannableString spannable = new SpannableString("Olá, " + nome);
+                        SpannableString spannable = new SpannableString(saudacao + nome);
                         spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")),
-                                5, // Início do nome
+                                saudacao.length(), // Início do nome
                                 spannable.length(), // Até o final
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                         textoOla.setText(spannable);
                     } else {
                         textoOla.setText("Olá, usuário!");
@@ -99,17 +124,52 @@ public class inicioFragment extends Fragment {
         });
     }
 
+    ShimmerFrameLayout shimmerLayout;
+    LinearLayout layoutSemAuxilios; // Para o "Nenhuma oportunidade encontrada"
+
+
+
+
     @SuppressLint({"WrongViewCast", "MissingInflatedId"})
     @Override
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_inicio, container, false);
+        // Inflando a view corretamente
+        View view = inflater.inflate(R.layout.fragment_inicio, container, false);
+
+        shimmerLayout = view.findViewById(R.id.shimmerLayout);
+        layoutSemAuxilios = view.findViewById(R.id.layoutSemAuxilios);
+        recyclerViewAuxilios = view.findViewById(R.id.recyclerViewAuxilios);
+
+        recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
+        shimmerLayout.startShimmer();
+        layoutSemAuxilios.setVisibility(View.GONE);
+        recyclerViewAuxilios.setVisibility(View.VISIBLE);
+
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshInicio);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            atualizarTela();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        // Recupera a preferência do modo escuro
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
+
+        // Aplica o tema diretamente alterando a cor de fundo
+        if (isDarkMode) {
+            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else {
+            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+        }
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        textoOla = rootView.findViewById(R.id.texto2);
-        progressBar = rootView.findViewById(R.id.progressBar);
+        textoOla = view.findViewById(R.id.texto2);
+        progressBar = view.findViewById(R.id.progressBar);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
@@ -117,34 +177,31 @@ public class inicioFragment extends Fragment {
             carregarNomeUsuario(userId);
         }
 
-        // Configura o TextView para exibir 'educApoio' com cores diferentes
-        TextView textoAppName = rootView.findViewById(R.id.texto1);
+        TextView textoAppName = view.findViewById(R.id.texto1);
         String appName = "educNews";
         SpannableString spannableAppName = new SpannableString(appName);
 
-        // Aplicar cor preta para "educ"
         spannableAppName.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Aplicar cor roxa para "Apoio"
         spannableAppName.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 4, appName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-        // Definir o texto formatado no TextView
         textoAppName.setText(spannableAppName);
 
-        recyclerViewAuxilios = rootView.findViewById(R.id.recyclerViewAuxilios);
-        recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        // Já configurado anteriormente, não precisa repetir
+        // recyclerViewAuxilios = view.findViewById(R.id.recyclerViewAuxilios);
+        // recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-
-        // Mostrar a ProgressBar antes de iniciar o carregamento dos dados
         progressBar.setVisibility(View.VISIBLE);
-        // Buscar dados do Firestore
         buscarAuxiliosDoFirestore();
 
-        // Outros códigos de eventos de clique em imagens
-        configurarImagemClique(rootView);
+        configurarImagemClique(view);
 
-        return rootView;
+        return view;
     }
+
+
+    private void atualizarTela() {
+        buscarAuxiliosDoFirestore();
+    }
+
 
     private void iniciarSlideAutomatico() {
         if (adapter == null || recyclerViewAuxilios.getLayoutManager() == null) {
@@ -208,7 +265,9 @@ public class inicioFragment extends Fragment {
         imageAcess.setOnClickListener(v -> mostrarMensagemIndisponibilidade());
 
         TextView textSite = rootView.findViewById(R.id.textSite);
+        TextView textSite2 = rootView.findViewById(R.id.textSite2);
         textSite.setOnClickListener(v -> abrirUrl("https://www.icet.ufam.edu.br/"));
+        textSite2.setOnClickListener(v -> abrirUrl("https://ecampus.ufam.edu.br/ecampus/home/login"));
 
         rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao"));
         rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));
@@ -220,7 +279,7 @@ public class inicioFragment extends Fragment {
         if (url != null && !url.isEmpty()) {
             // Adiciona http:// caso não tenha o prefixo adequado
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "http://" + url;  // ou "https://", dependendo da URL
+                url = "http://" + url;
             }
 
             // Exibe a confirmação antes de abrir o link
@@ -241,35 +300,35 @@ public class inicioFragment extends Fragment {
         TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
         dialogMessage.setText("Você tem certeza que deseja abrir o link?");
 
-        // Configura os botões de confirmação
+        // Botão Confirmar
         Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
         buttonConfirm.setOnClickListener(v -> {
-            // Tenta abrir o link quando confirmado
-            abrirUrlIntent(url);
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
-        });
-
-        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            // Fecha o dialog sem fazer nada
+            abrirUrlWebView(url); // 👉 Abre na WebView
             bottomSheetDialog.dismiss();
         });
 
-        // Exibe o BottomSheetDialog
+        // Botão Cancelar
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+        });
+
         bottomSheetDialog.show();
     }
 
-    private void abrirUrlIntent(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
+    private void abrirUrlWebView(String url) {
         try {
+            Intent intent = new Intent(getContext(), WebViewActivity.class);
+            intent.putExtra("url", url);
             startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            // Se não for possível abrir a URL
+        } catch (Exception e) {
             showCustomMessage("Não foi possível abrir o link.");
         }
     }
+
+
+
 
     private void showCustomMessage(String message) {
         // Infla o layout do BottomSheetDialog para exibir a mensagem
@@ -325,34 +384,100 @@ public class inicioFragment extends Fragment {
     }
 
     private void buscarAuxiliosDoFirestore() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Mostra a progressBar e o shimmer no começo da busca
+        progressBar.setVisibility(View.VISIBLE);
+        shimmerLayout.startShimmer();
+        shimmerLayout.setVisibility(View.VISIBLE);
+        recyclerViewAuxilios.setVisibility(View.GONE);
+        layoutSemAuxilios.setVisibility(View.GONE);
+
+        // Buscar o curso do usuário logado
+        db.collection("users").document(userId).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists() && documentSnapshot.contains("curso")) {
+                        String cursoUsuario = documentSnapshot.getString("curso");
+                        carregarAuxiliosFiltrados(cursoUsuario);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        shimmerLayout.stopShimmer();
+                        shimmerLayout.setVisibility(View.GONE);
+                        Toast.makeText(getContext(), "Erro ao obter curso do usuário.", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    shimmerLayout.stopShimmer();
+                    shimmerLayout.setVisibility(View.GONE);
+                    Toast.makeText(getContext(), "Erro ao carregar dados do usuário.", Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void compartilharAuxilio(String texto) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, texto);
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio via"));
+    }
+
+
+    private void carregarAuxiliosFiltrados(String cursoUsuario) {
         db.collection("auxilios")
                 .get()
                 .addOnCompleteListener(task -> {
+                    // Parar shimmer e esconder progressBar somente após resultado
+                    shimmerLayout.stopShimmer();
+                    shimmerLayout.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.GONE);
+
                     if (task.isSuccessful()) {
                         List<Map<String, Object>> auxiliosList = new ArrayList<>();
                         for (DocumentSnapshot document : task.getResult()) {
-                            auxiliosList.add(document.getData());
+                            boolean publicoGeral = document.contains("publicoGeral") && document.getBoolean("publicoGeral");
+
+                            if (publicoGeral) {
+                                auxiliosList.add(document.getData());
+                            } else {
+                                List<String> cursos = (List<String>) document.get("cursos");
+                                if (cursos != null && cursos.contains(cursoUsuario)) {
+                                    auxiliosList.add(document.getData());
+                                }
+                            }
                         }
 
-                        adapter = new AuxilioAdapter(auxiliosList, url -> {
-                            if (url != null && !url.isEmpty()) {
-                                abrirUrl(url);
-                            } else {
-                                Toast.makeText(getContext(), "URL não disponível", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        recyclerViewAuxilios.setAdapter(adapter);
+                        if (auxiliosList.isEmpty()) {
+                            layoutSemAuxilios.setVisibility(View.VISIBLE);
+                            recyclerViewAuxilios.setVisibility(View.GONE);
+                        } else {
+                            layoutSemAuxilios.setVisibility(View.GONE);
+                            recyclerViewAuxilios.setVisibility(View.VISIBLE);
 
-                        // Oculta a ProgressBar após o carregamento dos dados
-                        progressBar.setVisibility(View.GONE);
+                            adapter = new AuxilioAdapter(auxiliosList, new AuxilioAdapter.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(String url) {
+                                    if (url != null && !url.isEmpty()) {
+                                        abrirUrl(url);
+                                    } else {
+                                        Toast.makeText(getContext(), "URL não disponível", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onShareClick(String textoParaCompartilhar) {
+                                    compartilharAuxilio(textoParaCompartilhar);
+                                }
+                            });
+
+                            recyclerViewAuxilios.setAdapter(adapter);
+                        }
                     } else {
-                        // Em caso de falha, ocultar a ProgressBar e mostrar uma mensagem
-                        progressBar.setVisibility(View.GONE);
+                        layoutSemAuxilios.setVisibility(View.VISIBLE);
+                        recyclerViewAuxilios.setVisibility(View.GONE);
                         Toast.makeText(getContext(), "Erro ao carregar auxílios.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
 
 
 }

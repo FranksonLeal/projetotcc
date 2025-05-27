@@ -1,6 +1,8 @@
 package com.example.educapoio;
 
 
+import com.google.firebase.firestore.PropertyName;
+
 public class Article {
     private String author;
     private String title;
@@ -9,6 +11,8 @@ public class Article {
     private String urlToImage;
     private String publishedAt;
     private String content;
+
+
 
     // Getters e Setters
     public String getAuthor() {
@@ -30,6 +34,8 @@ public class Article {
     public String getDescription() {
         return description;
     }
+
+
 
     public void setDescription(String description) {
         this.description = description;

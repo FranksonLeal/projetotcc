@@ -9,5 +9,18 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="educ_news"><![CDATA[<font color="#000000">educ</font><font color="#841FFD">News</font>]]></string>
+    <string name="sobre_texto">
+    O educNews é um aplicativo desenvolvido para auxiliar estudantes na busca por oportunidades acadêmicas, como auxílios estudantis, bolsas e notícias relevantes da universidade.\n\n
+    Com uma interface intuitiva e moderna, o aplicativo permite que os usuários:\n
+    ✅ Acompanhem os auxílios disponíveis e suas datas de inscrição.\n
+    ✅ Recebam notificações sobre novas oportunidades.\n
+    ✅ Acessem notícias acadêmicas em tempo real.\n
+    ✅ Personalizem sua experiência de acordo com suas preferências.\n\n
+    Nosso objetivo é tornar a informação acessível e organizada, garantindo que nenhum estudante perca prazos importantes.\n\n
+    📌 Versão: 1.0\n
+    📌 Desenvolvido por: Frankson Leal\n
+    📌 Contato: E-mail: frankson.11leal@gmail.com\n\n
+    Se tiver dúvidas ou sugestões, entre em contato! 🚀
+</string>
 
 </resources>

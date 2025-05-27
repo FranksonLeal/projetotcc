@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.educapoio.AuxilioAdapterInscricao;
 import com.example.educapoio.R;
+import com.example.educapoio.WebViewActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -39,7 +40,6 @@ public class AuxiliosAbertosFragment extends Fragment {
     private List<QueryDocumentSnapshot> auxiliosList;
     private ProgressBar progressBar;
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,7 +53,6 @@ public class AuxiliosAbertosFragment extends Fragment {
     }
 
     private void buscarAuxiliosAbertos() {
-        // Exibe a ProgressBar enquanto os dados estão sendo carregados
         progressBar.setVisibility(View.VISIBLE);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -63,34 +62,40 @@ public class AuxiliosAbertosFragment extends Fragment {
             if (task.isSuccessful()) {
                 List<QueryDocumentSnapshot> documentosAbertos = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    // Adiciona os auxílios abertos à lista
                     if (isAuxilioAberto(document)) {
                         documentosAbertos.add(document);
                     }
                 }
 
-                // Verifica se existem auxílios abertos
                 if (documentosAbertos.isEmpty()) {
-                    // Se não houver auxílios, exibe a mensagem
                     TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
                     noAuxiliosMessage.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE); // Esconde o RecyclerView
+                    recyclerView.setVisibility(View.GONE);
                 } else {
-                    // Se houver auxílios, oculta a mensagem e exibe o RecyclerView
                     TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
                     noAuxiliosMessage.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 
-                    // Converte para Map<String, Object> e cria o adapter
                     List<Map<String, Object>> auxiliosAbertosMap = converterParaMap(documentosAbertos);
-                    adapter = new AuxilioAdapterInscricao(auxiliosAbertosMap, this::abrirUrl);
+
+                    // ** Aqui o listener com os dois métodos obrigatórios **
+                    adapter = new AuxilioAdapterInscricao(auxiliosAbertosMap, new AuxilioAdapterInscricao.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(String url) {
+                            abrirUrl(url);
+                        }
+
+                        @Override
+                        public void onShareClick(Map<String, Object> auxilio) {
+                            compartilharAuxilio(auxilio);
+                        }
+                    });
+
                     recyclerView.setAdapter(adapter);
                 }
 
-                // Esconde a ProgressBar após carregar os dados
                 progressBar.setVisibility(View.GONE);
             } else {
-                // Esconde a ProgressBar após carregar os dados
                 progressBar.setVisibility(View.GONE);
                 Toast.makeText(getContext(), "Erro ao carregar auxílios", Toast.LENGTH_SHORT).show();
             }
@@ -100,13 +105,13 @@ public class AuxiliosAbertosFragment extends Fragment {
     private boolean isAuxilioAberto(QueryDocumentSnapshot document) {
         String dataFimStr = document.getString("dataFim");
         LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        return dataFim.isAfter(LocalDate.now()); // Verifica se a data de fim é futura
+        return !dataFim.isBefore(LocalDate.now());
     }
 
     private List<Map<String, Object>> converterParaMap(List<QueryDocumentSnapshot> auxilios) {
         List<Map<String, Object>> listaAuxilios = new ArrayList<>();
         for (QueryDocumentSnapshot document : auxilios) {
-            listaAuxilios.add(document.getData()); // Adiciona o Map do documento à lista
+            listaAuxilios.add(document.getData());
         }
         return listaAuxilios;
     }
@@ -122,34 +127,32 @@ public class AuxiliosAbertosFragment extends Fragment {
         }
     }
 
-
     private void showConfirmationDialog(final String url) {
-        // Infla o layout do BottomSheetDialog
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Configura a mensagem de confirmação
         TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
         dialogMessage.setText("Você tem certeza que deseja abrir o link?");
 
-        // Configura os botões de confirmação
         Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
         buttonConfirm.setOnClickListener(v -> {
-            // Tenta abrir o link quando confirmado
-            abrirUrlIntent(url);
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
-        });
-
-        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            // Fecha o dialog sem fazer nada
+            abrirWebView(url);  // Agora abre na WebView
             bottomSheetDialog.dismiss();
         });
 
-        // Exibe o BottomSheetDialog
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
         bottomSheetDialog.show();
     }
+
+    private void abrirWebView(String url) {
+        Intent intent = new Intent(getContext(), WebViewActivity.class);
+        intent.putExtra("url", url);
+        startActivity(intent);
+    }
+
 
     private void abrirUrlIntent(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -158,22 +161,42 @@ public class AuxiliosAbertosFragment extends Fragment {
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            // Se não for possível abrir a URL
             showCustomMessage("Não foi possível abrir o link.");
         }
     }
 
     private void showCustomMessage(String message) {
-        // Infla o layout do BottomSheetDialog para exibir a mensagem
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Configura a mensagem de erro
         TextView toastMessage = bottomSheetView.findViewById(R.id.dialog_message);
         toastMessage.setText(message);
 
-        // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
+
+    // Novo método para compartilhar auxílio
+    private void compartilharAuxilio(Map<String, Object> auxilio) {
+        String titulo = (String) auxilio.get("titulo");
+
+        String url = (String) auxilio.get("url");
+
+        String textoParaCompartilhar = "🚀 Oportunidade incrível para você!\n\n"
+                + "📌 *" + titulo + "*\n";
+
+
+        if (url != null && !url.isEmpty()) {
+            textoParaCompartilhar += "\n🔗 Acesse aqui: " + url + "\n";
+        }
+
+        textoParaCompartilhar += "\n💡 Compartilhado via EducNews - Fique sempre por dentro das oportunidades acadêmicas!";
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, textoParaCompartilhar);
+
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio via"));
+    }
+
 }

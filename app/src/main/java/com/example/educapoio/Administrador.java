@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -32,8 +33,10 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import android.app.DatePickerDialog;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +47,11 @@ public class Administrador extends AppCompatActivity {
     private FirebaseFirestore db;
     private FirebaseStorage storage;
     private StorageReference storageRef;
+
     private Uri imageUri; // Para armazenar o URI da imagem
+
+    private String[] cursos = {"Selecione um curso:","Sistemas de Informação", "Engenharia de Software", "Engenharia de Produção",
+            "Matemática e física", "Pedagogia", "Química e biologia", "Farmácia", "Engenharia sanitária", "Agronomia"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,27 +63,60 @@ public class Administrador extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
-        // DatePicker for dataInicio
+        // Criando o ArrayAdapter para os cursos
+        ArrayAdapter<String> cursosAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cursos);
+        cursosAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerCursos.setAdapter(cursosAdapter);  // Setando o adapter no Spinner
+
+        // Inicializa o comportamento do CheckBox
+        binding.checkboxPublicoGeral.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                binding.textCursos.setVisibility(View.GONE);
+                binding.spinnerCursos.setVisibility(View.GONE);  // Tornar o Spinner visível
+            } else {
+                binding.textCursos.setVisibility(View.VISIBLE);
+                binding.spinnerCursos.setVisibility(View.VISIBLE);  // Tornar o Spinner visível
+            }
+        });
+
+        // DatePicker para dataInicio
         binding.editEmail.setOnClickListener(v -> showDatePickerDialog(binding.editEmail));
 
-        // DatePicker for dataFim
+        // DatePicker para dataFim
         binding.editSenha.setOnClickListener(v -> showDatePickerDialog(binding.editSenha));
+
+        binding.editDataPubli.setOnClickListener(v -> showDatePickerDialog(binding.editDataPubli));
+
 
         // Selecionar imagem
         binding.buttonSelectImage.setOnClickListener(v -> openFileChooser());
 
-        binding.btnCriarConta.setOnClickListener(v -> {
+        binding.buttonCadastrarNoticia.setOnClickListener(v -> {
             String titulo = binding.editNome.getText().toString().trim();
             String dataInicio = binding.editEmail.getText().toString().trim();
             String dataFim = binding.editSenha.getText().toString().trim();
             String url = binding.editUrl.getText().toString().trim();
 
+            // Se o título, data de início e data de fim não estiverem vazios, faça o upload da imagem
             if (!titulo.isEmpty() && !dataInicio.isEmpty() && !dataFim.isEmpty()) {
                 uploadImage(titulo, dataInicio, dataFim, url); // Chama a função para upload
             } else {
                 Toast.makeText(this, "Preencha todos os campos obrigatórios", Toast.LENGTH_SHORT).show();
             }
         });
+
+
+        binding.buttonCadastrarOutras.setOnClickListener(v -> {
+            String tituloOutras = binding.textTituloOutras.getText().toString().trim();
+            String dataPublicacao = binding.editDataPubli.getText().toString().trim();
+
+            if (!tituloOutras.isEmpty() && !dataPublicacao.isEmpty()) {
+                cadastrarOutrasNoticias(tituloOutras, dataPublicacao);
+            } else {
+                Toast.makeText(this, "Preencha todos os campos de outras notícias", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         binding.btnSair.setOnClickListener(v -> {
             // Desconectar o usuário do Firebase
@@ -135,38 +175,87 @@ public class Administrador extends AppCompatActivity {
         return "https://dummyimage.com/130x130/ffffff/000000.png&text=" + titulo.charAt(0); // Placeholder URL
     }
 
+    private String getCursoSelecionado() {
+        int selectedPosition = binding.spinnerCursos.getSelectedItemPosition();
+        if (selectedPosition > 0) {
+            return cursos[selectedPosition]; // Retorna o nome do curso selecionado
+        }
+        return "";
+    }
+
+
+    private void cadastrarOutrasNoticias(String titulo, String dataPublicacao) {
+        String id = db.collection("noticias").document().getId();
+
+        Map<String, Object> noticia = new HashMap<>();
+        noticia.put("id", id);
+        noticia.put("titulo", titulo);
+        noticia.put("dataPublicacao", dataPublicacao);
+
+        db.collection("noticias").document(id)
+                .set(noticia)
+                .addOnSuccessListener(aVoid -> {
+                    Toast.makeText(this, "Notícia cadastrada com sucesso!", Toast.LENGTH_SHORT).show();
+                    limparCamposNoticias();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Erro ao cadastrar notícia", Toast.LENGTH_SHORT).show();
+                    Log.e("Firestore", "Erro ao cadastrar notícia: ", e);
+                });
+    }
+
+    private void limparCamposNoticias() {
+        binding.textTituloOutras.setText("");
+        binding.editDataPubli.setText("");
+    }
+
+
+
+
     private void addAuxilioToFirestore(String titulo, String dataInicio, String dataFim, String url, String imagemUrl) {
         String id = db.collection("auxilios").document().getId();
 
-        // Dados para adicionar
+        boolean isPublicoGeral = binding.checkboxPublicoGeral.isChecked();
         Map<String, Object> auxilio = new HashMap<>();
         auxilio.put("titulo", titulo);
         auxilio.put("dataInicio", dataInicio);
         auxilio.put("dataFim", dataFim);
         auxilio.put("url", url);
-        auxilio.put("imagemUrl", imagemUrl); // URL da imagem (ou inicial do título)
+        auxilio.put("imagemUrl", imagemUrl);
         auxilio.put("status", "aberto");
+        auxilio.put("publicoGeral", isPublicoGeral);
 
-        // Adiciona o documento no Firestore
+        if (!isPublicoGeral) {
+            String cursoSelecionado = getCursoSelecionado();
+            if (!cursoSelecionado.isEmpty()) {
+                List<String> cursosList = new ArrayList<>();
+                cursosList.add(cursoSelecionado);
+                auxilio.put("cursos", cursosList); // Salva como lista
+            } else {
+                Toast.makeText(Administrador.this, "Selecione um curso!", Toast.LENGTH_SHORT).show();
+                return; // Impede o cadastro sem curso selecionado
+            }
+        }
+
+
         db.collection("auxilios").document(id).set(auxilio)
                 .addOnSuccessListener(aVoid -> {
-                    String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-                    String uniqueId = String.valueOf(System.currentTimeMillis()); // ID único para a notificação
-                    String mensagem = "Nova oportunidade " + titulo + " lançada! Aproveite!  \n\nData: " + currentDateTime;
-
-                    // Carrega as notificações existentes
-                    SharedPreferences prefs = getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
-                    String existingNotifications = prefs.getString("notifications_list", "");
-
-                    // Adiciona a nova notificação com um delimitador "|||"
-                    String updatedNotifications = existingNotifications.isEmpty() ? uniqueId + "|" + mensagem : existingNotifications + "|||" + uniqueId + "|" + mensagem;
-                    prefs.edit().putString("notifications_list", updatedNotifications).apply();
-
                     Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(Administrador.this, "Erro ao cadastrar auxílio", Toast.LENGTH_SHORT).show();
                 });
+    }
+
+
+    private String getCursosSelecionados() {
+        // Obtém o índice do curso selecionado no Spinner
+        int selectedPosition = binding.spinnerCursos.getSelectedItemPosition();
+        // Verifica se o curso não for "Nenhum curso selecionado"
+        if (selectedPosition > 0) {
+            return cursos[selectedPosition];
+        }
+        return ""; // Caso nenhum curso seja selecionado
     }
 
     private void showDatePickerDialog(EditText editText) {

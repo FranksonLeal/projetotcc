@@ -12,7 +12,7 @@
         android:fontFamily="@font/poppins_regular"
         android:enabled="true"
         android:icon="@drawable/ic_inscri"
-        android:title="Inscrições"/>
+        android:title="Oportunidades"/>
 
     <item
         android:id="@+id/menu_noticias"

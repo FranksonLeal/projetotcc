@@ -1,21 +1,18 @@
 package com.example.educapoio;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.style.ForegroundColorSpan;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,9 +26,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class cadastro extends AppCompatActivity {
+
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private ActivityCadastroBinding binding;
+
+    private String cursoSelecionado; // Para armazenar o curso selecionado
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,50 +40,55 @@ public class cadastro extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();  // Inicializa o Firestore
+        db = FirebaseFirestore.getInstance(); // Inicializa o Firestore
 
         binding.btnCriarConta.setOnClickListener(v -> validaDados());
 
-        // Referência ao TextView
-        TextView texto1 = findViewById(R.id.texto1);
-
-// Configura o texto com duas partes coloridas
-        String educ = "educ";
-        String news = "News";
-
-// Usa Spannable para aplicar cores diferentes nas partes do texto
-        SpannableStringBuilder spannable = new SpannableStringBuilder();
-
-// Adiciona "educ" em preto
-        SpannableString educPart = new SpannableString(educ);
-        educPart.setSpan(new ForegroundColorSpan(Color.BLACK), 0, educ.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.append(educPart);
-
-// Adiciona "News" em roxo
-        SpannableString newsPart = new SpannableString(news);
-        newsPart.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 0, news.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.append(newsPart);
-
-// Define o texto formatado no TextView
-        texto1.setText(spannable);
-
+        // Configurando o Spinner
+        configurarSpinner();
 
         // Botão para voltar à tela de login
         Button btnVoltarLogin = findViewById(R.id.btnVoltarLogin);
         btnVoltarLogin.setOnClickListener(v -> {
             Intent intent = new Intent(cadastro.this, login.class);
             TransitionUtil.startActivityWithAnimation(cadastro.this, intent);
-            finish();  // Finaliza a tela de cadastro para evitar retorno
+            finish(); // Finaliza a tela de cadastro para evitar retorno
         });
     }
 
+    private void configurarSpinner() {
+        Spinner spinnerCurso = binding.spinnerCurso;
+
+        // Lista de cursos existentes
+        String[] cursos = {"Selecione um curso:","Sistemas de Informação", "Engenharia de Software", "Engenharia de Produção", "Matemática e física", "Pedagogia", "Química e biologia", "Farmácia", "Engenharia sanitária", "Agronomia"};
+
+        // Configurando o adaptador do Spinner
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cursos);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerCurso.setAdapter(adapter);
+
+        // Listener para capturar o curso selecionado
+        spinnerCurso.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                cursoSelecionado = cursos[position];
+                if (position == 0) {
+                    cursoSelecionado = ""; // Nenhum curso selecionado
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                cursoSelecionado = "";
+            }
+        });
+    }
 
     private void validaDados() {
         String nome = binding.editNome.getText().toString().trim();
         String email = binding.editEmail.getText().toString().trim();
         String senha = binding.editSenha.getText().toString().trim();
         String telefone = binding.editTelefone.getText().toString().trim();
-        String curso = binding.editCurso.getText().toString().trim();
 
         // Captura o valor selecionado no RadioGroup
         int selectedId = binding.radioGroup.getCheckedRadioButtonId();
@@ -123,11 +128,8 @@ public class cadastro extends AppCompatActivity {
             binding.editTelefone.setBackgroundResource(R.drawable.bg_edittext); // Remove a borda vermelha
         }
 
-        if (curso.isEmpty()) {
-            mensagemErro = "Preencha o campo Curso!";
-            binding.editCurso.setBackgroundResource(R.drawable.bg_edittext_error); // Adiciona borda vermelha
-        } else {
-            binding.editCurso.setBackgroundResource(R.drawable.bg_edittext); // Remove a borda vermelha
+        if (cursoSelecionado.isEmpty()) {
+            mensagemErro = "Selecione um curso!";
         }
 
         if (tipoUsuario.isEmpty()) {
@@ -140,7 +142,7 @@ public class cadastro extends AppCompatActivity {
         }
 
         binding.progressBar.setVisibility(View.VISIBLE);
-        criarContaFirebase(nome, email, senha, telefone, curso, tipoUsuario);
+        criarContaFirebase(nome, email, senha, telefone, cursoSelecionado, tipoUsuario);
     }
 
     private void criarContaFirebase(String nome, String email, String senha, String telefone, String curso, String tipoUsuario) {
@@ -149,7 +151,7 @@ public class cadastro extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            salvarDadosFirestore(user.getUid(), nome, email, telefone, curso, tipoUsuario);  // Inclui tipo de usuário
+                            salvarDadosFirestore(user.getUid(), nome, email, telefone, curso, tipoUsuario); // Inclui tipo de usuário
                         }
                     } else {
                         binding.progressBar.setVisibility(View.GONE);
@@ -157,22 +159,27 @@ public class cadastro extends AppCompatActivity {
                     }
                 });
     }
+    private void salvarCursoUsuario(String curso) {
+        SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("cursoUsuario", curso);
+        editor.apply();
+    }
 
     private void salvarDadosFirestore(String userId, String nome, String email, String telefone, String curso, String tipoUsuario) {
-        // Cria um mapa com os dados do usuário
         Map<String, Object> userData = new HashMap<>();
         userData.put("nome", nome);
         userData.put("email", email);
         userData.put("telefone", telefone);
         userData.put("curso", curso);
-        userData.put("tipoUsuario", tipoUsuario);  // Adiciona o tipo de usuário (Aluno/Professor)
+        userData.put("tipoUsuario", tipoUsuario);
 
-        // Salva no Firestore
         db.collection("users").document(userId)
                 .set(userData)
                 .addOnSuccessListener(aVoid -> {
+                    salvarCursoUsuario(curso); // Salva o curso no SharedPreferences
                     binding.progressBar.setVisibility(View.GONE);
-                    mostrarMensagemErro("Usuário cadastrado com sucesso!", true); // true indica que é um sucesso
+                    mostrarMensagemErro("Usuário cadastrado com sucesso!", true);
                     startActivity(new Intent(cadastro.this, mensagemCadastro.class));
                     finish();
                 })
@@ -181,6 +188,7 @@ public class cadastro extends AppCompatActivity {
                     mostrarMensagemErro("Erro ao salvar dados: " + e.getMessage(), false);
                 });
     }
+
 
     private void mostrarMensagemErro(String mensagem, boolean sucesso) {
         // Cria o BottomSheetDialog

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -91,15 +98,13 @@
         android:id="@+id/textUrl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text="Imagem"
         android:textColor="#0D0E0E"
         android:textSize="15sp"
-        app:layout_constraintStart_toStartOf="@+id/editUrl"
-        app:layout_constraintTop_toBottomOf="@+id/editUrl" />
-
-
-
+        app:layout_constraintStart_toStartOf="@+id/checkboxPublicoGeral"
+        app:layout_constraintTop_toBottomOf="@+id/checkboxPublicoGeral"
+        app:layout_goneMarginTop="20dp" />
 
     <EditText
         android:id="@+id/editNome"
@@ -171,7 +176,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editSenha" />
 
-
     <ImageView
         android:id="@+id/imageViewAid"
         android:layout_width="match_parent"
@@ -187,14 +191,15 @@
         android:id="@+id/buttonSelectImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints"
-        android:layout_marginTop="20dp"
+        android:layout_marginStart="96dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_editbottom"
+        android:text="Selecione a imagem"
         android:textColor="@color/white"
         app:backgroundTint="@null"
-        android:background="@drawable/bg_editbottom"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewAid"
         app:layout_constraintStart_toStartOf="@+id/textUrl"
-        android:text="Selecione a imagem" />
+        app:layout_constraintTop_toBottomOf="@+id/textUrl"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/buttonUploadImage"
@@ -203,8 +208,6 @@
         android:text="Upload Image"
         android:visibility="gone"
         tools:ignore="MissingConstraints" />
-
-
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -219,19 +222,127 @@
         app:layout_constraintTop_toBottomOf="@+id/editSenha"
         tools:visibility="visible" />
 
-    <Button
-        android:id="@+id/btnCriarConta"
+    <!-- Checkbox para definir o público da notícia -->
+
+    <!-- Caixa de seleção de cursos -->
+
+
+    <CheckBox
+        android:id="@+id/checkboxPublicoGeral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Notícia para todos os usuários"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/editUrl"
+        app:layout_constraintTop_toBottomOf="@+id/editUrl" />
+
+    <TextView
+        android:id="@+id/textOutrasNoticias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Cadastre outras noticias"
+        android:textColor="#0D0E0E"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/buttonCadastrarNoticia"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrarNoticia" />
+
+    <EditText
+        android:id="@+id/textTituloOutras"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:hint="Titulo"
         android:layout_marginTop="30dp"
+        android:inputType="text"
+        android:padding="13dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textOutrasNoticias" />
+
+    <TextView
+        android:id="@+id/textDataPubli"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data publicação"
+        android:textColor="#0D0E0E"
+        android:textSize="15sp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="@+id/editEmail"
+        app:layout_constraintTop_toBottomOf="@+id/textTituloOutras" />
+
+
+    <EditText
+        android:id="@+id/editDataPubli"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:hint="Data inicio"
+        android:inputType="none"
+        android:padding="13dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textDataPubli" />
+
+
+    <Button
+        android:id="@+id/buttonCadastrarOutras"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="45dp"
         android:background="@drawable/bg_editbottom"
-        android:padding="10dp"
+        android:text="Cadastrar outras"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editDataPubli" />
+
+    <TextView
+        android:id="@+id/textCursos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Selecione os cursos"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textUrl"
+        app:layout_constraintStart_toStartOf="@+id/checkboxPublicoGeral"
+        app:layout_constraintTop_toBottomOf="@+id/checkboxPublicoGeral" />
+
+    <Spinner
+        android:id="@+id/spinnerCursos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/textCursos"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonCadastrarNoticia"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_editbottom"
         android:text="Cadastrar"
         android:textColor="@color/white"
-        app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonSelectImage" />
 
@@ -240,19 +351,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
+        android:layout_marginTop="396dp"
         android:layout_marginEnd="45dp"
-        android:layout_marginTop="20dp"
         android:background="@drawable/bg_editbottom"
         android:padding="10dp"
         android:text="Voltar para login"
         android:textColor="@color/white"
         app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCriarConta" />
-
-
-
-
-
+        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrarNoticia" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

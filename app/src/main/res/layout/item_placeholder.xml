@@ -2,7 +2,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="250dp"
-    android:layout_height="260dp"
+    android:layout_height="290dp"
     app:shimmer_auto_start="true"
     app:shimmer_duration="1500"
     android:gravity="center"

@@ -12,80 +12,85 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="209dp">
 
-        <!-- Selo "Fechado" -->
+
         <TextView
-            android:id="@+id/seloFechado"
+            android:id="@+id/seloStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fechado"
-            android:textColor="#FF0000"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/poppins_regular"
             android:padding="4dp"
-            android:layout_margin="13dp"
+            android:text="Status"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toStartOf="@+id/textTituloAuxilio"
+            app:layout_constraintTop_toBottomOf="@+id/textTituloAuxilio" />
 
-        <!-- Selo "Aberto" -->
-        <TextView
-            android:id="@+id/seloAberto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Aberto"
-            android:textColor="#4CAF50"
-            android:padding="4dp"
-            android:layout_margin="13dp"
-            android:fontFamily="@font/poppins_regular"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Imagem Circular do Auxílio -->
         <ImageView
             android:id="@+id/imagemAuxilio"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/bg_circle"
-            android:scaleType="centerCrop"
-            android:clipToOutline="true"
             android:layout_margin="5dp"
-            tools:ignore="MissingConstraints" />
+            android:background="@drawable/bg_circle"
+            android:clipToOutline="true"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Ícone de compartilhar embaixo da imagem, à esquerda -->
+        <ImageView
+            android:id="@+id/ic_share"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:clickable="true"
+            android:contentDescription="Compartilhar auxílio"
+            android:focusable="true"
+            android:src="@drawable/ic_share"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/imagemAuxilio"
+            app:layout_constraintTop_toBottomOf="@id/imagemAuxilio" />
 
 
-        <!-- Título do Auxílio -->
         <TextView
             android:id="@+id/textTituloAuxilio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Título do Auxílio"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins_regular"
+            android:text="Título do Auxílio"
             android:textColor="#000000"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/imagemAuxilio"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Datas do Auxílio -->
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imagemAuxilio"
-            app:layout_constraintTop_toBottomOf="@id/textTituloAuxilio">
+            app:layout_constraintTop_toBottomOf="@+id/seloStatus">
 
             <TextView
                 android:id="@+id/textDataInicio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="50dp"
+
                 android:layout_marginTop="15dp"
-                android:text="Início: 01/01/2024"
                 android:fontFamily="@font/poppins_regular"
+                android:text="Início: 01/01/2024"
                 android:textColor="#841FFD"
                 android:textSize="14sp" />
 
@@ -93,10 +98,10 @@
                 android:id="@+id/textDataFim"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+
                 android:layout_marginTop="4dp"
-                android:layout_marginStart="50dp"
-                android:text="Fim: 01/02/2024"
                 android:fontFamily="@font/poppins_regular"
+                android:text="Fim: 01/02/2024"
                 android:textColor="#841FFD"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -104,11 +109,11 @@
         <!-- Botão de Ação -->
         <Button
             android:id="@+id/botaoInscricao"
-            android:layout_width="150dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
             android:backgroundTint="#841FFD"
             android:text="Visualizar"
-            android:layout_marginStart="50dp"
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imagemAuxilio"

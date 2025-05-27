@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshInicio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="56dp"
+    android:paddingBottom="60dp"
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:id="@+id/rootLayoutInicio"
         android:background="#F5F7FB"
         tools:context=".fragments.inicioFragment">
 
@@ -65,9 +72,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
-            android:gravity="center"
             android:fontFamily="@font/poppins_regular"
-            android:text="Projetos e bolsas recomendados para você:"
+            android:text="Principais oportunidades recomendadas para você🚀:"
             android:textSize="21sp"
             android:textColor="#626364"
             app:layout_constraintTop_toBottomOf="@id/texto2"
@@ -75,31 +81,76 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp" />
 
-        <!-- RecyclerView para exibir auxílios -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewAuxilios"
+
+        <!-- Container para shimmer, recycler e layoutSemAuxilios -->
+        <FrameLayout
+            android:id="@+id/containerAuxilios"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:layout_height="300dp"
             app:layout_constraintTop_toBottomOf="@id/texto3"
-            android:layout_marginTop="25dp" />
+            app:layout_constraintStart_toStartOf="@id/texto3"
+            app:layout_constraintEnd_toEndOf="@id/texto3"
+            android:layout_marginTop="25dp">
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                app:shimmer_auto_start="true"
+                app:shimmer_duration="1500">
+
+                <include layout="@layout/item_placeholder" />
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAuxilios"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:visibility="gone" /> <!-- Inicialmente escondido -->
+
+            <LinearLayout
+                android:id="@+id/layoutSemAuxilios"
+                android:layout_width="250dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/bg_circle"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nenhuma oportunidade encontrada"
+                    android:textColor="#626364"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="16sp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+        </FrameLayout>
+
+
+
+
 
         <TextView
             android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Categorias e áreas para concursos"
-            android:textSize="20sp"
-            android:textColor="#626364"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="25dp"
             android:fontFamily="@font/poppins_regular"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewAuxilios"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="25dp" />
+            android:text="Categorias e áreas para concursos"
+            android:textColor="#626364"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/texto3"
+            app:layout_constraintTop_toBottomOf="@id/containerAuxilios" />
 
         <!-- HorizontalScrollView com as categorias -->
         <HorizontalScrollView
@@ -107,10 +158,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/textView3"
-            >
+            app:layout_constraintStart_toStartOf="@+id/textView3"
+            app:layout_constraintTop_toBottomOf="@id/textView3">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -207,13 +256,13 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/bg_circle2"
                         android:scaleType="centerInside"
-                        android:src="@drawable/vector4" />
+                        android:src="@drawable/educ1" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Contabilidade"
-                        android:textColor="#527D43"
+                        android:text="Educação"
+                        android:textColor="#8480E0"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -238,7 +287,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Direito"
-                        android:textColor="#527D43"
+                        android:textColor="#B23F49"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -264,7 +313,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Bancário"
-                        android:textColor="#527D43"
+                        android:textColor="#FDB500"
                         android:textSize="16sp" />
 
                 </LinearLayout>
@@ -274,36 +323,57 @@
         </HorizontalScrollView>
 
         <!-- Texto para mais notícias -->
+
+        <!-- Link para visitar página -->
+
         <TextView
             android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Quer saber sobre mais notícias? Visite nossa página."
-            android:textSize="20sp"
-            android:fontFamily="@font/poppins_regular"
+            android:layout_marginTop="28dp"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
-            android:textColor="#626364"
-            app:layout_constraintTop_toBottomOf="@id/horizontalScrollView2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="30dp" />
+            android:fontFamily="@font/poppins_regular"
+            android:text="🔗 Acesso rápido"
+            android:textColor="#1B1B1B"
 
-        <!-- Link para visitar página -->
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/texto3"
+            app:layout_constraintTop_toBottomOf="@id/horizontalScrollView2" />
+
         <TextView
             android:id="@+id/textSite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_marginStart="40dp"
-            android:layout_marginBottom="50dp"
-            android:text="Visitar página do ICET"
+            android:layout_marginEnd="40dp"
             android:fontFamily="@font/poppins_regular"
-            android:textColor="#006400"
+            android:text="🌐 Página do ICET"
+            android:textColor="#626364"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView4"
-            android:layout_marginTop="30dp" />
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@id/textView4" />
+
+
+        <TextView
+            android:id="@+id/textSite2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="20dp"
+            android:fontFamily="@font/poppins_regular"
+            android:text="📚 Ecampus"
+            android:textColor="#626364"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@+id/textSite" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -321,3 +391,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

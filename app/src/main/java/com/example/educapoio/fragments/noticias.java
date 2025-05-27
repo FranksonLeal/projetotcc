@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.educapoio.NoticiasPagerAdapter;
@@ -25,7 +26,9 @@ public class noticias extends Fragment {
     private TabLayout tabLayoutNoticias;
     private ViewPager2 viewPagerNoticias;
     private ProgressBar progressBar;
-    private final String[] tabTitles = {"Recomendado","Educação", "Tecnologia", "Saúde", "Entretenimento", "Esporte" };
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private final String[] tabTitles = {"Recomendado", "Sobre seu curso"};
 
     @Nullable
     @Override
@@ -35,23 +38,35 @@ public class noticias extends Fragment {
         tabLayoutNoticias = rootView.findViewById(R.id.tabLayoutNoticias);
         viewPagerNoticias = rootView.findViewById(R.id.viewPagerNoticias);
         progressBar = rootView.findViewById(R.id.progressBar);
+        swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshInicio);
 
-        // Buscar o curso do usuário antes de inicializar o adapter
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            atualizarTela();
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
         carregarCursoUsuario();
-        carregarNoticias(); // Chamada aqui
+        carregarNoticias();
 
         return rootView;
     }
 
+    private void atualizarTela() {
+        if (!isAdded()) return;
+        Toast.makeText(requireContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
+    }
+
     private void carregarCursoUsuario() {
+        if (!isAdded()) return;
         progressBar.setVisibility(View.VISIBLE);
 
-        // Simulação de consulta ao Firebase para obter o curso do usuário
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
+                    if (!isAdded()) return;
+
                     if (documentSnapshot.exists()) {
                         String cursoUsuario = documentSnapshot.getString("curso");
                         if (cursoUsuario != null) {
@@ -63,54 +78,51 @@ public class noticias extends Fragment {
                     progressBar.setVisibility(View.GONE);
                 })
                 .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
+
                     Toast.makeText(requireContext(), "Erro ao carregar o curso!", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 });
     }
 
     private void inicializarViewPager(String cursoUsuario) {
+        if (!isAdded()) return;
+
         NoticiasPagerAdapter adapter = new NoticiasPagerAdapter(requireActivity(), cursoUsuario);
         viewPagerNoticias.setAdapter(adapter);
 
-        // Configurar as cores do TabLayout
         tabLayoutNoticias.setTabTextColors(
                 Color.parseColor("#B0B0B0"), // Cinza
-                Color.parseColor("#841FFD") // Roxo
+                Color.parseColor("#841FFD")  // Roxo
         );
 
-        // Conectar o TabLayout ao ViewPager
         new TabLayoutMediator(tabLayoutNoticias, viewPagerNoticias,
                 (tab, position) -> tab.setText(tabTitles[position])
         ).attach();
     }
 
     private void carregarNoticias() {
-        // Mostrar a ProgressBar enquanto as notícias estão sendo carregadas
+        if (!isAdded()) return;
+
         progressBar.setVisibility(View.VISIBLE);
 
-        // Simulação de carregamento (substitua com carregamento real, como uma chamada de API)
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Simulando tempo de carregamento (exemplo: 2 segundos)
-                    Thread.sleep(2000);
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);  // Simula carregamento
 
-                    // Após o carregamento, esconder a ProgressBar
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            progressBar.setVisibility(View.GONE);  // Esconder a ProgressBar
+                if (!isAdded()) return;
 
-                            // Aqui você pode atualizar o ViewPager com os dados reais
-                            Toast.makeText(requireContext(), "Notícias carregadas!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                requireActivity().runOnUiThread(() -> {
+                    if (!isAdded()) return;
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(requireContext(), "Notícias carregadas!", Toast.LENGTH_SHORT).show();
+                });
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }).start();
     }
+
 }

@@ -7,13 +7,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,10 +27,10 @@ import java.util.Map;
 
 public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapterInscricao.AuxilioViewHolder> {
 
-    private List<Map<String, Object>> auxilios;
-    private OnItemClickListener onItemClickListener;
+    private final List<Map<String, Object>> auxilios;
+    private final OnItemClickListener onItemClickListener;
+    private final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Construtor atualizado
     public AuxilioAdapterInscricao(List<Map<String, Object>> auxilios, OnItemClickListener listener) {
         this.auxilios = auxilios;
         this.onItemClickListener = listener;
@@ -47,25 +47,17 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
     public void onBindViewHolder(@NonNull AuxilioViewHolder holder, int position) {
         Map<String, Object> auxilio = auxilios.get(position);
 
-        String url = (String) auxilio.get("url");
-
-        // Configura o clique no botão para abrir a URL
-        holder.botaoInscricao.setOnClickListener(v -> {
-            if (url != null && onItemClickListener != null) {
-                onItemClickListener.onItemClick(url);
-            }
-        });
-
-        String titulo = auxilio.get("titulo").toString();
-        String dataInicio = auxilio.get("dataInicio").toString();
-        String dataFim = auxilio.get("dataFim").toString();
+        String titulo = auxilio.get("titulo") != null ? auxilio.get("titulo").toString() : "Sem Título";
+        String dataInicio = auxilio.get("dataInicio") != null ? auxilio.get("dataInicio").toString() : "00/00/0000";
+        String dataFim = auxilio.get("dataFim") != null ? auxilio.get("dataFim").toString() : "00/00/0000";
+        String url = auxilio.get("url") != null ? auxilio.get("url").toString() : null;
         String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : null;
 
         holder.titulo.setText(titulo);
         holder.dataInicio.setText("Início: " + dataInicio);
         holder.dataFim.setText("Fim: " + dataFim);
 
-        // Carrega a imagem ou define a inicial
+        // Carregar imagem ou gerar círculo com inicial
         if (imagemUrl != null && !imagemUrl.isEmpty()) {
             Glide.with(holder.imagemInicial.getContext())
                     .load(imagemUrl)
@@ -73,34 +65,48 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
                     .error(R.drawable.error_image)
                     .into(holder.imagemInicial);
         } else {
-            String inicial = titulo.substring(0, 1).toUpperCase();
+            String inicial = !titulo.isEmpty() ? titulo.substring(0, 1).toUpperCase() : "?";
             holder.imagemInicial.setImageDrawable(getCircularImage(holder.itemView.getContext(), inicial));
         }
 
-        // Verifica se está "Aberto" ou "Fechado"
-        if (isAuxilioAberto(auxilio)) {
-            holder.seloAberto.setVisibility(View.VISIBLE);
-            holder.seloFechado.setVisibility(View.GONE);
+        // Botão inscrição
+        holder.botaoInscricao.setOnClickListener(v -> {
+            if (url != null && !url.isEmpty() && onItemClickListener != null) {
+                onItemClickListener.onItemClick(url);
+            }
+        });
+
+        // Clique no ícone compartilhar
+        holder.ic_share.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onShareClick(auxilio);
+            }
+        });
+
+        // Atualiza o selo status baseado na data
+        if (isAuxilioAberto(dataInicio, dataFim)) {
+            holder.seloStatus.setText("Aberto");
+            holder.seloStatus.setTextColor(Color.parseColor("#4CAF50")); // verde
         } else {
-            holder.seloFechado.setVisibility(View.VISIBLE);
-            holder.seloAberto.setVisibility(View.GONE);
+            holder.seloStatus.setText("Encerrado");
+            holder.seloStatus.setTextColor(Color.parseColor("#FF0000")); // vermelho
         }
     }
 
-    private boolean isAuxilioAberto(Map<String, Object> auxilio) {
-        String dataFimStr = auxilio.get("dataFim").toString();
-        String dataInicioStr = auxilio.get("dataInicio").toString();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+    // Retorna true se o auxílio está ABERTO no dia de hoje (dataInicio <= hoje <= dataFim)
+    private boolean isAuxilioAberto(String dataInicioStr, String dataFimStr) {
         try {
-            Date dataFim = sdf.parse(dataFimStr);
             Date dataInicio = sdf.parse(dataInicioStr);
-            Date hoje = new Date();
+            Date dataFim = sdf.parse(dataFimStr);
+            Date hoje = sdf.parse(sdf.format(new Date())); // Zera horário para comparar só datas
 
-            return !dataFim.before(hoje) && !dataInicio.after(hoje); // Verifica se está entre as datas
+            if (dataInicio == null || dataFim == null) return false;
+
+            // Está aberto se: dataInicio <= hoje <= dataFim
+            return !hoje.before(dataInicio) && !hoje.after(dataFim);
         } catch (ParseException e) {
             e.printStackTrace();
-            return false; // Em caso de erro, você pode decidir como tratar
+            return false;
         }
     }
 
@@ -109,11 +115,11 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
         return auxilios.size();
     }
 
-    // Modifique a classe AuxilioViewHolder para incluir o botão
     public static class AuxilioViewHolder extends RecyclerView.ViewHolder {
-        TextView titulo, dataInicio, dataFim, seloAberto, seloFechado;
+        TextView titulo, dataInicio, dataFim, seloStatus;
         ImageView imagemInicial;
-        Button botaoInscricao; // Adicione esta linha
+        ImageView ic_share;  // Ícone de compartilhar
+        Button botaoInscricao;
 
         public AuxilioViewHolder(View itemView) {
             super(itemView);
@@ -121,39 +127,34 @@ public class AuxilioAdapterInscricao extends RecyclerView.Adapter<AuxilioAdapter
             dataInicio = itemView.findViewById(R.id.textDataInicio);
             dataFim = itemView.findViewById(R.id.textDataFim);
             imagemInicial = itemView.findViewById(R.id.imagemAuxilio);
-            seloAberto = itemView.findViewById(R.id.seloAberto);
-            seloFechado = itemView.findViewById(R.id.seloFechado);
-            botaoInscricao = itemView.findViewById(R.id.botaoInscricao); // Inicialize o botão
+            seloStatus = itemView.findViewById(R.id.seloStatus);
+            botaoInscricao = itemView.findViewById(R.id.botaoInscricao);
+            ic_share = itemView.findViewById(R.id.ic_share);  // Pega o ícone de compartilhar pelo id
         }
     }
 
-    // Método para gerar imagem circular com a inicial do título
     private Drawable getCircularImage(Context context, String text) {
-        int size = 100;  // Tamanho do círculo
+        int size = 100;
         Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
 
-        // Criação da cor de fundo (círculo)
         Paint paintBg = new Paint();
-        paintBg.setColor(Color.BLUE);  // Define a cor azul, mas pode ser personalizada
-        paintBg.setAntiAlias(true);  // Suaviza as bordas do círculo
+        paintBg.setColor(Color.BLUE);
+        paintBg.setAntiAlias(true);
         canvas.drawCircle(size / 2, size / 2, size / 2, paintBg);
 
-        // Criação da letra no centro do círculo
         Paint paintText = new Paint();
-        paintText.setColor(Color.WHITE);  // Cor da letra branca
-        paintText.setTextSize(40);  // Tamanho do texto
+        paintText.setColor(Color.WHITE);
+        paintText.setTextSize(40);
         paintText.setTextAlign(Paint.Align.CENTER);
-        paintText.setAntiAlias(true);  // Suaviza as bordas da letra
-
-        // Posição da letra (ajustada verticalmente para ficar centralizada)
+        paintText.setAntiAlias(true);
         canvas.drawText(text, size / 2, size / 2 + (paintText.getTextSize() / 3), paintText);
 
         return new BitmapDrawable(context.getResources(), bitmap);
     }
 
-    // Interface para lidar com cliques em itens do RecyclerView
     public interface OnItemClickListener {
-        void onItemClick(String url);  // Lida com a URL quando o item é clicado
+        void onItemClick(String url);         // Clique no botão inscrição
+        void onShareClick(Map<String, Object> auxilio);  // Clique no ícone compartilhar
     }
 }

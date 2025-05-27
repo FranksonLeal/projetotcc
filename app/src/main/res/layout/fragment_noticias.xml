@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipeRefreshInicio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rootLayoutInicio"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="56dp"
     android:orientation="vertical">
@@ -11,7 +17,7 @@
         android:id="@+id/textViewNoticias"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notícias"
+        android:text="Outras Notícias"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/black"
         android:textAlignment="center"
@@ -24,7 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        app:tabTextAppearance="@style/CustomTabText"
         android:background="#F5F7FB"
+        app:tabMode="fixed"
+
         android:contentDescription="Categorias de notícias" />
 
     <!-- ProgressBar -->
@@ -44,3 +53,4 @@
         android:layout_weight="1" />
 
 </LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

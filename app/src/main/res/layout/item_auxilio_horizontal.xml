@@ -1,7 +1,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="250dp"
-    android:layout_height="260dp"
+    android:layout_height="290dp"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
@@ -55,5 +55,17 @@
         android:textColor="#841FFD"
         android:textSize="16sp"
         android:gravity="center" />
+
+    <ImageView
+        android:id="@+id/buttonCompartilhar"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_share"
+        android:contentDescription="Compartilhar"
+        android:clickable="true"
+        android:focusable="true"/>
+
 
 </LinearLayout>

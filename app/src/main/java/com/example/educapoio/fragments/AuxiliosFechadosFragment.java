@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.educapoio.AuxilioAdapterInscricao;
 import com.example.educapoio.R;
+import com.example.educapoio.WebViewActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,14 +72,30 @@ public class AuxiliosFechadosFragment extends Fragment {
                     LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
                     // Verifica se o auxílio está fechado
-                    if (dataFim.isBefore(LocalDate.now()) || dataFim.isEqual(LocalDate.now())) {
+                    if (dataFim.isBefore(LocalDate.now())) {
                         documentosFechados.add(document);
                     }
                 }
 
                 // Converte para Map<String, Object> e cria o adapter
                 List<Map<String, Object>> auxiliosFechadosMap = converterParaMap(documentosFechados);
-                adapter = new AuxilioAdapterInscricao(auxiliosFechadosMap, this::abrirUrl);
+
+                // Ajuste aqui: implementação anônima para interface com múltiplos métodos
+                adapter = new AuxilioAdapterInscricao(auxiliosFechadosMap, new AuxilioAdapterInscricao.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(String url) {
+                        abrirUrl(url);
+                    }
+
+                    @Override
+                    public void onShareClick(Map<String, Object> auxilio) {
+                        compartilharAuxilio(auxilio);
+                    }
+                });
+
+
+
+
                 recyclerView.setAdapter(adapter);
 
                 // Verifica se há auxílios fechados e atualiza a visibilidade do TextView
@@ -95,6 +112,29 @@ public class AuxiliosFechadosFragment extends Fragment {
             }
         });
     }
+    private void compartilharAuxilio(Map<String, Object> auxilio) {
+        String titulo = (String) auxilio.get("titulo");
+
+        String url = (String) auxilio.get("url");
+
+        String textoParaCompartilhar = "🚀 Oportunidade incrível para você!\n\n"
+                + "📌 *" + titulo + "*\n";
+
+
+        if (url != null && !url.isEmpty()) {
+            textoParaCompartilhar += "\n🔗 Acesse aqui: " + url + "\n";
+        }
+
+        textoParaCompartilhar += "\n💡 Compartilhado via EducNews - Fique sempre por dentro das oportunidades acadêmicas!";
+
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, textoParaCompartilhar);
+
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio via"));
+    }
+
+
 
     private List<Map<String, Object>> converterParaMap(List<QueryDocumentSnapshot> auxilios) {
         List<Map<String, Object>> listaAuxilios = new ArrayList<>();
@@ -106,46 +146,41 @@ public class AuxiliosFechadosFragment extends Fragment {
 
     private void abrirUrl(String url) {
         if (url != null && !url.isEmpty()) {
-            // Adiciona http:// caso não tenha o prefixo adequado
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                url = "http://" + url;  // ou "https://", dependendo da URL
+                url = "http://" + url;
             }
-
-            // Exibe a confirmação antes de abrir o link
             showConfirmationDialog(url);
         } else {
-            // Se a URL for inválida
             showCustomMessage("URL inválida");
         }
     }
 
     private void showConfirmationDialog(final String url) {
-        // Infla o layout do BottomSheetDialog
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Configura a mensagem de confirmação
         TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
         dialogMessage.setText("Você tem certeza que deseja abrir o link?");
 
-        // Configura os botões de confirmação
         Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
         buttonConfirm.setOnClickListener(v -> {
-            // Tenta abrir o link quando confirmado
-            abrirUrlIntent(url);
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
-        });
-
-        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
-        buttonCancel.setOnClickListener(v -> {
-            // Fecha o dialog sem fazer nada
+            abrirWebView(url);  // Agora abre na WebView
             bottomSheetDialog.dismiss();
         });
 
-        // Exibe o BottomSheetDialog
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
         bottomSheetDialog.show();
     }
+
+    private void abrirWebView(String url) {
+        Intent intent = new Intent(getContext(), WebViewActivity.class);
+        intent.putExtra("url", url);
+        startActivity(intent);
+    }
+
 
     private void abrirUrlIntent(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

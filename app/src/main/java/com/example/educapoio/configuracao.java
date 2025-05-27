@@ -1,7 +1,10 @@
 package com.example.educapoio;
 
+import static android.app.PendingIntent.getActivity;
+
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -21,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,31 +37,56 @@ public class configuracao extends AppCompatActivity {
     private ProgressBar progressBar;
     private Switch switchDarkMode;
 
+    private View rootView;  // Adicionado aqui
+
+    Switch switchModoEscuro;
+    SharedPreferences sharedPreferences;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configuracao);
 
-        switchDarkMode = findViewById(R.id.textView14);
-        // Obter o estado atual do modo escuro
-        int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-            switchDarkMode.setChecked(true);
-        } else {
-            switchDarkMode.setChecked(false);
-        }
-        // Alterar o tema quando o switch for alterado
+        sharedPreferences = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isDarkModeEnabled = sharedPreferences.getBoolean("dark_mode", false);
+
+        switchDarkMode = findViewById(R.id.switchDarkMode);
+        rootView = findViewById(R.id.rootLayout);
+        switchDarkMode.setChecked(isDarkModeEnabled);
+
+        // Aplica a cor inicial ao abrir a Activity
+        int corInicial = isDarkModeEnabled ? ContextCompat.getColor(this, R.color.colorPrimaryDark)
+                : ContextCompat.getColor(this, R.color.colorPrimaryLight);
+        rootView.setBackgroundColor(corInicial);
+
         switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
+            int novaCor = isChecked ? ContextCompat.getColor(this, R.color.colorPrimaryDark)
+                    : ContextCompat.getColor(this, R.color.colorPrimaryLight);
+            rootView.setBackgroundColor(novaCor);
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("dark_mode", isChecked);
+            editor.apply();
+        });
+
+        // Botão de voltar
+        ImageView imageVoltar = findViewById(R.id.imageVoltar);
+        imageVoltar.setOnClickListener(v -> finish());
+
+
+        TextView textViewSobre = findViewById(R.id.textView13);
+        textViewSobre.setOnClickListener(v -> {
+            Intent intent = new Intent(configuracao.this, sobre.class);
+            startActivity(intent);
         });
 
 
-        progressBar = findViewById(R.id.progressBar);
-        ImageView imageVoltar = findViewById(R.id.imageVoltar);
+
+
+    progressBar = findViewById(R.id.progressBar);
+
 
         // Configurar o clique do ícone de voltar
         imageVoltar.setOnClickListener(new View.OnClickListener() {
@@ -240,4 +269,6 @@ public class configuracao extends AppCompatActivity {
                     });
         }
     }
+
+
 }

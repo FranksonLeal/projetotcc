@@ -1,6 +1,7 @@
 package com.example.educapoio;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -32,11 +33,27 @@ public class PrazoAuxilioWorker extends Worker {
     }
 
     @NonNull
+
     @Override
     public Result doWork() {
-        // Bloquear até que os auxílios sejam buscados e verificados
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+        String lastNotificationDate = prefs.getString("last_notification_date", "");
+
+        // Data atual formatada como "dd/MM/yyyy"
+        String todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        if (todayDate.equals(lastNotificationDate)) {
+            // Já enviou notificações hoje, não precisa enviar de novo
+            Log.d("PrazoAuxilioWorker", "Notificações já enviadas hoje. Ignorando...");
+            return Result.success();
+        }
+
+        // Atualiza a data para hoje, pois vamos enviar notificações agora
+        prefs.edit().putString("last_notification_date", todayDate).apply();
+
         return buscarAuxilios();
     }
+
 
     private Result buscarAuxilios() {
         try {
@@ -109,5 +126,10 @@ public class PrazoAuxilioWorker extends Worker {
         prefs.edit().putString("notifications_list", updatedNotifications).apply();
 
         Log.d("PrazoAuxilioWorker", "Notificação salva: " + mensagem);
+
+        // Envia broadcast para atualizar a badge automaticamente
+        Intent intent = new Intent("NOTICIA_ATUALIZADA");
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
     }
+
 }

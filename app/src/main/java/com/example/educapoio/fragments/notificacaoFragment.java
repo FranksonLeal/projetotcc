@@ -1,6 +1,7 @@
 package com.example.educapoio.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -8,6 +9,8 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AlertDialog;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +37,20 @@ public class notificacaoFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Infla o layout para este fragmento
         View view = inflater.inflate(R.layout.fragment_notificacao, container, false);
+
+        // Obtendo a referência correta da rootView após inflar a view
+        View rootView = view.findViewById(R.id.rootLayoutInicio);
+
+        // Recupera a preferência do modo escuro
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
+
+        // Aplica o tema diretamente alterando a cor de fundo
+        if (isDarkMode) {
+            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        } else {
+            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
+        }
 
         // Obtém o título e verifica se foi inflado corretamente
         TextView titulo = view.findViewById(R.id.textView5);
@@ -101,8 +118,10 @@ public class notificacaoFragment extends Fragment {
         noNotificationText.setTextSize(18);
         noNotificationText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         noNotificationText.setPadding(45, 20, 45, 20);
+        noNotificationText.setTextColor(Color.BLACK);  // Define a cor preta aqui
         notificationLayout.addView(noNotificationText);
     }
+
 
     private void addNotificationItem(LinearLayout notificationLayout, String notification) {
         if (notification.contains("|")) {
@@ -206,6 +225,8 @@ public class notificacaoFragment extends Fragment {
 
         // Atualizar a lista de notificações
         atualizarNotificacoes(notificationContainer);
+
+        LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(new Intent("NOTICIA_ATUALIZADA"));
     }
 
 
@@ -227,6 +248,7 @@ public class notificacaoFragment extends Fragment {
 
             // Atualizar a lista de notificações após a exclusão
             atualizarNotificacoes(notificationContainer);
+            LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(new Intent("NOTICIA_ATUALIZADA"));
 
             Log.d("NotificacaoFragment", "Todas as notificações foram excluídas.");
             bottomSheetDialog.dismiss();
