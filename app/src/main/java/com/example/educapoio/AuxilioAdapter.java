@@ -52,7 +52,8 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
         String url = auxilio.get("url") != null ? auxilio.get("url").toString() : "";
 
         // ADICIONE ESSA LINHA:
-        String imagemUrl = auxilio.get("imagem") != null ? auxilio.get("imagem").toString() : "";
+        String imagemUrl = auxilio.get("imagemUrl") != null ? auxilio.get("imagemUrl").toString() : "";
+
 
         // Atualiza os TextViews e imagem
         holder.titulo.setText(titulo);
@@ -142,9 +143,6 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
     }
 
 
-    // Método para atualizar a lista de auxílios no adapter
-    // Método para atualizar a lista de auxílios e notificar o adapter
-    // Método para atualizar a lista de auxílios e notificar o adapter
     public void updateAuxilios(List<Map<String, Object>> newAuxilios) {
         this.auxilios.clear();  // Limpa a lista existente
         this.auxilios.addAll(newAuxilios);  // Adiciona os novos auxílios

@@ -1,38 +1,25 @@
 package com.example.educapoio;
 
-import static com.example.educapoio.fragments.notificacaoFragment.NOTIFICATION_PREFS;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.educapoio.databinding.ActivityAdministradorBinding;
-import com.example.educapoio.fragments.notificacaoFragment;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -58,6 +45,12 @@ public class Administrador extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityAdministradorBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        binding.btnVisualizarDados.setOnClickListener(v -> {
+            Intent intent = new Intent(Administrador.this, visualizarDados.class);
+            startActivity(intent);
+        });
+
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -187,10 +180,17 @@ public class Administrador extends AppCompatActivity {
     private void cadastrarOutrasNoticias(String titulo, String dataPublicacao) {
         String id = db.collection("noticias").document().getId();
 
+        String url = binding.editUrlNoti.getText().toString().trim();
+
         Map<String, Object> noticia = new HashMap<>();
         noticia.put("id", id);
         noticia.put("titulo", titulo);
         noticia.put("dataPublicacao", dataPublicacao);
+
+        // Só adiciona a URL se ela não estiver vazia
+        if (!url.isEmpty()) {
+            noticia.put("url", url);
+        }
 
         db.collection("noticias").document(id)
                 .set(noticia)
@@ -207,7 +207,9 @@ public class Administrador extends AppCompatActivity {
     private void limparCamposNoticias() {
         binding.textTituloOutras.setText("");
         binding.editDataPubli.setText("");
+        binding.editUrlNoti.setText(""); // Limpar URL também
     }
+
 
 
 

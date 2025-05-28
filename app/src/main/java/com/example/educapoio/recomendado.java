@@ -5,6 +5,8 @@ public class recomendado {
     private String titulo;
     private String dataPublicacao;
 
+    private String url;
+
     // Construtor vazio obrigatório para o Firestore
     public recomendado() { }
 
@@ -27,5 +29,13 @@ public class recomendado {
     }
     public void setDataPublicacao(String dataPublicacao) {
         this.dataPublicacao = dataPublicacao;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

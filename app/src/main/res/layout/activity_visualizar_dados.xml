@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    tools:context=".activity_visualizar_dados">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Auxílios"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center"/>
+
+        <!-- Carrossel de Auxílios -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerAuxilios"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:overScrollMode="never"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Notícias"
+            android:textSize="24sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"/>
+
+        <!-- Carrossel de Notícias -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerNoticias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:overScrollMode="never"/>
+
+        <Button
+            android:id="@+id/btnVoltar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Voltar"
+            android:layout_gravity="center"
+            android:layout_marginTop="32dp"
+            android:background="@drawable/bg_editbottom"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+</ScrollView>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="@drawable/bg_circle"
+    android:elevation="2dp"
+    android:layout_margin="12dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:background="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:padding="6dp">
+
+            <!-- Título editável -->
+            <EditText
+                android:id="@+id/noticia_titulo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#1B1B1B"
+                android:textSize="16sp"
+                android:fontFamily="@font/poppins_regular"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@null"
+                android:inputType="textCapSentences"/>
+
+            <!-- Data editável -->
+            <EditText
+                android:id="@+id/noticia_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#6B6B6B"
+                android:textSize="12sp"
+                android:fontFamily="@font/poppins_regular"
+                android:layout_marginBottom="8dp"
+                android:background="@null"
+                android:inputType="date"/>
+
+            <!-- Botões editar e excluir na mesma linha -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp">
+
+                <ImageButton
+                    android:id="@+id/btnEditar"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Editar notícia"
+                    android:src="@drawable/ic_edit"
+                    android:padding="6dp"
+                    app:tint="#6200EE" />
+
+                <ImageButton
+                    android:id="@+id/btnExcluir"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Excluir notícia"
+                    android:src="@drawable/ic_exclusao"
+                    android:padding="6dp"
+                    android:layout_marginStart="16dp"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

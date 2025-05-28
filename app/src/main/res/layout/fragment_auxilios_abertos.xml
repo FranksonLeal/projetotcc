@@ -10,7 +10,7 @@
         android:id="@+id/txtNoAuxilios"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nenhum auxílio aberto encontrado."
+        android:text="Nenhuma oportunidade em aberto encontrado."
         android:visibility="gone"
         android:fontFamily="@font/poppins_regular"
         android:textColor="@color/black"

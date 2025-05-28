@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,22 +8,23 @@
     android:padding="5dp"
     android:background="@drawable/bg_circle"
     android:elevation="2dp"
+    android:textColor="#FFFFFF"
     android:layout_margin="12dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
-
         app:cardElevation="4dp"
+        android:textColor="#FFFFFF"
         android:background="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@android:color/white"
-            android:padding="6dp">
+            android:background="@color/white"
+            android:padding="8dp">
 
             <!-- Logo -->
             <ImageView
@@ -34,8 +34,7 @@
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/ufam_icet_logo"
                 android:contentDescription="Logo UFAM ICET"
-                android:scaleType="fitCenter"
-                android:layout_marginBottom="8dp"/>
+                android:scaleType="fitCenter"/>
 
             <!-- Título -->
             <TextView
@@ -47,7 +46,7 @@
                 android:textSize="16sp"
                 android:fontFamily="@font/poppins_regular"
                 android:lineSpacingExtra="4dp"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginTop="8dp"/>
 
             <!-- Data -->
             <TextView
@@ -57,7 +56,7 @@
                 android:textColor="#6B6B6B"
                 android:textSize="12sp"
                 android:fontFamily="@font/poppins_regular"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginTop="4dp"/>
 
             <!-- Resumo -->
             <TextView
@@ -69,20 +68,42 @@
                 android:fontFamily="@font/poppins_regular"
                 android:lineSpacingExtra="4dp"
                 android:maxLines="4"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:layout_marginTop="8dp"/>
 
-            <!-- Botão Compartilhar -->
-            <ImageView
-                android:id="@+id/btn_compartilhar"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_gravity="start"
-                android:src="@drawable/ic_share"
-                android:contentDescription="Compartilhar"
-                android:padding="4dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+            <!-- Ações -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
 
-                android:layout_marginTop="10dp"/>
+                <!-- Botão Visualizar à esquerda -->
+                <Button
+                    android:id="@+id/btn_visualizar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:text="Visualizar"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#6200EE"
+                    android:visibility="gone"/>
+
+                <!-- Espaço que empurra o botão e o ícone para as extremidades -->
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+                <!-- Compartilhar à direita -->
+                <ImageView
+                    android:id="@+id/btn_compartilhar"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_share"
+                    android:contentDescription="Compartilhar"
+                    android:background="?attr/selectableItemBackgroundBorderless"/>
+            </LinearLayout>
 
         </LinearLayout>
 

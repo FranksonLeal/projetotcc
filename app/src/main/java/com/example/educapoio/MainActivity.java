@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, texto);
-        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio"));
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar oportunidade"));
     }
 
 

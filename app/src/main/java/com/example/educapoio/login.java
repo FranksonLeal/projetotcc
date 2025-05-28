@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.educapoio.databinding.ActivityLoginBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -130,7 +129,7 @@ public class login extends AppCompatActivity {
 
                         if (user != null && "admin@gmail.com".equals(user.getEmail())) {
                             // Se for o admin, redirecione para a tela de administração
-                            intent = new Intent(this, Administrador.class); // Alterado para AdminActivity
+                            intent = new Intent(this, Administrador.class);
                         } else {
                             // Se não for o admin, redirecione para a tela inicial comum
                             intent = new Intent(this, inicio.class);

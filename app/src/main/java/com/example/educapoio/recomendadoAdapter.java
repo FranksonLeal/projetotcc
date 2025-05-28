@@ -33,9 +33,10 @@ public class recomendadoAdapter extends RecyclerView.Adapter<recomendadoAdapter.
         holder.titulo.setText(noticia.getTitulo());
         holder.data.setText(noticia.getDataPublicacao());
 
+        // Botão compartilhar
         holder.btnCompartilhar.setOnClickListener(v -> {
             String textoCompartilhar = noticia.getTitulo() + "\n\nData: " + noticia.getDataPublicacao() +
-                    "\n\nVeja mais no aplicativo EducApoio!";
+                    "\n\nVeja mais no aplicativo EducNews!";
 
             Intent compartilharIntent = new Intent();
             compartilharIntent.setAction(Intent.ACTION_SEND);
@@ -44,9 +45,20 @@ public class recomendadoAdapter extends RecyclerView.Adapter<recomendadoAdapter.
 
             v.getContext().startActivity(Intent.createChooser(compartilharIntent, "Compartilhar notícia via"));
         });
+
+        // Verificar se tem URL
+        if (noticia.getUrl() != null && !noticia.getUrl().isEmpty()) {
+            holder.btnVisualizar.setVisibility(View.VISIBLE);
+            holder.btnVisualizar.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), WebViewActivity.class);
+                intent.putExtra("url", noticia.getUrl());
+                v.getContext().startActivity(intent);
+            });
+
+        } else {
+            holder.btnVisualizar.setVisibility(View.GONE);
+        }
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -56,15 +68,15 @@ public class recomendadoAdapter extends RecyclerView.Adapter<recomendadoAdapter.
     public static class NoticiaViewHolder extends RecyclerView.ViewHolder {
         TextView titulo, data;
         ImageView btnCompartilhar;
-
+        View btnVisualizar;
 
         public NoticiaViewHolder(@NonNull View itemView) {
             super(itemView);
             titulo = itemView.findViewById(R.id.noticia_titulo);
             data = itemView.findViewById(R.id.noticia_data);
             btnCompartilhar = itemView.findViewById(R.id.btn_compartilhar);
-
-
+            btnVisualizar = itemView.findViewById(R.id.btn_visualizar);
         }
     }
 }
+

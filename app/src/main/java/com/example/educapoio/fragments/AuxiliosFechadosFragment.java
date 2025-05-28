@@ -108,7 +108,7 @@ public class AuxiliosFechadosFragment extends Fragment {
                 }
 
             } else {
-                Toast.makeText(getContext(), "Erro ao carregar auxílios fechados", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Erro ao carregar oportunidades encerradas", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -131,7 +131,7 @@ public class AuxiliosFechadosFragment extends Fragment {
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, textoParaCompartilhar);
 
-        startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio via"));
+        startActivity(Intent.createChooser(shareIntent, "Compartilhar oportunidade via"));
     }
 
 

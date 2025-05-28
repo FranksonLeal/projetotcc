@@ -41,25 +41,18 @@ public class noticias extends Fragment {
         swipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshInicio);
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            atualizarTela();
-            swipeRefreshLayout.setRefreshing(false);
+            carregarTudo(true);
         });
 
-        carregarCursoUsuario();
-        carregarNoticias();
+        carregarTudo(false);
 
         return rootView;
     }
 
-    private void atualizarTela() {
+    private void carregarTudo(boolean mostrarToast) {
         if (!isAdded()) return;
-        Toast.makeText(requireContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
-    }
 
-    private void carregarCursoUsuario() {
-        if (!isAdded()) return;
         progressBar.setVisibility(View.VISIBLE);
-
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -70,22 +63,24 @@ public class noticias extends Fragment {
                     if (documentSnapshot.exists()) {
                         String cursoUsuario = documentSnapshot.getString("curso");
                         if (cursoUsuario != null) {
-                            inicializarViewPager(cursoUsuario);
+                            inicializarViewPager(cursoUsuario, mostrarToast);
                         } else {
                             Toast.makeText(requireContext(), "Curso não encontrado!", Toast.LENGTH_SHORT).show();
+                            finalizarCarregamento();
                         }
+                    } else {
+                        Toast.makeText(requireContext(), "Dados do usuário não encontrados!", Toast.LENGTH_SHORT).show();
+                        finalizarCarregamento();
                     }
-                    progressBar.setVisibility(View.GONE);
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded()) return;
-
                     Toast.makeText(requireContext(), "Erro ao carregar o curso!", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
+                    finalizarCarregamento();
                 });
     }
 
-    private void inicializarViewPager(String cursoUsuario) {
+    private void inicializarViewPager(String cursoUsuario, boolean mostrarToast) {
         if (!isAdded()) return;
 
         NoticiasPagerAdapter adapter = new NoticiasPagerAdapter(requireActivity(), cursoUsuario);
@@ -99,30 +94,37 @@ public class noticias extends Fragment {
         new TabLayoutMediator(tabLayoutNoticias, viewPagerNoticias,
                 (tab, position) -> tab.setText(tabTitles[position])
         ).attach();
+
+        carregarNoticias(mostrarToast);
     }
 
-    private void carregarNoticias() {
+    private void carregarNoticias(boolean mostrarToast) {
         if (!isAdded()) return;
-
-        progressBar.setVisibility(View.VISIBLE);
 
         new Thread(() -> {
             try {
-                Thread.sleep(2000);  // Simula carregamento
+                // Simula carregamento das notícias (substitua isso por sua lógica real de carregamento)
+                Thread.sleep(1500);
 
                 if (!isAdded()) return;
 
                 requireActivity().runOnUiThread(() -> {
                     if (!isAdded()) return;
-
-                    progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), "Notícias carregadas!", Toast.LENGTH_SHORT).show();
+                    finalizarCarregamento();
+                    if (mostrarToast) {
+                        Toast.makeText(requireContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
+                    }
                 });
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                requireActivity().runOnUiThread(this::finalizarCarregamento);
             }
         }).start();
     }
 
+    private void finalizarCarregamento() {
+        progressBar.setVisibility(View.GONE);
+        swipeRefreshLayout.setRefreshing(false);
+    }
 }

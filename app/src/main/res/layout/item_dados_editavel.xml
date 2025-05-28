@@ -1,7 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="250dp"
-    android:layout_height="330dp"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
@@ -13,16 +14,13 @@
     <!-- Título do Auxílio -->
     <TextView
         android:id="@+id/textTituloAuxilio"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:fontFamily="@font/poppins_regular"
         android:textColor="#626364"
         android:text="Título do Auxílio"
-        android:gravity="center"
-        android:maxLines="2"
-        android:ellipsize="end"/>
-
+        android:gravity="center" />
 
     <!-- Imagem Circular do Auxílio -->
     <ImageView
@@ -59,16 +57,33 @@
         android:textSize="16sp"
         android:gravity="center" />
 
-    <ImageView
-        android:id="@+id/buttonCompartilhar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_share"
-        android:contentDescription="Compartilhar"
-        android:clickable="true"
-        android:focusable="true"/>
+    <!-- Botões Editar e Excluir -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:weightSum="2">
 
+        <Button
+            android:id="@+id/btnEditar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Editar"
+            android:backgroundTint="#4CAF50"
+            android:textColor="#FFFFFF"
+            android:layout_marginEnd="8dp" />
 
+        <Button
+            android:id="@+id/btnExcluir"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Excluir"
+            android:backgroundTint="#F44336"
+            android:textColor="#FFFFFF"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
 </LinearLayout>

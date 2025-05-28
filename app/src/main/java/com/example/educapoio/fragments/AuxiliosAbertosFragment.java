@@ -97,7 +97,7 @@ public class AuxiliosAbertosFragment extends Fragment {
                 progressBar.setVisibility(View.GONE);
             } else {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(getContext(), "Erro ao carregar auxílios", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Erro ao carregar oportunidades", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -154,16 +154,6 @@ public class AuxiliosAbertosFragment extends Fragment {
     }
 
 
-    private void abrirUrlIntent(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            showCustomMessage("Não foi possível abrir o link.");
-        }
-    }
 
     private void showCustomMessage(String message) {
         View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);

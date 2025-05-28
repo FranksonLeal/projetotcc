@@ -264,16 +264,21 @@ public class inicioFragment extends Fragment {
         ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
         imageAcess.setOnClickListener(v -> mostrarMensagemIndisponibilidade());
 
-        TextView textSite = rootView.findViewById(R.id.textSite);
-        TextView textSite2 = rootView.findViewById(R.id.textSite2);
-        textSite.setOnClickListener(v -> abrirUrl("https://www.icet.ufam.edu.br/"));
-        textSite2.setOnClickListener(v -> abrirUrl("https://ecampus.ufam.edu.br/ecampus/home/login"));
+        // Novo botão Página do ICET
+        LinearLayout btnIcet = rootView.findViewById(R.id.btn_icet);
+        btnIcet.setOnClickListener(v -> abrirUrl("https://www.icet.ufam.edu.br/"));
 
+        // Novo botão eCampus
+        LinearLayout btnEcampus = rootView.findViewById(R.id.btn_ecampus);
+        btnEcampus.setOnClickListener(v -> abrirUrl("https://ecampus.ufam.edu.br/ecampus/home/login"));
+
+        // As imagens continuam funcionando normalmente
         rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao"));
         rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));
         rootView.findViewById(R.id.imagemAdm).setOnClickListener(v -> abrirUrl("https://jcconcursos.com.br/concursos/por-cargo/administrador"));
         rootView.findViewById(R.id.imagemContabilidade).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-contabilidade"));
     }
+
 
     private void abrirUrl(String url) {
         if (url != null && !url.isEmpty()) {
