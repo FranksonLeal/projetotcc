@@ -7,7 +7,13 @@
         <item name="android:statusBarColor">#841FFD</item>
     </style>
 
-    <style name="Theme.EducApoio" parent="Base.Theme.EducApoio" />
+
+    <style name="Theme.EducApoio" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/background_primary</item>
+        <item name="android:windowBackground">@color/background_primary</item>
+    </style>
+
+
 
 
     <style name="Widget.App.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView.Colored">

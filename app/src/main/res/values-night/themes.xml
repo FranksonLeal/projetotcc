@@ -6,6 +6,8 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:colorBackground">#121212</item>
 
+
+
         <item name="colorPrimary">#BB86FC</item>
         <item name="colorPrimaryVariant">#3700B3</item>
         <item name="colorOnPrimary">#FFFFFF</item>

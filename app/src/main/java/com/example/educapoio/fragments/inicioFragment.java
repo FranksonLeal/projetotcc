@@ -28,15 +28,20 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.educapoio.Ajuda;
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
+import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
+import com.example.educapoio.configuracao;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.auth.FirebaseAuth;
@@ -81,9 +86,10 @@ public class inicioFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
 
+
+
     }
 
-    // Método para carregar o nome do usuário a partir do Firestore
     private void carregarNomeUsuario(String userId) {
         DocumentReference docRef = db.collection("users").document(userId);
 
@@ -154,16 +160,10 @@ public class inicioFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        // Recupera a preferência do modo escuro
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
 
-        // Aplica o tema diretamente alterando a cor de fundo
-        if (isDarkMode) {
-            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else {
-            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
-        }
+        ConstraintLayout rootLayoutInicio = view.findViewById(R.id.rootLayoutInicio);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutInicio);
+
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
@@ -184,6 +184,11 @@ public class inicioFragment extends Fragment {
         spannableAppName.setSpan(new ForegroundColorSpan(Color.BLACK), 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableAppName.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 4, appName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         textoAppName.setText(spannableAppName);
+
+        // Configuração e edição de perfil
+        view.findViewById(R.id.imageAjuda).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), Ajuda.class))
+        );
 
         // Já configurado anteriormente, não precisa repetir
         // recyclerViewAuxilios = view.findViewById(R.id.recyclerViewAuxilios);
@@ -379,6 +384,14 @@ public class inicioFragment extends Fragment {
 
         Button okButton = new Button(getContext());
         okButton.setText("OK");
+        okButton.setTextColor(Color.WHITE);
+
+        // Cria fundo arredondado preto para o botão
+        GradientDrawable buttonBackground = new GradientDrawable();
+        buttonBackground.setColor(Color.BLACK);
+        buttonBackground.setCornerRadius(30f); // raio do botão
+        okButton.setBackground(buttonBackground);
+
         okButton.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
         layout.addView(messageText);
@@ -387,6 +400,8 @@ public class inicioFragment extends Fragment {
         bottomSheetDialog.setContentView(layout);
         bottomSheetDialog.show();
     }
+
+
 
     private void buscarAuxiliosDoFirestore() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();

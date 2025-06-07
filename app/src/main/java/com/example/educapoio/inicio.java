@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -41,6 +42,11 @@ public class inicio extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         initNavigation();
+
+        ConstraintLayout rootLayout = findViewById(R.id.rootLayoutInicio);
+        BottomNavigationView bottomNavigation = findViewById(R.id.bottom_navigation);
+        ThemeHelper.aplicarModoEscuro(this, rootLayout, bottomNavigation);
+
 
         atualizarBadgeNotificacoes();
     }

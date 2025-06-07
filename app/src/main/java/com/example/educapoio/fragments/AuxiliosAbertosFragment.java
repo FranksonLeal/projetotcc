@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.example.educapoio.AuxilioAdapterInscricao;
 import com.example.educapoio.R;
+import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.CollectionReference;
@@ -47,6 +49,10 @@ public class AuxiliosAbertosFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewAuxiliosAbertos);
         progressBar = view.findViewById(R.id.progressBarLoading);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        ConstraintLayout rootLayoutAbertosTela = view.findViewById(R.id.rootLayoutAbertosTela);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutAbertosTela);
+
 
         buscarAuxiliosAbertos();
         return view;

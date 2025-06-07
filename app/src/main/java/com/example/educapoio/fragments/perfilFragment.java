@@ -20,12 +20,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.educapoio.CircleCrop;
 import com.example.educapoio.R;
+import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.configuracao;
 import com.example.educapoio.editarPerfil;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,14 +62,9 @@ public class perfilFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(false);
         });
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
+        ConstraintLayout rootLayoutPerfil = view.findViewById(R.id.rootLayoutPerfil);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutPerfil);
 
-        if (isDarkMode) {
-            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else {
-            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
-        }
 
         // Inicializa os TextViews e outros componentes da UI
         editNome = view.findViewById(R.id.editNome);

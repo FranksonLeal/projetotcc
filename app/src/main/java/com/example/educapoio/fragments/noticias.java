@@ -1,21 +1,26 @@
 package com.example.educapoio.fragments;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.educapoio.NoticiasPagerAdapter;
 import com.example.educapoio.R;
+import com.example.educapoio.ThemeHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,6 +48,15 @@ public class noticias extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             carregarTudo(true);
         });
+
+        LinearLayout rootLayoutInicio = rootView.findViewById(R.id.rootLayoutInicio);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutInicio);
+
+
+        TabLayout tabLayout = rootView.findViewById(R.id.tabLayoutNoticias);
+        ThemeHelper.aplicarModoEscuro(requireContext(), tabLayout);
+
+
 
         carregarTudo(false);
 

@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayoutInicio"
+    android:background="@color/colorPrimaryLight"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="56dp"
     android:orientation="vertical">
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:tabTextAppearance="@style/CustomTabText"
-        android:background="#F5F7FB"
+        android:background="@color/colorPrimaryLight"
         app:tabMode="fixed"
 
         android:contentDescription="Categorias de notícias" />

@@ -62,14 +62,25 @@ public class configuracao extends AppCompatActivity {
         rootView.setBackgroundColor(corInicial);
 
         switchDarkMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int novaCor = isChecked ? ContextCompat.getColor(this, R.color.colorPrimaryDark)
-                    : ContextCompat.getColor(this, R.color.colorPrimaryLight);
-            rootView.setBackgroundColor(novaCor);
-
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("dark_mode", isChecked);
             editor.apply();
+
+            AppCompatDelegate.setDefaultNightMode(
+                    isChecked ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO
+            );
+
+            recreate(); // Reinicia a Activity para aplicar o tema
         });
+
+
+
+        ImageView imageAjuda = findViewById(R.id.imageAjuda);
+        imageAjuda.setOnClickListener(v -> {
+            Intent intent = new Intent(configuracao.this, Ajuda.class);
+            startActivity(intent);
+        });
+
 
         // Botão de voltar
         ImageView imageVoltar = findViewById(R.id.imageVoltar);
@@ -125,7 +136,7 @@ public class configuracao extends AppCompatActivity {
     }
 
     private void compartilharRecomendacao() {
-        String mensagem = "Confira o aplicativo EducApoio! Ele pode te ajudar a encontrar oportunidades de projetos e informações úteis. Baixe agora! 😉";
+        String mensagem = "Confira o aplicativo EducNews🚀📲! Ele pode te ajudar a encontrar oportunidades e notícias acadêmicas muito importantes pra você. Baixe agora! 😉";
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, mensagem);
@@ -133,121 +144,51 @@ public class configuracao extends AppCompatActivity {
     }
 
     private void exibirDialogoConfirmacaoExclusaoConta() {
-        // Cria o BottomSheetDialog
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Infla um layout simples programaticamente
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+        TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
+        dialogMessage.setText("Tem certeza de que deseja excluir sua conta 😢? Esta ação é irreversível.");
 
-        // Cria um GradientDrawable para bordas arredondadas
-        GradientDrawable backgroundDrawable = new GradientDrawable();
-        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
-        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
-        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
-
-        // Adiciona o texto da mensagem
-        TextView messageText = new TextView(this);
-        messageText.setText("Tem certeza de que deseja excluir sua conta 😢? Esta ação é irreversível.");
-        messageText.setTextSize(18); // Tamanho do texto
-        messageText.setTextColor(Color.BLACK); // Cor do texto
-        messageText.setPadding(0, 0, 0, 40); // Padding inferior
-
-        // Adiciona o botão de confirmação
-        Button confirmButton = new Button(this);
-        confirmButton.setText("Sim");
-        confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
-        confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
-
-        // Ação do botão de confirmação
-        confirmButton.setOnClickListener(v -> {
-            excluirConta(); // Chama a função para excluir a conta
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+        Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
+        buttonConfirm.setText("Sim");
+        buttonConfirm.setOnClickListener(v -> {
+            excluirConta();
+            bottomSheetDialog.dismiss();
         });
 
-        // Adiciona o botão de cancelamento
-        Button cancelButton = new Button(this);
-        cancelButton.setText("Cancelar");
-        cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
-        cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setText("Cancelar");
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        // Ação do botão de cancelamento
-        cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
-
-        // Adiciona os componentes ao layout
-        layout.addView(messageText);
-        layout.addView(confirmButton);
-        layout.addView(cancelButton);
-
-        // Define o layout inflado no BottomSheetDialog
-        bottomSheetDialog.setContentView(layout);
-
-        // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
-
     private void exibirDialogoConfirmacaoSair() {
-        // Cria o BottomSheetDialog
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.toast_custom_layout, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
 
-        // Infla um layout simples programaticamente
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(40, 40, 40, 40); // Ajuste o padding conforme necessário
+        TextView dialogMessage = bottomSheetView.findViewById(R.id.dialog_message);
+        dialogMessage.setText("Tem certeza de que deseja sair? Você precisará fazer login novamente.");
 
-        // Cria um GradientDrawable para bordas arredondadas
-        GradientDrawable backgroundDrawable = new GradientDrawable();
-        backgroundDrawable.setColor(Color.WHITE); // Cor de fundo
-        backgroundDrawable.setCornerRadius(20f); // Raio dos cantos
-        layout.setBackground(backgroundDrawable); // Aplica o fundo ao layout
-
-        // Adiciona o texto da mensagem
-        TextView messageText = new TextView(this);
-        messageText.setText("Tem certeza de que deseja sair? Você precisará fazer login novamente.");
-        messageText.setTextSize(18); // Tamanho do texto
-        messageText.setTextColor(Color.BLACK); // Cor do texto
-        messageText.setPadding(0, 0, 0, 40); // Padding inferior
-
-        // Adiciona o botão de confirmação
-        Button confirmButton = new Button(this);
-        confirmButton.setText("Sim");
-        confirmButton.setBackgroundColor(Color.BLACK); // Cor de fundo do botão
-        confirmButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        confirmButton.setPadding(40, 20, 40, 20); // Padding do botão
-
-        // Ação do botão de confirmação
-        confirmButton.setOnClickListener(v -> {
+        Button buttonConfirm = bottomSheetView.findViewById(R.id.button_open_url);
+        buttonConfirm.setText("Sim");
+        buttonConfirm.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(configuracao.this, login.class));
             finish();
-            bottomSheetDialog.dismiss(); // Fecha o dialog após a ação
+            bottomSheetDialog.dismiss();
         });
 
-        // Adiciona o botão de cancelamento
-        Button cancelButton = new Button(this);
-        cancelButton.setText("Cancelar");
-        cancelButton.setBackgroundColor(Color.GRAY); // Cor de fundo do botão
-        cancelButton.setTextColor(Color.WHITE); // Cor do texto do botão
-        cancelButton.setPadding(40, 20, 40, 20); // Padding do botão
+        Button buttonCancel = bottomSheetView.findViewById(R.id.button_cancel);
+        buttonCancel.setText("Cancelar");
+        buttonCancel.setOnClickListener(v -> bottomSheetDialog.dismiss());
 
-        // Ação do botão de cancelamento
-        cancelButton.setOnClickListener(v -> bottomSheetDialog.dismiss()); // Apenas fecha o dialog
-
-        // Adiciona os componentes ao layout
-        layout.addView(messageText);
-        layout.addView(confirmButton);
-        layout.addView(cancelButton);
-
-        // Define o layout inflado no BottomSheetDialog
-        bottomSheetDialog.setContentView(layout);
-
-        // Exibe o BottomSheetDialog
         bottomSheetDialog.show();
     }
+
 
     private void excluirConta() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -1,7 +1,10 @@
 package com.example.educapoio;
 
+import static com.example.educapoio.fragments.notificacaoFragment.NOTIFICATION_PREFS;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -180,6 +183,9 @@ public class cadastro extends AppCompatActivity {
                     salvarCursoUsuario(curso); // Salva o curso no SharedPreferences
                     binding.progressBar.setVisibility(View.GONE);
                     mostrarMensagemErro("Usuário cadastrado com sucesso!", true);
+
+                    // Salva notificação local com título e mensagem
+                    salvarNotificacao("Cadastro realizado", "Bem-vindo " + nome + " ao educNews! Fique por dentro agora das oportunidades acadêmicas🚀.");
                     startActivity(new Intent(cadastro.this, mensagemCadastro.class));
                     finish();
                 })
@@ -188,6 +194,22 @@ public class cadastro extends AppCompatActivity {
                     mostrarMensagemErro("Erro ao salvar dados: " + e.getMessage(), false);
                 });
     }
+
+    private void salvarNotificacao(String titulo, String mensagem) {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences(NOTIFICATION_PREFS, Context.MODE_PRIVATE);
+        String existingNotifications = prefs.getString("notifications_list", "");
+        String uniqueId = String.valueOf(System.currentTimeMillis());
+        String updatedNotifications = existingNotifications.isEmpty()
+                ? uniqueId + "|" + mensagem
+                : existingNotifications + "|||" + uniqueId + "|" + mensagem;
+
+        prefs.edit().putString("notifications_list", updatedNotifications).apply();
+
+        // Envia broadcast para atualizar a interface da aba de notificações
+        Intent intent = new Intent("NOTICIA_ATUALIZADA");
+        androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
 
 
     private void mostrarMensagemErro(String mensagem, boolean sucesso) {

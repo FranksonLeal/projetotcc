@@ -3,21 +3,25 @@ package com.example.educapoio.fragments;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.educapoio.R;
 import com.example.educapoio.SectionsPagerAdapter;
+import com.example.educapoio.ThemeHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -38,10 +42,16 @@ public class inscricaoFragment extends Fragment {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", MODE_PRIVATE);
         boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
 
-        // Aplica a cor de fundo no layout raiz
-        view.setBackgroundColor(getResources().getColor(
-                isDarkMode ? R.color.colorPrimaryDark : R.color.colorPrimaryLight
-        ));
+        LinearLayout rootLayoutInicio = view.findViewById(R.id.rootLayoutInicio);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutInicio);
+
+        TabLayout tabLayout = view.findViewById(R.id.tabLayout);
+        ThemeHelper.aplicarModoEscuro(requireContext(), tabLayout);
+
+
+
+
+
 
         // Inicializa componentes
         swipeRefreshLayout = view.findViewById(R.id.swipeRefresh);

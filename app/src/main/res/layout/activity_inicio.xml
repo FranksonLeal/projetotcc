@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".inicio"
-    android:background="#F5F7FB"
+    android:id="@+id/rootLayoutInicio"
+    android:background="@color/colorPrimaryLight"
     tools:ignore="ExtraText">
 
     <androidx.fragment.app.FragmentContainerView
@@ -26,12 +27,12 @@
         style="@style/Widget.App.BottomNavigationView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

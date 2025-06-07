@@ -21,6 +21,7 @@ import android.util.Log;
 import android.widget.Button;
 
 import com.example.educapoio.R;
+import com.example.educapoio.ThemeHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 public class notificacaoFragment extends Fragment {
@@ -41,17 +42,8 @@ public class notificacaoFragment extends Fragment {
         // Obtendo a referência correta da rootView após inflar a view
         View rootView = view.findViewById(R.id.rootLayoutInicio);
 
-        // Recupera a preferência do modo escuro
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
-        boolean isDarkMode = sharedPreferences.getBoolean("dark_mode", false);
-
-        // Aplica o tema diretamente alterando a cor de fundo
-        if (isDarkMode) {
-            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        } else {
-            rootView.setBackgroundColor(getResources().getColor(R.color.colorPrimaryLight));
-        }
-
+        LinearLayout rootLayoutInicio = rootView.findViewById(R.id.rootLayoutInicio);
+        ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutInicio);
         // Obtém o título e verifica se foi inflado corretamente
         TextView titulo = view.findViewById(R.id.textView5);
         if (titulo != null) {

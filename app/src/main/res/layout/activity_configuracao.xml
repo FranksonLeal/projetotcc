@@ -9,13 +9,11 @@
 
 
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:id="@+id/rootLayout"
     android:layout_height="match_parent"
-    android:background="#F5F7FB"
+    android:background="@color/colorPrimaryLight"
     android:paddingBottom="56dp"
     tools:context=".configuracao">
 
@@ -36,6 +34,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageAjuda"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="38dp"
+        android:layout_marginEnd="35dp"
+        android:src="@drawable/ic_ajuda"
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <ImageView
         android:id="@+id/imageVoltar"
@@ -89,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="60px"
-        android:text="Modo de interface"
+        android:text="Interface"
         android:textColor="#626364"
         android:fontFamily="@font/poppins_regular"
         android:textSize="20sp"
@@ -104,7 +114,7 @@
         android:id="@+id/switchDarkMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Modo Escuro"
+        android:text="Modo escuro"
         android:textColor="#626364"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"

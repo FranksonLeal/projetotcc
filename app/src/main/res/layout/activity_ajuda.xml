@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/colorPrimaryLight">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rootLayoutInicio"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp">
+
+            <ImageView
+                android:id="@+id/imageVoltar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="35dp"
+                android:src="@drawable/ic_voltar"
+                android:contentDescription="Voltar"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true" />
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EducNews"
+                android:textColor="@color/black"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true" />
+        </RelativeLayout>
+
+
+        <!-- Pergunta 1 -->
+        <LinearLayout
+            android:id="@+id/layout_pergunta1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/pergunta1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Como acesso uma notícia?"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/resposta1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Basta clicar na oportunidade que você será redirecionado para a página principal."
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:visibility="gone"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+
+        <!-- Espaçamento -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+        <!-- Pergunta 2 -->
+        <LinearLayout
+            android:id="@+id/layout_pergunta2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:padding="12dp"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/pergunta2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Preciso realizar o login novamente após o primeiro login?"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/resposta2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Não, quando você faz login uma vez, você já fica autenticado por tempo inderteminado."
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:visibility="gone"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+
+        <!-- Espaçamento -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+
+
+
+        <!-- Pergunta 3 -->
+        <LinearLayout
+            android:id="@+id/layout_pergunta3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/pergunta3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Como posso compartilhar uma oportunidade  ?"
+                android:textSize="18sp"
+                android:textStyle="bold"
+
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/resposta3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Clique no ícone de compartilhamento e escolha o destino final desejado (WhatsApp, e-mail, etc)."
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:visibility="gone"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+
+        <!-- Espaçamento -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="16dp" />
+
+
+
+        <!-- Pergunta 4 -->
+        <LinearLayout
+            android:id="@+id/layout_pergunta4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@drawable/bg_card"
+            android:clickable="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:focusable="true">
+
+            <TextView
+                android:id="@+id/pergunta4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Como recuperar a senha para entrar no aplicativo?"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/resposta4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Basta você acessar a tela de login, clicar em 'Recuperar senha', digitar seu e-mail de cadastro(que seja válido) e digitar sua nova senha pelo link enviado para seu e-mail. "
+                android:textSize="16sp"
+                android:textColor="#444444"
+                android:visibility="gone"
+                android:paddingTop="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

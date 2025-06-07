@@ -10,7 +10,10 @@
     <color name="primary">#841FFD</color>
     <color name="onPrimary">#FFFFFF</color>
 
-    <color name="colorPrimaryDark">#000000</color> <!-- Preto -->
+
+    <color name="background_primary">#F2F2F2</color>
+
+    <color name="colorPrimaryDark">#2F2F2F</color> <!-- Preto -->
     <color name="colorPrimaryLight">#F5F7FB</color> <!-- Branco -->
     <color name="dark_gray">#A9A9A9</color> <!-- Cor do fundo da barra -->
 </resources>

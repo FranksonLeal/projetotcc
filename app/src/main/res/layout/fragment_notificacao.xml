@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:id="@+id/rootLayoutInicio"
     android:padding="16dp"
-    android:background="#F5F7FB">
+    android:background="@color/colorPrimaryLight">
 
     <!-- Título fixo -->
     <TextView
@@ -39,7 +39,7 @@
     <!-- Botão para excluir todas as notificações -->
     <Button
         android:id="@+id/deleteAllButton"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Excluir tudo"
         android:layout_gravity="center"
@@ -47,7 +47,7 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="#C81D25"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:contentDescription="Excluir todas as notificações" />
 
 </LinearLayout>
