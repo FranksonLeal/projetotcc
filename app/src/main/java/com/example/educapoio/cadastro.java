@@ -40,6 +40,49 @@ public class cadastro extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
+
+        binding.editTelefone.addTextChangedListener(new android.text.TextWatcher() {
+            boolean isUpdating;
+
+            // Máscara: (##) #####-####
+            private final String mask = "(##) #####-####";
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isUpdating) {
+                    isUpdating = false;
+                    return;
+                }
+
+                String str = s.toString().replaceAll("[^\\d]", ""); // Remove tudo que não for número
+                StringBuilder formatted = new StringBuilder();
+
+                int i = 0;
+                for (char m : mask.toCharArray()) {
+                    if (m != '#' && str.length() > i) {
+                        formatted.append(m);
+                    } else {
+                        try {
+                            formatted.append(str.charAt(i));
+                        } catch (Exception e) {
+                            break;
+                        }
+                        i++;
+                    }
+                }
+
+                isUpdating = true;
+                binding.editTelefone.setText(formatted.toString());
+                binding.editTelefone.setSelection(formatted.length());
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
@@ -62,15 +105,31 @@ public class cadastro extends AppCompatActivity {
     private void configurarSpinner() {
         Spinner spinnerCurso = binding.spinnerCurso;
 
-        // Lista de cursos existentes
-        String[] cursos = {"Selecione um curso:","Sistemas de Informação", "Engenharia de Software", "Engenharia de Produção", "Matemática e física", "Pedagogia", "Química e biologia", "Farmácia", "Engenharia sanitária", "Agronomia"};
+        String[] cursos = {
+                "Selecione um curso:",
+                "Sistemas de Informação",
+                "Engenharia de Software",
+                "Engenharia de Produção",
+                "Matemática e física",
+                "Pedagogia",
+                "Química e biologia",
+                "Farmácia",
+                "Engenharia sanitária",
+                "Agronomia"
+        };
 
-        // Configurando o adaptador do Spinner
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, cursos);
+        // Usa seu layout customizado para o item do spinner (o que você criou)
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                R.layout.spinner_item,  // seu layout customizado aqui
+                cursos
+        );
+
+        // Layout para a lista suspensa (dropdown)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinnerCurso.setAdapter(adapter);
 
-        // Listener para capturar o curso selecionado
         spinnerCurso.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -86,6 +145,7 @@ public class cadastro extends AppCompatActivity {
             }
         });
     }
+
 
     private void validaDados() {
         String nome = binding.editNome.getText().toString().trim();

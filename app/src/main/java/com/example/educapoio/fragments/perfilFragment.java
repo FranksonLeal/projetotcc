@@ -31,6 +31,7 @@ import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.configuracao;
 import com.example.educapoio.editarPerfil;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -116,8 +117,7 @@ public class perfilFragment extends Fragment {
         if (user != null) {
             carregarDadosUsuario(user.getUid());
         }
-        // Exemplo simples de ação:
-        Toast.makeText(getContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
+
     }
 
 
@@ -135,6 +135,9 @@ public class perfilFragment extends Fragment {
             if (!task.isSuccessful()) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 editNome.setText("Erro ao carregar dados");
+
+                // Mostrar Snackbar de erro
+                Snackbar.make(requireView(), "Erro ao carregar dados do usuário", Snackbar.LENGTH_SHORT).show();
                 return;
             }
 
@@ -142,6 +145,9 @@ public class perfilFragment extends Fragment {
             if (document == null || !document.exists()) {
                 if (progressBar != null) progressBar.setVisibility(View.GONE);
                 editNome.setText("Dados não encontrados");
+
+                // Mostrar Snackbar de aviso
+                Snackbar.make(requireView(), "Dados do usuário não encontrados", Snackbar.LENGTH_SHORT).show();
                 return;
             }
 
@@ -165,7 +171,9 @@ public class perfilFragment extends Fragment {
                             .error(R.drawable.error_image)
                             .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
                                 @Override
-                                public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, boolean isFirstResource) {
+                                public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e, Object model,
+                                                            com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
+                                                            boolean isFirstResource) {
                                     if (isAdded() && progressBar != null) {
                                         progressBar.setVisibility(View.GONE);
                                     }
@@ -173,7 +181,9 @@ public class perfilFragment extends Fragment {
                                 }
 
                                 @Override
-                                public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target, com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                                public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model,
+                                                               com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
+                                                               com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
                                     if (isAdded() && progressBar != null) {
                                         progressBar.setVisibility(View.GONE);
                                     }
@@ -190,8 +200,25 @@ public class perfilFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                 }
             }
+
+            // Mostrar Snackbar de sucesso ao finalizar o carregamento
+            Snackbar snackbar = Snackbar.make(requireView(), "Dados do usuário carregados", Snackbar.LENGTH_SHORT);
+            View snackbarView = snackbar.getView();
+            snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo claro
+
+            int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+            TextView textView = snackbarView.findViewById(snackbarTextId);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+            int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+            if (textView != null) {
+                textView.setTextColor(Color.WHITE);
+            }
+
+            snackbar.show();
         });
     }
+
 
 
     private void mostrarInicial(String nome) {

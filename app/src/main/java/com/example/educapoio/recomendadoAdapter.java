@@ -35,8 +35,13 @@ public class recomendadoAdapter extends RecyclerView.Adapter<recomendadoAdapter.
 
         // Botão compartilhar
         holder.btnCompartilhar.setOnClickListener(v -> {
-            String textoCompartilhar = noticia.getTitulo() + "\n\nData: " + noticia.getDataPublicacao() +
-                    "\n\nVeja mais no aplicativo EducNews!";
+            String textoCompartilhar = "Notícia:\n" + noticia.getTitulo() + "\n\nData: " + noticia.getDataPublicacao();
+
+            if (noticia.getUrl() != null && !noticia.getUrl().isEmpty()) {
+                textoCompartilhar += "\n\nLeia mais: " + noticia.getUrl();
+            }
+
+            textoCompartilhar += "\n\n💡 Compartilhado via EducNews - Fique sempre por dentro das oportunidades acadêmicas!";
 
             Intent compartilharIntent = new Intent();
             compartilharIntent.setAction(Intent.ACTION_SEND);
@@ -45,6 +50,7 @@ public class recomendadoAdapter extends RecyclerView.Adapter<recomendadoAdapter.
 
             v.getContext().startActivity(Intent.createChooser(compartilharIntent, "Compartilhar notícia via"));
         });
+
 
         // Verificar se tem URL
         if (noticia.getUrl() != null && !noticia.getUrl().isEmpty()) {

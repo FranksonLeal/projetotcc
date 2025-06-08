@@ -4,9 +4,11 @@ import static java.security.AccessController.getContext;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -178,40 +181,6 @@ public class editarPerfil extends AppCompatActivity {
         }
     }
 
-    private void removerImagemPerfil() {
-        new AlertDialog.Builder(this)
-                .setTitle("Remover Imagem")
-                .setMessage("Tem certeza que deseja remover a imagem?")
-                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                    progressBarRemover.setVisibility(View.VISIBLE); // Exibir ProgressBar ao remover imagem
-                    // Atualizar Firestore para remover a URL da imagem
-                    Map<String, Object> userData = new HashMap<>();
-                    userData.put("imagem", null); // Remover a imagem (definindo como null)
-
-                    db.collection("users").document(userId)
-                            .update(userData)
-                            .addOnSuccessListener(aVoid -> {
-                                // Remover imagem do Firebase Storage
-                                StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
-                                filePath.delete().addOnSuccessListener(aVoid1 -> {
-                                    Toast.makeText(editarPerfil.this, "Imagem removida com sucesso", Toast.LENGTH_SHORT).show();
-                                    mudarPerfil.setImageResource(R.drawable.placeholder_image); // Exibir placeholder após remoção
-                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após remoção
-                                    adicionarImagem.setText("Adicionar imagem"); // Alterar texto para "Adicionar imagem"
-                                    adicionarImagem.setOnClickListener(v -> escolherImagem());
-                                }).addOnFailureListener(e -> {
-                                    Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Storage", Toast.LENGTH_SHORT).show();
-                                    progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
-                                });
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(editarPerfil.this, "Erro ao remover a imagem do Firestore", Toast.LENGTH_SHORT).show();
-                                progressBarRemover.setVisibility(View.GONE); // Esconder ProgressBar após erro
-                            });
-                })
-                .setNegativeButton(android.R.string.no, null)
-                .show();
-    }
 
     private void atualizarDadosUsuario(String nome, String telefone, String curso) {
         progressBarSalvar.setVisibility(View.VISIBLE); // Exibir ProgressBar ao salvar dados
@@ -236,16 +205,71 @@ public class editarPerfil extends AppCompatActivity {
         }
     }
 
+    private void mostrarSnackbar(View view, String mensagem) {
+        Snackbar snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_SHORT);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+        snackbarView.setLayoutParams(params);
+
+        int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        if (textView != null) {
+            textView.setTextColor(Color.WHITE);
+        }
+
+        snackbar.show();
+    }
+
+    private void removerImagemPerfil() {
+        new AlertDialog.Builder(this)
+                .setTitle("Remover Imagem")
+                .setMessage("Tem certeza que deseja remover a imagem?")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    progressBarRemover.setVisibility(View.VISIBLE);
+                    Map<String, Object> userData = new HashMap<>();
+                    userData.put("imagem", null);
+
+                    db.collection("users").document(userId)
+                            .update(userData)
+                            .addOnSuccessListener(aVoid -> {
+                                StorageReference filePath = storageRef.child("profile_images").child(userId + ".jpg");
+                                filePath.delete()
+                                        .addOnSuccessListener(aVoid1 -> {
+                                            mostrarSnackbar(findViewById(android.R.id.content), "Imagem removida com sucesso");
+                                            mudarPerfil.setImageResource(R.drawable.placeholder_image);
+                                            progressBarRemover.setVisibility(View.GONE);
+                                            adicionarImagem.setText("Adicionar imagem");
+                                            adicionarImagem.setOnClickListener(v -> escolherImagem());
+                                        })
+                                        .addOnFailureListener(e -> {
+                                            mostrarSnackbar(findViewById(android.R.id.content), "Erro ao remover a imagem do Storage");
+                                            progressBarRemover.setVisibility(View.GONE);
+                                        });
+                            })
+                            .addOnFailureListener(e -> {
+                                mostrarSnackbar(findViewById(android.R.id.content), "Erro ao remover a imagem do Firestore");
+                                progressBarRemover.setVisibility(View.GONE);
+                            });
+                })
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
+
     private void salvarDadosNoFirestore(Map<String, Object> userData) {
         db.collection("users").document(userId).update(userData)
                 .addOnCompleteListener(task -> {
-                    progressBarSalvar.setVisibility(View.GONE); // Esconder ProgressBar após salvar dados
+                    progressBarSalvar.setVisibility(View.GONE);
                     if (task.isSuccessful()) {
-                        Toast.makeText(editarPerfil.this, "Dados atualizados com sucesso", Toast.LENGTH_SHORT).show();
+                        mostrarSnackbar(findViewById(android.R.id.content), "Dados atualizados com sucesso");
                     } else {
-                        Toast.makeText(editarPerfil.this, "Erro ao atualizar os dados", Toast.LENGTH_SHORT).show();
+                        mostrarSnackbar(findViewById(android.R.id.content), "Erro ao atualizar os dados");
                     }
                 });
     }
+
 }
 

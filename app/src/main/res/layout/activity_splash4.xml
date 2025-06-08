@@ -74,7 +74,7 @@
 
     <Button
         android:id="@+id/continuar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="200dp"
         android:layout_marginTop="72dp"
@@ -93,7 +93,7 @@
 
     <Button
         android:id="@+id/voltar"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginTop="72dp"

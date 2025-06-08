@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,6 +23,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.educapoio.R;
 import com.example.educapoio.SectionsPagerAdapter;
 import com.example.educapoio.ThemeHelper;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -47,9 +49,6 @@ public class inscricaoFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tabLayout);
         ThemeHelper.aplicarModoEscuro(requireContext(), tabLayout);
-
-
-
 
 
 
@@ -80,10 +79,9 @@ public class inscricaoFragment extends Fragment {
 
         // Configura ação de "puxar para atualizar"
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            // 🔁 Aqui você coloca o que deve acontecer quando o usuário fizer o swipe
+
             atualizarTela();
 
-            // Para a animação de carregamento depois que terminar
             swipeRefreshLayout.setRefreshing(false);
         });
 
@@ -91,12 +89,30 @@ public class inscricaoFragment extends Fragment {
     }
 
     private void atualizarTela() {
-        // Aqui você atualiza os dados da tela:
-        // Pode ser buscar dados do Firestore, Firebase ou apenas atualizar a interface.
+        if (!isAdded()) return;
 
-        // Exemplo simples de ação:
-        Toast.makeText(getContext(), "Oportunidades atualizadas!", Toast.LENGTH_SHORT).show();
+        View rootView = requireView();
+
+        Snackbar snackbar = Snackbar.make(rootView, "Oportunidades atualizadas!", Snackbar.LENGTH_SHORT);
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+        // Ajusta margem inferior para empurrar Snackbar para cima
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+        snackbarView.setLayoutParams(params);
+
+        int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        if (textView != null) {
+            textView.setTextColor(Color.WHITE);
+        }
+
+        snackbar.show();
     }
+
 
 
     // Função para recarregar os fragments

@@ -2,6 +2,7 @@ package com.example.educapoio.fragments;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -65,6 +67,8 @@ public class AuxiliosAbertosFragment extends Fragment {
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE);
+
             if (task.isSuccessful()) {
                 List<QueryDocumentSnapshot> documentosAbertos = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -84,7 +88,6 @@ public class AuxiliosAbertosFragment extends Fragment {
 
                     List<Map<String, Object>> auxiliosAbertosMap = converterParaMap(documentosAbertos);
 
-                    // ** Aqui o listener com os dois métodos obrigatórios **
                     adapter = new AuxilioAdapterInscricao(auxiliosAbertosMap, new AuxilioAdapterInscricao.OnItemClickListener() {
                         @Override
                         public void onItemClick(String url) {
@@ -98,15 +101,51 @@ public class AuxiliosAbertosFragment extends Fragment {
                     });
 
                     recyclerView.setAdapter(adapter);
+
+                    // Snackbar de sucesso ao carregar
+                    View rootView = requireView();
+                    Snackbar snackbar = Snackbar.make(rootView, "Oportunidades carregadas!", Snackbar.LENGTH_SHORT);
+
+                    View snackbarView = snackbar.getView();
+                    snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                    int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+                    params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                    snackbarView.setLayoutParams(params);
+
+                    int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                    TextView textView = snackbarView.findViewById(snackbarTextId);
+                    if (textView != null) {
+                        textView.setTextColor(Color.WHITE);
+                    }
+
+                    snackbar.show();
+                }
+            } else {
+                // Snackbar de erro no lugar do Toast
+                View rootView = requireView();
+                Snackbar snackbar = Snackbar.make(rootView, "Erro ao carregar oportunidades", Snackbar.LENGTH_SHORT);
+
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                snackbarView.setLayoutParams(params);
+
+                int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                TextView textView = snackbarView.findViewById(snackbarTextId);
+                if (textView != null) {
+                    textView.setTextColor(Color.WHITE);
                 }
 
-                progressBar.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                Toast.makeText(getContext(), "Erro ao carregar oportunidades", Toast.LENGTH_SHORT).show();
+                snackbar.show();
             }
         });
     }
+
 
     private boolean isAuxilioAberto(QueryDocumentSnapshot document) {
         String dataFimStr = document.getString("dataFim");

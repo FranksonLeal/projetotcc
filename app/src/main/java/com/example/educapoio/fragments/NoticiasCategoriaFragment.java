@@ -1,5 +1,7 @@
 package com.example.educapoio.fragments;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.educapoio.ApiClient;
@@ -17,6 +20,7 @@ import com.example.educapoio.NewsApiService;
 import com.example.educapoio.NewsResponse;
 import com.example.educapoio.NoticiasAdapter;
 import com.example.educapoio.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,6 +38,9 @@ public class NoticiasCategoriaFragment extends Fragment {
     private static final String ARG_CATEGORIA = "category";
     private RecyclerView recyclerViewNoticias;
     private NoticiasAdapter noticiasAdapter;
+
+    private NoticiasCallback callback;
+
 
     public static NoticiasCategoriaFragment newInstance(String categoria) {
         NoticiasCategoriaFragment fragment = new NoticiasCategoriaFragment();
@@ -66,6 +73,15 @@ public class NoticiasCategoriaFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if (getParentFragment() instanceof NoticiasCallback) {
+            callback = (NoticiasCallback) getParentFragment();
+        }
+    }
+
+
     // Buscar notícias recomendadas no Firebase
     private void buscarNoticiasDoFirebase() {
         FirebaseFirestore.getInstance().collection("noticias")
@@ -75,7 +91,6 @@ public class NoticiasCategoriaFragment extends Fragment {
                         QuerySnapshot querySnapshot = task.getResult();
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
                             List<Article> artigosFirebase = new ArrayList<>();
-                            // Supondo que você tenha um método para converter DocumentSnapshot para Article
                             for (DocumentSnapshot doc : querySnapshot.getDocuments()) {
                                 Article artigo = doc.toObject(Article.class);
                                 if (artigo != null) {
@@ -84,66 +99,92 @@ public class NoticiasCategoriaFragment extends Fragment {
                             }
                             noticiasAdapter = new NoticiasAdapter(artigosFirebase);
                             recyclerViewNoticias.setAdapter(noticiasAdapter);
-                        } else {
-                            Toast.makeText(getContext(), "Nenhuma notícia recomendada encontrada", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(getContext(), "Erro ao buscar notícias recomendadas", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
-    // Buscar o curso do usuário para filtrar notícias da API
-    private void buscarCursoDoUsuario() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            // Mostrar Snackbar de sucesso
+                            Snackbar snackbar = Snackbar.make(recyclerViewNoticias, "Notícias carregadas", Snackbar.LENGTH_SHORT);
+                            View snackbarView = snackbar.getView();
+                            snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo mais claro
 
-        FirebaseFirestore.getInstance().collection("users")
-                .document(userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot document = task.getResult();
-                        if (document != null && document.exists()) {
-                            String curso = document.getString("curso");
-                            if (curso != null && !curso.isEmpty()) {
-                                buscarNoticiasDaAPI(curso); // Usa o curso do usuário como filtro
-                            } else {
-                                Toast.makeText(getContext(), "Curso não encontrado", Toast.LENGTH_SHORT).show();
+                            int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                            TextView textView = snackbarView.findViewById(snackbarTextId);
+                            if (textView != null) {
+                                textView.setTextColor(Color.WHITE);
                             }
+
+                            snackbar.show();
+
                         } else {
-                            Toast.makeText(getContext(), "Usuário não encontrado", Toast.LENGTH_SHORT).show();
+                            Snackbar.make(recyclerViewNoticias, "Nenhuma notícia recomendada encontrada", Snackbar.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getContext(), "Erro ao buscar dados do usuário", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(recyclerViewNoticias, "Erro ao buscar notícias recomendadas", Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
     // Buscar notícias da API com base em uma query (curso)
-    private void buscarNoticiasDaAPI(String query) {
-        NewsApiService service = ApiClient.getClient().create(NewsApiService.class);
+    private void buscarNoticiasDaAPI(String curso) {
+        if (callback != null) callback.onNoticiasCarregando();
 
-        Call<NewsResponse> call = service.searchNews(query, "pt");
+        NewsApiService apiService = ApiClient.getClient().create(NewsApiService.class);
+        Call<NewsResponse> call = apiService.searchNews(curso, "pt");
+
+
         call.enqueue(new Callback<NewsResponse>() {
+
             @Override
             public void onResponse(Call<NewsResponse> call, Response<NewsResponse> response) {
+                if (callback != null) callback.onNoticiasCarregadas();
+
                 if (response.isSuccessful() && response.body() != null) {
                     List<Article> articles = response.body().getArticles();
-                    if (articles != null && !articles.isEmpty()) {
-                        noticiasAdapter = new NoticiasAdapter(articles);
-                        recyclerViewNoticias.setAdapter(noticiasAdapter);
-                    } else {
-                        Toast.makeText(getContext(), "Nenhuma notícia encontrada", Toast.LENGTH_SHORT).show();
+                    noticiasAdapter = new NoticiasAdapter(articles);
+                    recyclerViewNoticias.setAdapter(noticiasAdapter);
+
+                    // Mostrar Snackbar após o carregamento com cor roxa clara e texto branco
+                    Snackbar snackbar = Snackbar.make(recyclerViewNoticias, "Notícias carregadas", Snackbar.LENGTH_SHORT);
+                    View snackbarView = snackbar.getView();
+                    snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo mais claro
+
+                    // Ajusta margem inferior para empurrar Snackbar para cima (64dp)
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                    int bottomMarginPx = (int) (64 * recyclerViewNoticias.getResources().getDisplayMetrics().density);
+                    params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                    snackbarView.setLayoutParams(params);
+
+                    // Pega o id do texto do Snackbar dinamicamente para evitar erro R
+                    int snackbarTextId = recyclerViewNoticias.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                    TextView textView = snackbarView.findViewById(snackbarTextId);
+                    if (textView != null) {
+                        textView.setTextColor(Color.WHITE);
                     }
+
+                    snackbar.show();
                 } else {
-                    Toast.makeText(getContext(), "Erro ao carregar notícias", Toast.LENGTH_SHORT).show();
+                    Snackbar snackbar = Snackbar.make(recyclerViewNoticias, "Erro ao carregar notícias", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
                 }
             }
 
+
+
+
+
             @Override
             public void onFailure(Call<NewsResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Erro: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                if (callback != null) callback.onNoticiasCarregadas();
+                Toast.makeText(getContext(), "Erro na conexão", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+
+
+
+    public interface NoticiasCallback {
+        void onNoticiasCarregando();
+        void onNoticiasCarregadas();
+    }
+
 }

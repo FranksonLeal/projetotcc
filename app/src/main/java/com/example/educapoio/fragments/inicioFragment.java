@@ -1,17 +1,12 @@
 package com.example.educapoio.fragments;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -21,35 +16,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.example.educapoio.Ajuda;
 import com.example.educapoio.AuxilioAdapter;
 import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
-import com.example.educapoio.configuracao;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +60,8 @@ public class inicioFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
 
+    private boolean carrosselIniciado = false;
+
     public inicioFragment() {
         // Required empty public constructor
     }
@@ -84,9 +76,7 @@ public class inicioFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
+        handler = new Handler(Looper.getMainLooper());
 
     }
 
@@ -97,24 +87,23 @@ public class inicioFragment extends Fragment {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
-                    String nome = document.getString("nome");
-                    String tipoUsuario = document.getString("tipoUsuario"); // Corrigido para "tipoUsuario"
+                    String nomeCompleto = document.getString("nome");
+                    String tipoUsuario = document.getString("tipoUsuario");
 
-                    // Log para depuração
-                    Log.d("UserInfo", "Nome: " + nome + ", Tipo: " + tipoUsuario);
+                    Log.d("UserInfo", "Nome: " + nomeCompleto + ", Tipo: " + tipoUsuario);
 
-                    if (nome != null) {
-                        // Garantindo que a comparação ignore maiúsculas e minúsculas
+                    if (nomeCompleto != null) {
+                        String primeiroNome = nomeCompleto.split(" ")[0]; // Pega só o primeiro nome
+
                         String saudacao = "Olá, ";
                         if (tipoUsuario != null && tipoUsuario.equalsIgnoreCase("Professor")) {
                             saudacao = "Olá, Professor ";
                         }
 
-                        // Aplicando cor ao nome do usuário
-                        SpannableString spannable = new SpannableString(saudacao + nome);
+                        SpannableString spannable = new SpannableString(saudacao + primeiroNome);
                         spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")),
-                                saudacao.length(), // Início do nome
-                                spannable.length(), // Até o final
+                                saudacao.length(),
+                                spannable.length(),
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
                         textoOla.setText(spannable);
@@ -130,10 +119,9 @@ public class inicioFragment extends Fragment {
         });
     }
 
+
     ShimmerFrameLayout shimmerLayout;
     LinearLayout layoutSemAuxilios; // Para o "Nenhuma oportunidade encontrada"
-
-
 
 
     @SuppressLint({"WrongViewCast", "MissingInflatedId"})
@@ -190,9 +178,6 @@ public class inicioFragment extends Fragment {
                 startActivity(new Intent(getActivity(), Ajuda.class))
         );
 
-        // Já configurado anteriormente, não precisa repetir
-        // recyclerViewAuxilios = view.findViewById(R.id.recyclerViewAuxilios);
-        // recyclerViewAuxilios.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         progressBar.setVisibility(View.VISIBLE);
         buscarAuxiliosDoFirestore();
@@ -202,69 +187,68 @@ public class inicioFragment extends Fragment {
         return view;
     }
 
-
-    private void atualizarTela() {
-        buscarAuxiliosDoFirestore();
-    }
-
-
-    private void iniciarSlideAutomatico() {
-        if (adapter == null || recyclerViewAuxilios.getLayoutManager() == null) {
-            return;  // Não iniciar o slide se o adapter ou o layout manager não estiverem prontos
-        }
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                // Verifica a posição atual
-                int position = ((LinearLayoutManager) recyclerViewAuxilios.getLayoutManager()).findFirstVisibleItemPosition();
-                int nextPosition = position + 1;
-
-                // Se a próxima posição ultrapassar o número de itens, reinicia o slide
-                if (nextPosition >= adapter.getItemCount()) {
-                    nextPosition = 0;
-                }
-
-                // Cria o scroller suave para a rolagem
-                LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
-                    @Override
-                    protected int getHorizontalSnapPreference() {
-                        return SNAP_TO_START; // Se você precisar alinhar à esquerda
-                    }
-
-                    @Override
-                    protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                        // Ajuste a velocidade da rolagem
-                        float inchesPerPixel = super.calculateSpeedPerPixel(displayMetrics);
-                        return inchesPerPixel * 10; // Aumente esse valor para desacelerar a rolagem
-                    }
-                };
-
-                smoothScroller.setTargetPosition(nextPosition);
-                recyclerViewAuxilios.getLayoutManager().startSmoothScroll(smoothScroller);
-
-                // Aguardar 3 segundos antes de mover para o próximo item
-                handler.postDelayed(this, 3000);
-            }
-        };
-
-        handler.post(runnable); // Iniciar o slide automático
-    }
-
-
     @Override
     public void onResume() {
         super.onResume();
-        iniciarSlideAutomatico();  // Iniciar o slide quando o fragmento for visível
+        iniciarSlideAutomatico();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable);  // Parar o slide quando o fragmento for pausado
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable); // Para o slide automático
+            runnable = null;
+            // NÃO zere o handler aqui
+        }
     }
 
-    // Configurar eventos de clique nas imagens
+
+    private void atualizarTela() {
+        buscarAuxiliosDoFirestore();
+    }
+
+    private void iniciarSlideAutomatico() {
+        if (adapter == null || recyclerViewAuxilios.getLayoutManager() == null) {
+            return;
+        }
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerViewAuxilios.getLayoutManager();
+                int lastVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition();
+
+                if (lastVisiblePosition == adapter.getItemCount() - 1) {
+                    // Volta ao início com scroll suave
+                    recyclerViewAuxilios.smoothScrollToPosition(0);
+                } else {
+                    int nextPosition = layoutManager.findFirstVisibleItemPosition() + 1;
+
+                    LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+                        @Override
+                        protected int getHorizontalSnapPreference() {
+                            return SNAP_TO_START;
+                        }
+
+                        @Override
+                        protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                            return super.calculateSpeedPerPixel(displayMetrics) * 10;
+                        }
+                    };
+                    smoothScroller.setTargetPosition(nextPosition);
+                    layoutManager.startSmoothScroll(smoothScroller);
+                }
+
+                handler.postDelayed(this, 3000);
+            }
+        };
+
+        handler.post(runnable);
+    }
+
+
+
     private void configurarImagemClique(View rootView) {
         ImageView imageAcess = rootView.findViewById(R.id.imageAcess);
         imageAcess.setOnClickListener(v -> mostrarMensagemIndisponibilidade());
@@ -277,13 +261,25 @@ public class inicioFragment extends Fragment {
         LinearLayout btnEcampus = rootView.findViewById(R.id.btn_ecampus);
         btnEcampus.setOnClickListener(v -> abrirUrl("https://ecampus.ufam.edu.br/ecampus/home/login"));
 
-        // As imagens continuam funcionando normalmente
-        rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.grancursosonline.com.br/cursos/carreira/tecnologia-da-informacao"));
-        rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));
-        rootView.findViewById(R.id.imagemAdm).setOnClickListener(v -> abrirUrl("https://jcconcursos.com.br/concursos/por-cargo/administrador"));
-        rootView.findViewById(R.id.imagemContabilidade).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-contabilidade"));
-    }
+        // Tecnologia da Informação
+        rootView.findViewById(R.id.imagemTi).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-ti/"));
 
+// Saúde
+        rootView.findViewById(R.id.imagemSaude).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-area-da-saude/"));
+
+// Administração
+        rootView.findViewById(R.id.imagemAdm).setOnClickListener(v -> abrirUrl("https://www.jcconcursos.com.br/concursos/por-cargo/administrador"));
+
+// Educação
+        rootView.findViewById(R.id.imagemEducacao).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-educacao/"));
+
+// Banco e Finanças
+        rootView.findViewById(R.id.imagemBanco).setOnClickListener(v -> abrirUrl("https://www.estrategiaconcursos.com.br/blog/concursos-bancarios/#:~:text=Concursos%20Banc%C3%A1rios%3A%20%C3%A1rea%20financeira&text=Concurso%20BACEN,Concurso%20BNDES"));
+
+// Direito
+        rootView.findViewById(R.id.imagemDireito).setOnClickListener(v -> abrirUrl("https://www.jcconcursos.com.br/concursos/por-cargo/advogado"));
+
+    }
 
     private void abrirUrl(String url) {
         if (url != null && !url.isEmpty()) {
@@ -326,7 +322,6 @@ public class inicioFragment extends Fragment {
         bottomSheetDialog.show();
     }
 
-
     private void abrirUrlWebView(String url) {
         try {
             Intent intent = new Intent(getContext(), WebViewActivity.class);
@@ -336,8 +331,6 @@ public class inicioFragment extends Fragment {
             showCustomMessage("Não foi possível abrir o link.");
         }
     }
-
-
 
 
     private void showCustomMessage(String message) {
@@ -355,7 +348,6 @@ public class inicioFragment extends Fragment {
     }
 
 
-
     public void onItemClick(String url) {
         if (url != null && !url.isEmpty()) {
             abrirUrl(url);
@@ -363,7 +355,6 @@ public class inicioFragment extends Fragment {
             Toast.makeText(getContext(), "URL não disponível", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void mostrarMensagemIndisponibilidade() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
@@ -400,8 +391,6 @@ public class inicioFragment extends Fragment {
         bottomSheetDialog.setContentView(layout);
         bottomSheetDialog.show();
     }
-
-
 
     private void buscarAuxiliosDoFirestore() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -441,7 +430,6 @@ public class inicioFragment extends Fragment {
         startActivity(Intent.createChooser(shareIntent, "Compartilhar auxílio via"));
     }
 
-
     private void carregarAuxiliosFiltrados(String cursoUsuario) {
         db.collection("auxilios")
                 .get()
@@ -469,6 +457,9 @@ public class inicioFragment extends Fragment {
                         if (auxiliosList.isEmpty()) {
                             layoutSemAuxilios.setVisibility(View.VISIBLE);
                             recyclerViewAuxilios.setVisibility(View.GONE);
+
+                            // Iniciar carrossel automaticamente após carregar dados
+                            iniciarSlideAutomatico();
                         } else {
                             layoutSemAuxilios.setVisibility(View.GONE);
                             recyclerViewAuxilios.setVisibility(View.VISIBLE);
@@ -490,11 +481,33 @@ public class inicioFragment extends Fragment {
                             });
 
                             recyclerViewAuxilios.setAdapter(adapter);
+                            // Iniciar carrossel após configurar o adapter
+                            iniciarSlideAutomatico();
+
+                            // Mostrar Snackbar de sucesso com estilo roxo claro e texto branco
+                            Snackbar snackbar = Snackbar.make(recyclerViewAuxilios, "Oportunidades carregadas", Snackbar.LENGTH_SHORT);
+                            View snackbarView = snackbar.getView();
+                            snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo claro
+
+                            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                            int bottomMarginPx = (int) (64 * recyclerViewAuxilios.getResources().getDisplayMetrics().density);
+                            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                            snackbarView.setLayoutParams(params);
+
+                            int snackbarTextId = recyclerViewAuxilios.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                            TextView textView = snackbarView.findViewById(snackbarTextId);
+                            if (textView != null) {
+                                textView.setTextColor(Color.WHITE);
+                            }
+
+                            snackbar.show();
                         }
                     } else {
                         layoutSemAuxilios.setVisibility(View.VISIBLE);
                         recyclerViewAuxilios.setVisibility(View.GONE);
-                        Toast.makeText(getContext(), "Erro ao carregar auxílios.", Toast.LENGTH_SHORT).show();
+
+                        // Snackbar simples de erro
+                        Snackbar.make(recyclerViewAuxilios, "Erro ao carregar auxílios.", Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }

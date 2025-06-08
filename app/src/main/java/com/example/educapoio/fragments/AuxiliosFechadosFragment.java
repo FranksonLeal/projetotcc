@@ -2,6 +2,7 @@ package com.example.educapoio.fragments;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -24,6 +25,7 @@ import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -68,8 +70,8 @@ public class AuxiliosFechadosFragment extends Fragment {
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
-            // Ao finalizar a busca
-            progressBar.setVisibility(View.GONE);  // Sempre escondemos a ProgressBar aqui
+            // Sempre escondemos a ProgressBar aqui
+            progressBar.setVisibility(View.GONE);
 
             if (task.isSuccessful()) {
                 List<QueryDocumentSnapshot> documentosFechados = new ArrayList<>();
@@ -83,10 +85,8 @@ public class AuxiliosFechadosFragment extends Fragment {
                     }
                 }
 
-                // Converte para Map<String, Object> e cria o adapter
                 List<Map<String, Object>> auxiliosFechadosMap = converterParaMap(documentosFechados);
 
-                // Ajuste aqui: implementação anônima para interface com múltiplos métodos
                 adapter = new AuxilioAdapterInscricao(auxiliosFechadosMap, new AuxilioAdapterInscricao.OnItemClickListener() {
                     @Override
                     public void onItemClick(String url) {
@@ -99,25 +99,57 @@ public class AuxiliosFechadosFragment extends Fragment {
                     }
                 });
 
-
-
-
                 recyclerView.setAdapter(adapter);
 
-                // Verifica se há auxílios fechados e atualiza a visibilidade do TextView
                 if (auxiliosFechadosMap.isEmpty()) {
                     recyclerView.setVisibility(View.GONE);
                     txtNoAuxiliosFechados.setVisibility(View.VISIBLE);
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     txtNoAuxiliosFechados.setVisibility(View.GONE);
+
+                    // Snackbar de sucesso estilizado
+                    Snackbar snackbar = Snackbar.make(view, "Oportunidades encerradas carregadas", Snackbar.LENGTH_SHORT);
+                    View snackbarView = snackbar.getView();
+                    snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo claro
+
+                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                    int bottomMarginPx = (int) (64 * view.getResources().getDisplayMetrics().density); // 64dp para pixels
+                    params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                    snackbarView.setLayoutParams(params);
+
+                    int snackbarTextId = view.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                    TextView textView = snackbarView.findViewById(snackbarTextId);
+                    if (textView != null) {
+                        textView.setTextColor(Color.WHITE);
+                    }
+
+                    snackbar.show();
                 }
 
             } else {
-                Toast.makeText(getContext(), "Erro ao carregar oportunidades encerradas", Toast.LENGTH_SHORT).show();
+                // Snackbar de erro estilizado
+                Snackbar snackbar = Snackbar.make(view, "Erro ao carregar oportunidades encerradas", Snackbar.LENGTH_SHORT);
+                View snackbarView = snackbar.getView();
+                snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                int bottomMarginPx = (int) (64 * view.getResources().getDisplayMetrics().density);
+                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                snackbarView.setLayoutParams(params);
+
+                int snackbarTextId = view.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                TextView textView = snackbarView.findViewById(snackbarTextId);
+                if (textView != null) {
+                    textView.setTextColor(Color.WHITE);
+                }
+
+                snackbar.show();
             }
         });
     }
+
+
     private void compartilharAuxilio(Map<String, Object> auxilio) {
         String titulo = (String) auxilio.get("titulo");
 

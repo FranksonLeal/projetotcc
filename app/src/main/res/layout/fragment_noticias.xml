@@ -4,54 +4,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/rootLayoutInicio"
-    android:background="@color/colorPrimaryLight"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="56dp"
-    android:orientation="vertical">
-
-    <!-- Título fixo Notícias -->
-    <TextView
-        android:id="@+id/textViewNoticias"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Outras Notícias"
-        android:fontFamily="@font/poppins_regular"
-        android:textColor="@color/black"
-        android:textAlignment="center"
-        android:layout_marginTop="30dp"
-        android:textSize="30sp"
-        android:textStyle="bold" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayoutNoticias"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:tabTextAppearance="@style/CustomTabText"
-        android:background="@color/colorPrimaryLight"
-        app:tabMode="fixed"
+        <!-- Layout principal com conteúdo -->
+        <LinearLayout
+            android:id="@+id/rootLayoutInicio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="56dp"
+            android:background="@color/colorPrimaryLight"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
 
-        android:contentDescription="Categorias de notícias" />
+            <!-- Título -->
+            <TextView
+                android:id="@+id/textViewNoticias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Outras Notícias"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:layout_marginTop="30dp"
+                android:textSize="30sp"
+                android:textStyle="bold" />
 
-    <!-- ProgressBar -->
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:indeterminate="true"
-        android:visibility="gone"
-        android:layout_gravity="center" />
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayoutNoticias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:tabTextAppearance="@style/CustomTabText"
+                app:tabMode="fixed"
+                android:background="@color/colorPrimaryLight"
+                android:contentDescription="Categorias de notícias" />
 
-    <!-- ViewPager2 para trocar entre os fragmentos de categoria -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPagerNoticias"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerNoticias"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
 
-</LinearLayout>
+        <!-- ProgressBar centralizado -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminate="true" />
+    </FrameLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

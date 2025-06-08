@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         tools:context=".cadastro">
@@ -92,7 +93,7 @@
             android:id="@+id/textTelefoneCadastro"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text="Telefone"
             android:fontFamily="@font/poppins_regular"
             android:textColor="#0D0E0E"
@@ -100,19 +101,19 @@
             app:layout_constraintStart_toStartOf="@+id/editTelefone"
             app:layout_constraintTop_toBottomOf="@+id/editSenha" />
 
-        <TextView
-            android:id="@+id/textSenhaErroCadastro"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+<!--        <TextView-->
+<!--            android:id="@+id/textSenhaErroCadastro"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="5dp"-->
 
-            android:layout_marginStart="30dp"
-            android:fontFamily="@font/poppins_regular"
-            android:text="* Deve conter no mínimo 6 caracteres"
-            android:textColor="#808080"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/editSenha"
-            app:layout_constraintTop_toBottomOf="@+id/editSenha" />
+<!--            android:layout_marginStart="30dp"-->
+<!--            android:fontFamily="@font/poppins_regular"-->
+<!--            android:text="* Deve conter no mínimo 6 caracteres"-->
+<!--            android:textColor="#808080"-->
+<!--            android:textSize="14sp"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/editSenha"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/editSenha" />-->
 
     <TextView
         android:id="@+id/textCursoCadastro"
@@ -127,23 +128,24 @@
         app:layout_constraintTop_toBottomOf="@+id/editTelefone" />
 
 
-        <EditText
-            android:id="@+id/editNome"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="45dp"
-            android:layout_marginEnd="45dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/bg_edittext"
-            android:ems="10"
-            android:hint="Nome"
-            android:textColor="#626364"
-            android:inputType="text"
-            android:padding="13dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textNomeCadastro" />
+    <EditText
+        android:id="@+id/editNome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:hint="Digite seu nome"
+        android:textColorHint="#9C9D9E"
+        android:inputType="text"
+        android:padding="13dp"
+        android:textColor="#626364"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textNomeCadastro" />
 
         <EditText
             android:id="@+id/editEmail"
@@ -152,8 +154,9 @@
             android:layout_marginStart="45dp"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="45dp"
+            android:textColorHint="#9C9D9E"
             android:ems="10"
-            android:hint="E-mail"
+            android:hint="Digite seu e-mail"
             android:textColor="#626364"
             android:background="@drawable/bg_edittext"
             android:padding="13dp"
@@ -168,10 +171,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="45dp"
+            android:textColorHint="#9C9D9E"
             android:layout_marginTop="50dp"
             android:layout_marginEnd="45dp"
             android:ems="10"
-            android:hint="Senha"
+            android:hint="Deve conter no mínimo 6 caracteres"
             android:textColor="#626364"
             android:background="@drawable/bg_edittext"
             android:padding="13dp"
@@ -181,38 +185,40 @@
             app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
 
-        <EditText
-            android:id="@+id/editTelefone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="45dp"
-            android:layout_marginTop="65dp"
-            android:layout_marginEnd="45dp"
-            android:ems="10"
-            android:background="@drawable/bg_edittext"
-            android:padding="13dp"
-            android:hint="Telefone"
-            android:textColor="#626364"
-            android:inputType="number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editSenha" />
+    <EditText
+        android:id="@+id/editTelefone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="45dp"
+        android:background="@drawable/bg_edittext"
+        android:ems="10"
+        android:hint="Telefone"
+        android:inputType="phone"
+        android:padding="13dp"
+        android:textColor="#626364"
+        android:textColorHint="#9C9D9E"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editSenha" />
 
     <Spinner
         android:id="@+id/spinnerCurso"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
+        android:layout_marginTop="48dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:padding="13dp"
+        android:textColor="#626364"
+        android:textColorHint="#626364"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textCursoCadastro" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/editTelefone" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -222,9 +228,10 @@
         android:layout_marginStart="172dp"
         android:layout_marginEnd="172dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSenhaErroCadastro"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
         <Button
@@ -235,6 +242,8 @@
             android:layout_marginTop="60dp"
             android:layout_marginEnd="45dp"
             android:text="Cadastrar"
+            android:textAllCaps="false"
+
             android:padding="10dp"
             android:textColor="@color/white"
             android:background="@drawable/bg_editbottom"
@@ -253,6 +262,8 @@
             android:background="@drawable/bg_editbottom"
             android:padding="10dp"
             android:text="Voltar para login"
+            android:textAllCaps="false"
+
             android:textColor="@color/white"
             app:backgroundTint="@null"
             app:layout_constraintEnd_toEndOf="parent"
@@ -287,17 +298,17 @@
 
         </RadioGroup>
 
-        <TextView
-            android:id="@+id/textOpcao"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sou:"
-            android:fontFamily="@font/poppins_regular"
-            android:layout_marginTop="65dp"
-            android:textColor="#0D0E0E"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="@+id/btnCriarConta"
-            app:layout_constraintTop_toBottomOf="@+id/textCursoCadastro" />
+    <TextView
+        android:id="@+id/textOpcao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Sou:"
+        android:layout_marginTop="10dp"
+        android:textColor="#0D0E0E"
+        android:textSize="15sp"
+        app:layout_constraintStart_toStartOf="@+id/spinnerCurso"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerCurso" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

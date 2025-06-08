@@ -261,7 +261,7 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/imagemContabilidade"
+                        android:id="@+id/imagemEducacao"
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:layout_margin="10dp"

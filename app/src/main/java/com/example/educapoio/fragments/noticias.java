@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.educapoio.NoticiasPagerAdapter;
 import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -94,6 +96,16 @@ public class noticias extends Fragment {
                 });
     }
 
+
+    public void onNoticiasCarregando() {
+        if (isAdded()) progressBar.setVisibility(View.VISIBLE);
+    }
+
+
+    public void onNoticiasCarregadas() {
+        if (isAdded()) progressBar.setVisibility(View.GONE);
+    }
+
     private void inicializarViewPager(String cursoUsuario, boolean mostrarToast) {
         if (!isAdded()) return;
 
@@ -117,7 +129,6 @@ public class noticias extends Fragment {
 
         new Thread(() -> {
             try {
-                // Simula carregamento das notícias (substitua isso por sua lógica real de carregamento)
                 Thread.sleep(1500);
 
                 if (!isAdded()) return;
@@ -125,8 +136,28 @@ public class noticias extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     if (!isAdded()) return;
                     finalizarCarregamento();
+
                     if (mostrarToast) {
-                        Toast.makeText(requireContext(), "Dados atualizados!", Toast.LENGTH_SHORT).show();
+                        View rootView = requireView();
+
+                        Snackbar snackbar = Snackbar.make(rootView, "Dados atualizados!", Snackbar.LENGTH_SHORT);
+
+                        View snackbarView = snackbar.getView();
+                        snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
+
+                        // Ajusta margem inferior para empurrar Snackbar para cima
+                        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                        int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+                        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+                        snackbarView.setLayoutParams(params);
+
+                        int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+                        TextView textView = snackbarView.findViewById(snackbarTextId);
+                        if (textView != null) {
+                            textView.setTextColor(Color.WHITE);
+                        }
+
+                        snackbar.show();
                     }
                 });
 
@@ -136,6 +167,8 @@ public class noticias extends Fragment {
             }
         }).start();
     }
+
+
 
     private void finalizarCarregamento() {
         progressBar.setVisibility(View.GONE);

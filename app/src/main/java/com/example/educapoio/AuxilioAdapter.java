@@ -78,16 +78,22 @@ public class AuxilioAdapter extends RecyclerView.Adapter<AuxilioAdapter.AuxilioV
             }
         });
 
-        // Clique para compartilhar
         holder.buttonCompartilhar.setOnClickListener(v -> {
             if (onItemClickListener != null) {
-                String textoParaCompartilhar = "Auxílio: " + titulo +
-                        "\nInício: " + dataInicio +
-                        "\nFim: " + dataFim +
-                        (url.isEmpty() ? "" : "\nSaiba mais: " + url);
-                onItemClickListener.onShareClick(textoParaCompartilhar);
+                StringBuilder textoParaCompartilhar = new StringBuilder();
+                textoParaCompartilhar.append("🚀 Oportunidade incrível para você!\n\n");
+                textoParaCompartilhar.append("📌 *").append(titulo).append("*\n");
+
+                if (url != null && !url.isEmpty()) {
+                    textoParaCompartilhar.append("\n🔗 Acesse aqui: ").append(url).append("\n");
+                }
+
+                textoParaCompartilhar.append("\n💡 Compartilhado via EducNews - Fique sempre por dentro das oportunidades acadêmicas!");
+
+                onItemClickListener.onShareClick(textoParaCompartilhar.toString());
             }
         });
+
     }
 
     @Override

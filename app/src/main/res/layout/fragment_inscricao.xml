@@ -12,6 +12,7 @@
         android:orientation="vertical"
         app:tabTextAppearance="@style/CustomTabText"
         app:tabMode="fixed"
+        android:background="@color/colorPrimaryLight"
         android:id="@+id/rootLayoutInicio"
         android:paddingBottom="56dp">
 
