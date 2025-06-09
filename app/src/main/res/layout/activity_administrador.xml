@@ -191,15 +191,45 @@
         android:id="@+id/buttonSelectImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:layout_marginTop="24dp"
         android:background="@drawable/bg_editbottom"
         android:text="Selecione a imagem"
+        android:layout_marginTop="20dp"
         android:textColor="@color/white"
         app:backgroundTint="@null"
-        app:layout_constraintStart_toStartOf="@+id/textUrl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textUrl"
         tools:ignore="MissingConstraints" />
+
+
+    <LinearLayout
+        android:id="@+id/imagePreviewContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonSelectImage">
+
+        <ImageView
+            android:id="@+id/imagePreview"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/image_preview_border"
+            android:scaleType="centerCrop" />
+
+        <ImageButton
+            android:id="@+id/buttonRemoveImage"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@null"
+            android:contentDescription="Remover imagem"
+            android:src="@drawable/ic_exclusao" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/buttonUploadImage"
@@ -327,21 +357,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editDataPubli" />
 
-
     <Button
         android:id="@+id/buttonCadastrarOutras"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_editbottom"
+        android:padding="10dp"
         android:text="Cadastrar outras"
-        android:layout_marginTop="30dp"
         android:textColor="@color/white"
+        app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editUrlNoti" />
+
+
 
     <TextView
         android:id="@+id/textCursos"
@@ -372,25 +405,26 @@
         android:background="@drawable/bg_editbottom"
         android:text="Cadastrar"
         android:textColor="@color/white"
+        app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonSelectImage" />
+        app:layout_constraintTop_toBottomOf="@+id/imagePreviewContainer" />
 
     <Button
         android:id="@+id/btnSair"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginEnd="45dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="45dp"
         android:background="@drawable/bg_editbottom"
         android:padding="10dp"
         android:text="Voltar para login"
         android:textColor="@color/white"
         app:backgroundTint="@null"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnVisualizarDados" />
 
@@ -400,15 +434,19 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_editbottom"
-        android:text="Visualizar Dados"
-
+        android:padding="10dp"
+        android:text="Visualizar dados"
+        android:layout_marginTop="30dp"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrarOutras"
+        app:backgroundTint="@null"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/buttonCadastrarOutras" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

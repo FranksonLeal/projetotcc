@@ -41,7 +41,7 @@
         android:layout_marginTop="70dp"
         android:textAlignment="center"
         android:textColor="#0D0E0E"
-        android:textSize="25sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/texto1" />
@@ -54,7 +54,7 @@
         android:fontFamily="@font/poppins_regular"
         android:layout_marginTop="20dp"
         android:textColor="#0D0E0E"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/editSenha"
         app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
@@ -66,7 +66,7 @@
         android:fontFamily="@font/poppins_regular"
         android:layout_marginTop="100dp"
         android:textColor="#0D0E0E"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/editEmail"
         app:layout_constraintTop_toBottomOf="@+id/textFazerLogin" />
 
@@ -79,6 +79,7 @@
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
+        android:textColorHint="#9C9D9E"
         android:hint="E-mail"
         android:layout_marginTop="20dp"
         android:inputType="textEmailAddress"
@@ -94,6 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
+        android:textColorHint="#9C9D9E"
         android:layout_marginTop="20dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
@@ -114,7 +116,7 @@
         android:text="Cadastrar"
         android:fontFamily="@font/poppins_regular"
         android:textColor="#841FFD"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/editSenha"
         app:layout_constraintTop_toBottomOf="@+id/editSenha" />
 
@@ -126,7 +128,7 @@
         android:text="Esqueceu a senha?"
         android:fontFamily="@font/poppins_regular"
         android:textColor="#FF3B30"
-        android:textSize="20sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/editSenha"
         app:layout_constraintTop_toBottomOf="@+id/editSenha" />
 

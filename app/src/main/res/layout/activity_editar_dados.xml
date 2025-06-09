@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -8,12 +9,16 @@
         android:id="@+id/editTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#1B1B1B"
+        android:textColorHint="#5B5A5A"
         android:hint="Título"/>
 
     <EditText
         android:id="@+id/editDescricao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="#1B1B1B"
+        android:textColorHint="#5B5A5A"
         android:hint="Descrição"
         android:layout_marginTop="8dp"/>
 
@@ -21,7 +26,11 @@
         android:id="@+id/btnSalvar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:padding="10dp"
         android:text="Salvar"
+        android:background="@drawable/bg_editbottom"
+        app:backgroundTint="@null"
         android:layout_marginTop="16dp"/>
 
 </LinearLayout>

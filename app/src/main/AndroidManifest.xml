@@ -30,6 +30,7 @@
         <activity
             android:name=".EditarDados"
             android:exported="false" />
+        <activity android:name=".EditarAuxilio" />
         <activity
             android:name=".visualizarDados"
             android:exported="false" />

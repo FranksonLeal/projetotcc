@@ -11,21 +11,31 @@
         android:id="@+id/editTitulo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Título"
+        android:hint="Título do auxílio"
         android:textColor="#1B1B1B"
         android:textColorHint="#5B5A5A"
         android:textSize="18sp"
-        android:inputType="textCapSentences"/>
+        android:inputType="textCapSentences" />
 
     <EditText
-        android:id="@+id/editData"
+        android:id="@+id/editDataInicio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Data"
+        android:hint="Data de início"
         android:textColor="#1B1B1B"
         android:textColorHint="#5B5A5A"
         android:layout_marginTop="8dp"
-        android:inputType="date"/>
+        android:inputType="date" />
+
+    <EditText
+        android:id="@+id/editDataFim"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Data de fim"
+        android:textColor="#1B1B1B"
+        android:textColorHint="#5B5A5A"
+        android:layout_marginTop="8dp"
+        android:inputType="date" />
 
     <Button
         android:id="@+id/btnSalvar"
@@ -33,7 +43,8 @@
         android:layout_height="wrap_content"
         android:text="Salvar"
         android:background="@drawable/bg_editbottom"
+        android:layout_marginTop="16dp"
         app:backgroundTint="@null"
-        android:layout_marginTop="16dp"/>
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

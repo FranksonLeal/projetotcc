@@ -11,6 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class DadosAdapter extends RecyclerView.Adapter<DadosAdapter.ViewHolder> {
@@ -19,7 +21,6 @@ public class DadosAdapter extends RecyclerView.Adapter<DadosAdapter.ViewHolder> 
     private Context context;
     private String tipo;
 
-    // Interface para callbacks
     public interface OnItemActionListener {
         void onEditarClicked(Dados dados);
         void onExcluirClicked(Dados dados);
@@ -36,19 +37,28 @@ public class DadosAdapter extends RecyclerView.Adapter<DadosAdapter.ViewHolder> 
 
     @NonNull
     @Override
-    public DadosAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_dados_editavel, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DadosAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Dados dados = listaDados.get(position);
-        holder.titulo.setText(dados.getTitulo());
-        holder.descricaoInicio.setText("Início: " + dados.getDescricao()); // Ajuste conforme seu modelo real, se tiver datas etc.
-        holder.descricaoFim.setText("Fim: --"); // Você deve adicionar no modelo se quiser preencher aqui
 
-        // Você pode usar imagem se tiver URL ou Drawable
+        holder.titulo.setText(dados.getTitulo());
+        holder.descricaoInicio.setText("Início: " + dados.getDataInicio());
+        holder.descricaoFim.setText("Fim: " + dados.getDataFim());
+
+        // Carregar imagem usando Glide
+        if (dados.getImagemUrl() != null && !dados.getImagemUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(dados.getImagemUrl())
+                    .placeholder(R.drawable.placeholder_image) // coloque uma imagem placeholder se quiser
+                    .into(holder.imagemAuxilio);
+        } else {
+            holder.imagemAuxilio.setImageResource(R.drawable.placeholder_image); // imagem padrão
+        }
 
         holder.btnEditar.setOnClickListener(v -> {
             if (actionListener != null) actionListener.onEditarClicked(dados);

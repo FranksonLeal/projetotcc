@@ -41,6 +41,8 @@ public class cadastro extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCadastroBinding.inflate(getLayoutInflater());
 
+
+
         binding.editTelefone.addTextChangedListener(new android.text.TextWatcher() {
             boolean isUpdating;
 

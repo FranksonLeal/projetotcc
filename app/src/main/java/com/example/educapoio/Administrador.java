@@ -6,15 +6,20 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.educapoio.databinding.ActivityAdministradorBinding;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -71,6 +76,13 @@ public class Administrador extends AppCompatActivity {
                 binding.spinnerCursos.setVisibility(View.VISIBLE);  // Tornar o Spinner visível
             }
         });
+
+        binding.buttonRemoveImage.setOnClickListener(v -> {
+            imageUri = null;
+            binding.imagePreview.setImageDrawable(null);
+            binding.imagePreviewContainer.setVisibility(View.GONE);
+        });
+
 
         // DatePicker para dataInicio
         binding.editEmail.setOnClickListener(v -> showDatePickerDialog(binding.editEmail));
@@ -137,9 +149,10 @@ public class Administrador extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            imageUri = data.getData();
-            binding.imageViewAid.setVisibility(View.VISIBLE);
-            binding.imageViewAid.setImageURI(imageUri);
+            imageUri = data.getData(); // já deve existir essa linha
+            binding.imagePreview.setImageURI(imageUri);
+            binding.imagePreviewContainer.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -192,16 +205,22 @@ public class Administrador extends AppCompatActivity {
             noticia.put("url", url);
         }
 
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
         db.collection("noticias").document(id)
                 .set(noticia)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(this, "Notícia cadastrada com sucesso!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    mostrarSnackbarSucesso("Notícia cadastrada com sucesso!");
                     limparCamposNoticias();
                 })
                 .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(this, "Erro ao cadastrar notícia", Toast.LENGTH_SHORT).show();
                     Log.e("Firestore", "Erro ao cadastrar notícia: ", e);
                 });
+
     }
 
     private void limparCamposNoticias() {
@@ -240,14 +259,40 @@ public class Administrador extends AppCompatActivity {
         }
 
 
+        ProgressBar progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.VISIBLE);
+
         db.collection("auxilios").document(id).set(auxilio)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(Administrador.this, "Auxílio cadastrado com sucesso", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    mostrarSnackbarSucesso("Auxílio cadastrado com sucesso");
                 })
                 .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
                     Toast.makeText(Administrador.this, "Erro ao cadastrar auxílio", Toast.LENGTH_SHORT).show();
                 });
+
     }
+
+    private void mostrarSnackbarSucesso(String mensagem) {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), mensagem, Snackbar.LENGTH_SHORT);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#4CAF50")); // Verde
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density);
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+        snackbarView.setLayoutParams(params);
+
+        int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        if (textView != null) {
+            textView.setTextColor(Color.WHITE);
+        }
+
+        snackbar.show();
+    }
+
 
 
     private String getCursosSelecionados() {

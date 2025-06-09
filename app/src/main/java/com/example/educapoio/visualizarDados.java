@@ -84,14 +84,23 @@ public class visualizarDados extends AppCompatActivity {
     }
 
     private void abrirTelaEdicao(Dados dados, String colecao) {
-        // Aqui você pode abrir uma nova Activity para editar o item, enviando o objeto dados e a coleção (auxilios ou noticias)
-        Intent intent = new Intent(this, EditarDados.class);
-        intent.putExtra("id", dados.getId());
-        intent.putExtra("titulo", dados.getTitulo());
-        intent.putExtra("descricao", dados.getDescricao());
+        Intent intent;
+        if (colecao.equals("auxilios")) {
+            intent = new Intent(this, EditarAuxilio.class);
+            intent.putExtra("id", dados.getId());
+            intent.putExtra("titulo", dados.getTitulo());
+            intent.putExtra("dataInicio", dados.getDataInicio());
+            intent.putExtra("dataFim", dados.getDataFim());
+        } else {
+            intent = new Intent(this, EditarDados.class);
+            intent.putExtra("id", dados.getId());
+            intent.putExtra("titulo", dados.getTitulo());
+            intent.putExtra("descricao", dados.getDescricao());
+        }
         intent.putExtra("colecao", colecao);
         startActivity(intent);
     }
+
 
     private void atualizarNoticiaNoFirestore(Dados noticia) {
         if (noticia.getId() == null || noticia.getId().isEmpty()) {
