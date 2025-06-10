@@ -1,6 +1,7 @@
 package com.example.educapoio.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -225,7 +226,11 @@ public class inicioFragment extends Fragment {
                 } else {
                     int nextPosition = layoutManager.findFirstVisibleItemPosition() + 1;
 
-                    LinearSmoothScroller smoothScroller = new LinearSmoothScroller(getContext()) {
+                    Context context = getContext();
+                    if (context == null) return;
+
+                    LinearSmoothScroller smoothScroller = new LinearSmoothScroller(context) {
+
                         @Override
                         protected int getHorizontalSnapPreference() {
                             return SNAP_TO_START;

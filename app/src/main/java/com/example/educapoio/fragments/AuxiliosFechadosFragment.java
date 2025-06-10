@@ -44,33 +44,35 @@ public class AuxiliosFechadosFragment extends Fragment {
     private List<QueryDocumentSnapshot> auxiliosFechados;
     private ProgressBar progressBar;
 
+    private View rootView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_auxilios_fechados, container, false);
-        recyclerView = view.findViewById(R.id.recyclerViewAuxiliosFechados);
-        progressBar = view.findViewById(R.id.progressBarLoading);
+        rootView = inflater.inflate(R.layout.fragment_auxilios_fechados, container, false);
+        recyclerView = rootView.findViewById(R.id.recyclerViewAuxiliosFechados);
+        progressBar = rootView.findViewById(R.id.progressBarLoading);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Buscando o TextView dentro da view inflada
-        TextView txtNoAuxiliosFechados = view.findViewById(R.id.txtNoAuxiliosFechados);
+        TextView txtNoAuxiliosFechados = rootView.findViewById(R.id.txtNoAuxiliosFechados);
 
-        ConstraintLayout rootLayoutAbertosTela = view.findViewById(R.id.rootLayoutAbertosTela);
+        ConstraintLayout rootLayoutAbertosTela = rootView.findViewById(R.id.rootLayoutAbertosTela);
         ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutAbertosTela);
 
 
-        buscarAuxiliosFechados(view, txtNoAuxiliosFechados); // Passando a view e o TextView para o método buscarAuxiliosFechados
-        return view;
+        buscarAuxiliosFechados(txtNoAuxiliosFechados); // Passando a view e o TextView para o método buscarAuxiliosFechados
+        return rootView;
     }
 
-    private void buscarAuxiliosFechados(View view, TextView txtNoAuxiliosFechados) {
-        // Exibe a ProgressBar enquanto os dados estão sendo carregados
+    private void buscarAuxiliosFechados(TextView txtNoAuxiliosFechados) {
         progressBar.setVisibility(View.VISIBLE);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
-            // Sempre escondemos a ProgressBar aqui
+            if (!isAdded() || getView() == null) return;
+
             progressBar.setVisibility(View.GONE);
 
             if (task.isSuccessful()) {
@@ -79,7 +81,6 @@ public class AuxiliosFechadosFragment extends Fragment {
                     String dataFimStr = document.getString("dataFim");
                     LocalDate dataFim = LocalDate.parse(dataFimStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-                    // Verifica se o auxílio está fechado
                     if (dataFim.isBefore(LocalDate.now())) {
                         documentosFechados.add(document);
                     }
@@ -107,47 +108,38 @@ public class AuxiliosFechadosFragment extends Fragment {
                 } else {
                     recyclerView.setVisibility(View.VISIBLE);
                     txtNoAuxiliosFechados.setVisibility(View.GONE);
-
-                    // Snackbar de sucesso estilizado
-                    Snackbar snackbar = Snackbar.make(view, "Oportunidades encerradas carregadas", Snackbar.LENGTH_SHORT);
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo claro
-
-                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
-                    int bottomMarginPx = (int) (64 * view.getResources().getDisplayMetrics().density); // 64dp para pixels
-                    params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
-                    snackbarView.setLayoutParams(params);
-
-                    int snackbarTextId = view.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
-                    TextView textView = snackbarView.findViewById(snackbarTextId);
-                    if (textView != null) {
-                        textView.setTextColor(Color.WHITE);
-                    }
-
-                    snackbar.show();
+                    mostrarSnackbarPersonalizado("Oportunidades encerradas carregadas");
                 }
 
             } else {
-                // Snackbar de erro estilizado
-                Snackbar snackbar = Snackbar.make(view, "Erro ao carregar oportunidades encerradas", Snackbar.LENGTH_SHORT);
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
-
-                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
-                int bottomMarginPx = (int) (64 * view.getResources().getDisplayMetrics().density);
-                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
-                snackbarView.setLayoutParams(params);
-
-                int snackbarTextId = view.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
-                TextView textView = snackbarView.findViewById(snackbarTextId);
-                if (textView != null) {
-                    textView.setTextColor(Color.WHITE);
-                }
-
-                snackbar.show();
+                mostrarSnackbarPersonalizado("Erro ao carregar oportunidades encerradas");
             }
         });
     }
+
+    // Função para mostrar o Snackbar com margem e cor personalizada
+    private void mostrarSnackbarPersonalizado(String mensagem) {
+        View parentView = getActivity().findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(parentView, mensagem, Snackbar.LENGTH_SHORT);
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF")); // Roxo claro
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        int bottomMarginPx = (int) (64 * parentView.getResources().getDisplayMetrics().density); // 64dp
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+        snackbarView.setLayoutParams(params);
+
+        int snackbarTextId = parentView.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        if (textView != null) {
+            textView.setTextColor(Color.WHITE);
+        }
+
+        snackbar.show();
+    }
+
+
 
 
     private void compartilharAuxilio(Map<String, Object> auxilio) {

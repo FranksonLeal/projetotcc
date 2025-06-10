@@ -34,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
+            android:contentDescription="Navegação entre auxílios abertos e fechados"
             android:background="@color/colorPrimaryLight"
             app:tabTextAppearance="@style/CustomTabText"
             app:tabMode="fixed" />

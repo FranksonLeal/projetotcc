@@ -44,20 +44,22 @@ public class AuxiliosAbertosFragment extends Fragment {
     private List<QueryDocumentSnapshot> auxiliosList;
     private ProgressBar progressBar;
 
+    private View rootView;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_auxilios_abertos, container, false);
-        recyclerView = view.findViewById(R.id.recyclerViewAuxiliosAbertos);
-        progressBar = view.findViewById(R.id.progressBarLoading);
+        rootView = inflater.inflate(R.layout.fragment_auxilios_abertos, container, false);
+        recyclerView = rootView.findViewById(R.id.recyclerViewAuxiliosAbertos);
+        progressBar = rootView.findViewById(R.id.progressBarLoading);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        ConstraintLayout rootLayoutAbertosTela = view.findViewById(R.id.rootLayoutAbertosTela);
+        ConstraintLayout rootLayoutAbertosTela = rootView.findViewById(R.id.rootLayoutAbertosTela);
         ThemeHelper.aplicarModoEscuro(requireContext(), rootLayoutAbertosTela);
 
 
         buscarAuxiliosAbertos();
-        return view;
+        return rootView;
     }
 
     private void buscarAuxiliosAbertos() {
@@ -67,6 +69,10 @@ public class AuxiliosAbertosFragment extends Fragment {
         CollectionReference auxiliosRef = db.collection("auxilios");
 
         auxiliosRef.get().addOnCompleteListener(task -> {
+            if (!isAdded() || getView() == null) {
+                return;
+            }
+
             progressBar.setVisibility(View.GONE);
 
             if (task.isSuccessful()) {
@@ -77,12 +83,12 @@ public class AuxiliosAbertosFragment extends Fragment {
                     }
                 }
 
+                TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
+
                 if (documentosAbertos.isEmpty()) {
-                    TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
                     noAuxiliosMessage.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
                 } else {
-                    TextView noAuxiliosMessage = getView().findViewById(R.id.txtNoAuxilios);
                     noAuxiliosMessage.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
 
@@ -102,49 +108,39 @@ public class AuxiliosAbertosFragment extends Fragment {
 
                     recyclerView.setAdapter(adapter);
 
-                    // Snackbar de sucesso ao carregar
-                    View rootView = requireView();
-                    Snackbar snackbar = Snackbar.make(rootView, "Oportunidades carregadas!", Snackbar.LENGTH_SHORT);
-
-                    View snackbarView = snackbar.getView();
-                    snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
-
-                    ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
-                    int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
-                    params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
-                    snackbarView.setLayoutParams(params);
-
-                    int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
-                    TextView textView = snackbarView.findViewById(snackbarTextId);
-                    if (textView != null) {
-                        textView.setTextColor(Color.WHITE);
-                    }
-
-                    snackbar.show();
+                    // Mostra Snackbar de sucesso
+                    mostrarSnackbarPersonalizado("Oportunidades carregadas!");
                 }
             } else {
-                // Snackbar de erro no lugar do Toast
-                View rootView = requireView();
-                Snackbar snackbar = Snackbar.make(rootView, "Erro ao carregar oportunidades", Snackbar.LENGTH_SHORT);
-
-                View snackbarView = snackbar.getView();
-                snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));
-
-                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
-                int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
-                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
-                snackbarView.setLayoutParams(params);
-
-                int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
-                TextView textView = snackbarView.findViewById(snackbarTextId);
-                if (textView != null) {
-                    textView.setTextColor(Color.WHITE);
-                }
-
-                snackbar.show();
+                // Mostra Snackbar de erro
+                mostrarSnackbarPersonalizado("Erro ao carregar oportunidades");
             }
         });
     }
+
+    // Função para mostrar o Snackbar com margem e cor personalizada
+    private void mostrarSnackbarPersonalizado(String mensagem) {
+        View parentView = getActivity().findViewById(android.R.id.content);
+        Snackbar snackbar = Snackbar.make(parentView, mensagem, Snackbar.LENGTH_SHORT);
+
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF")); // Roxo claro
+
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+        int bottomMarginPx = (int) (64 * parentView.getResources().getDisplayMetrics().density); // 64dp
+        params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+        snackbarView.setLayoutParams(params);
+
+        int snackbarTextId = parentView.getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+        TextView textView = snackbarView.findViewById(snackbarTextId);
+        if (textView != null) {
+            textView.setTextColor(Color.WHITE);
+        }
+
+        snackbar.show();
+    }
+
+
 
 
     private boolean isAuxilioAberto(QueryDocumentSnapshot document) {

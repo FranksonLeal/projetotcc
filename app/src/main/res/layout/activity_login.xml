@@ -55,7 +55,7 @@
         android:layout_marginTop="20dp"
         android:textColor="#0D0E0E"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/editSenha"
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutSenha"
         app:layout_constraintTop_toBottomOf="@+id/editEmail" />
 
     <TextView
@@ -79,6 +79,7 @@
         android:layout_marginEnd="45dp"
         android:background="@drawable/bg_edittext"
         android:ems="10"
+        android:textCursorDrawable="@drawable/cursor_roxo"
         android:textColorHint="#9C9D9E"
         android:hint="E-mail"
         android:layout_marginTop="20dp"
@@ -89,23 +90,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textEmail" />
 
-    <EditText
-        android:id="@+id/editSenha"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayoutSenha"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="45dp"
         android:layout_marginEnd="45dp"
-        android:textColorHint="#9C9D9E"
         android:layout_marginTop="20dp"
-        android:background="@drawable/bg_edittext"
-        android:ems="10"
-        android:hint="Senha"
-        android:inputType="textPassword"
-        android:padding="15dp"
-        android:textColor="#626364"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:endIconMode="password_toggle"
+        app:hintEnabled="false"
+        app:boxBackgroundMode="none"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textSenha" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textSenha">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editSenha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Senha"
+            android:textCursorDrawable="@drawable/cursor_roxo"
+            android:background="@drawable/bg_edittext"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:textColor="#626364"
+            android:textColorHint="#9C9D9E"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <TextView
@@ -117,8 +127,8 @@
         android:fontFamily="@font/poppins_regular"
         android:textColor="#841FFD"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="@+id/editSenha"
-        app:layout_constraintTop_toBottomOf="@+id/editSenha" />
+        app:layout_constraintStart_toStartOf="@+id/textInputLayoutSenha"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutSenha" />
 
     <TextView
         android:id="@+id/textRecuperaConta"
@@ -129,8 +139,8 @@
         android:fontFamily="@font/poppins_regular"
         android:textColor="#FF3B30"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/editSenha"
-        app:layout_constraintTop_toBottomOf="@+id/editSenha" />
+        app:layout_constraintEnd_toEndOf="@+id/textInputLayoutSenha"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayoutSenha" />
 
     <ProgressBar
         android:id="@+id/progressBar"
