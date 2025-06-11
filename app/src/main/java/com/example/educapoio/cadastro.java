@@ -9,11 +9,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,6 +51,8 @@ public class cadastro extends AppCompatActivity {
 
         binding.editTelefone.addTextChangedListener(new android.text.TextWatcher() {
             boolean isUpdating;
+
+
 
             // Máscara: (##) #####-####
             private final String mask = "(##) #####-####";
@@ -102,6 +110,43 @@ public class cadastro extends AppCompatActivity {
             TransitionUtil.startActivityWithAnimation(cadastro.this, intent);
             finish(); // Finaliza a tela de cadastro para evitar retorno
         });
+
+
+        EditText editSenha = findViewById(R.id.editSenha);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            editSenha.setTextCursorDrawable(R.drawable.cursor_roxo);
+        } else {
+            try {
+                java.lang.reflect.Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+                f.setAccessible(true);
+                f.set(editSenha, R.drawable.cursor_roxo);
+            } catch (Exception ignored) {}
+        }
+
+        // Referência ao TextView do título
+        TextView texto1 = findViewById(R.id.texto1); // certifique-se que o ID é o mesmo ou ajuste aqui
+
+// Configura o texto com duas partes coloridas
+        String educ = "educ";
+        String news = "News";
+
+// Usa Spannable para aplicar cores diferentes nas partes do texto
+        SpannableStringBuilder spannable = new SpannableStringBuilder();
+
+// Adiciona "educ" em preto
+        SpannableString educPart = new SpannableString(educ);
+        educPart.setSpan(new ForegroundColorSpan(Color.BLACK), 0, educ.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.append(educPart);
+
+// Adiciona "News" em roxo
+        SpannableString newsPart = new SpannableString(news);
+        newsPart.setSpan(new ForegroundColorSpan(Color.parseColor("#841FFD")), 0, news.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.append(newsPart);
+
+// Define o texto formatado no TextView
+        texto1.setText(spannable);
+
+
     }
 
     private void configurarSpinner() {
@@ -128,7 +173,7 @@ public class cadastro extends AppCompatActivity {
         );
 
         // Layout para a lista suspensa (dropdown)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item);
 
         spinnerCurso.setAdapter(adapter);
 

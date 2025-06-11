@@ -53,6 +53,7 @@
             android:id="@+id/progressBar"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:indeterminateTint="#841FFD"
             android:layout_gravity="center"
             android:visibility="gone"
             android:indeterminate="true" />

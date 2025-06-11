@@ -206,10 +206,15 @@ public class perfilFragment extends Fragment {
             View snackbarView = snackbar.getView();
             snackbarView.setBackgroundColor(Color.parseColor("#C1A9FF"));  // Roxo claro
 
-            int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
-            TextView textView = snackbarView.findViewById(snackbarTextId);
+            // Ajusta margem inferior para empurrar Snackbar para cima
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
             int bottomMarginPx = (int) (64 * getResources().getDisplayMetrics().density); // 64dp para pixels
+            params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
+            snackbarView.setLayoutParams(params);
+
+            int snackbarTextId = getResources().getIdentifier("snackbar_text", "id", "com.google.android.material");
+            TextView textView = snackbarView.findViewById(snackbarTextId);
+            
             params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, bottomMarginPx);
             if (textView != null) {
                 textView.setTextColor(Color.WHITE);

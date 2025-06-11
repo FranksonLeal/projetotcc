@@ -167,6 +167,8 @@
         android:layout_marginTop="10dp"
         app:endIconMode="password_toggle"
         app:hintEnabled="false"
+        android:textCursorDrawable="@drawable/cursor_roxo"
+        app:endIconTint="#626364"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textSenhaCadastro">
@@ -229,6 +231,7 @@
         android:layout_marginStart="172dp"
         android:layout_marginEnd="172dp"
         android:visibility="gone"
+        android:indeterminateTint="#841FFD"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -286,6 +289,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Aluno"
+                android:buttonTint="#841FFD"
                 android:textColor="#0D0E0E"
                 android:textSize="15sp" />
 
@@ -294,6 +298,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Professor"
+                android:buttonTint="#841FFD"
                 android:textColor="#0D0E0E"
                 android:textSize="15sp" />
 

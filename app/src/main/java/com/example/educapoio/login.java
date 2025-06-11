@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -11,6 +12,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -52,6 +54,18 @@ public class login extends AppCompatActivity {
 
 // Define o texto formatado no TextView
         texto1.setText(spannable);
+
+        EditText editSenha = findViewById(R.id.editSenha);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            editSenha.setTextCursorDrawable(R.drawable.cursor_roxo);
+        } else {
+            try {
+                java.lang.reflect.Field f = TextView.class.getDeclaredField("mCursorDrawableRes");
+                f.setAccessible(true);
+                f.set(editSenha, R.drawable.cursor_roxo);
+            } catch (Exception ignored) {}
+        }
+
 
 
 

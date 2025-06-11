@@ -214,21 +214,6 @@
         app:layout_constraintTop_toBottomOf="@+id/editCurso"
         tools:ignore="MissingConstraints" />
 
-<!--    <EditText-->
-<!--        android:id="@+id/editUsuario"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="20dp"-->
-<!--        android:background="@drawable/bg_edittext"-->
-<!--        android:layout_marginStart="45dp"-->
-<!--        android:layout_marginEnd="45dp"-->
-<!--        android:ems="10"-->
-<!--        android:hint="Usuário"-->
-<!--        android:inputType="textEmailAddress"-->
-<!--        android:padding="15dp"-->
-<!--        android:textColor="#626364"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/textTipoUsu"-->
-<!--        tools:layout_editor_absoluteX="0dp" />-->
 
     <RadioGroup
         android:id="@+id/radioGroup"
@@ -246,6 +231,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Aluno"
+            android:buttonTint="#841FFD"
             android:textColor="#0D0E0E"
             android:textSize="15sp" />
 
@@ -254,6 +240,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Professor"
+            android:buttonTint="#841FFD"
             android:textColor="#0D0E0E"
             android:textSize="15sp" />
 
@@ -283,6 +270,7 @@
         android:layout_height="30dp"
         android:indeterminate="true"
         android:visibility="gone"
+        android:indeterminateTint="#841FFD"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
