@@ -2,10 +2,12 @@ package com.example.educapoio.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.educapoio.R;
 import com.example.educapoio.SectionsPagerAdapter;
 import com.example.educapoio.ThemeHelper;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
@@ -87,6 +91,97 @@ public class inscricaoFragment extends Fragment {
 
         return view;
     }
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // SharedPreferences para o tutorial da inscrição
+        SharedPreferences prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        boolean tutorialInscricaoJaMostrado = prefs.getBoolean("tutorial_inscricao_mostrado", false);
+
+        if (!tutorialInscricaoJaMostrado) {
+            new Handler().postDelayed(() -> {
+                TapTargetSequence sequence = new TapTargetSequence(requireActivity())
+                        .targets(
+                                TapTarget.forView(
+                                                // Target do Tab "Abertos" (posição 0)
+                                                ((TabLayout) view.findViewById(R.id.tabLayout))
+                                                        .getTabAt(0)
+                                                        .view,
+                                                "Oportunidades abertas",
+                                                "Aqui você pode ver todos as oportunidades que ainda estão abertos para inscrição.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.white)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .cancelable(false)
+                                        .tintTarget(false)
+                                        .transparentTarget(true)
+                                        .drawShadow(false)
+                                        .id(1),
+
+                                TapTarget.forView(
+                                                // Target do Tab "Encerrados" (posição 1)
+                                                ((TabLayout) view.findViewById(R.id.tabLayout))
+                                                        .getTabAt(1)
+                                                        .view,
+                                                "Oportunidades encerrados",
+                                                "Aqui você pode consultar as oportunidades que já estão encerrados.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.white)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .cancelable(false)
+                                        .tintTarget(false)
+                                        .transparentTarget(true)
+                                        .drawShadow(false)
+                                        .id(2)
+                        )
+                        .listener(new TapTargetSequence.Listener() {
+                            @Override
+                            public void onSequenceFinish() {
+                                // Marca que tutorial foi mostrado
+                                prefs.edit().putBoolean("tutorial_inscricao_mostrado", true).apply();
+
+                                // Exibe snackbar de sucesso
+                                View rootView = requireActivity().findViewById(android.R.id.content);
+                                Snackbar snackbar = Snackbar.make(rootView, "Tutorial da inscrição finalizado! 🎉", Snackbar.LENGTH_LONG);
+
+                                View snackbarView = snackbar.getView();
+                                snackbarView.setBackgroundColor(Color.parseColor("#4CAF50")); // Verde
+
+                                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 100);
+                                snackbarView.setLayoutParams(params);
+
+                                TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+                                textView.setTextColor(Color.WHITE);
+                                textView.setTextSize(16);
+                                textView.setCompoundDrawablePadding(16);
+
+                                snackbar.show();
+                            }
+
+                            @Override
+                            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                                // Aqui pode implementar ações entre steps, se precisar
+                            }
+
+                            @Override
+                            public void onSequenceCanceled(TapTarget lastTarget) {
+                                Toast.makeText(requireContext(), "Tutorial cancelado.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                sequence.start();
+            }, 1000);
+        }
+    }
+
 
     private void atualizarTela() {
         if (!isAdded()) return;

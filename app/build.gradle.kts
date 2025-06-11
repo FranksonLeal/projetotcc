@@ -88,6 +88,8 @@ dependencies {
     implementation("com.github.rometools:rome:1.18.0")
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
+    implementation("com.getkeepsafe.taptargetview:taptargetview:1.13.3")
+
 
 
 

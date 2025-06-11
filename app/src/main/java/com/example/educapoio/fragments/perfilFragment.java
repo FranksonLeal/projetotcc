@@ -2,6 +2,7 @@ package com.example.educapoio.fragments;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,8 @@ import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.configuracao;
 import com.example.educapoio.editarPerfil;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -102,6 +106,93 @@ public class perfilFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        SharedPreferences prefs = requireActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        boolean tutorialPerfilJaMostrado = prefs.getBoolean("tutorial_perfil_mostrado", false);
+
+        if (!tutorialPerfilJaMostrado) {
+            View configIcon = view.findViewById(R.id.imageConfig);
+            View editIcon = view.findViewById(R.id.imageEdit);
+
+            // Delay para garantir que as views estejam prontas
+            new Handler().postDelayed(() -> {
+                TapTargetSequence sequence = new TapTargetSequence(requireActivity())
+                        .targets(
+                                TapTarget.forView(
+                                                configIcon,
+                                                "Configurações",
+                                                "Aqui você acessa as configurações do app.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.white)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .cancelable(false)
+                                        .tintTarget(false)
+                                        .transparentTarget(true)
+                                        .drawShadow(false)
+                                        .id(1),
+
+                                TapTarget.forView(
+                                                editIcon,
+                                                "Editar Perfil",
+                                                "Aqui você pode editar seus dados pessoais.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.white)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .cancelable(false)
+                                        .tintTarget(false)
+                                        .transparentTarget(true)
+                                        .drawShadow(false)
+                                        .id(2)
+                        )
+                        .listener(new TapTargetSequence.Listener() {
+                            @Override
+                            public void onSequenceFinish() {
+                                prefs.edit().putBoolean("tutorial_perfil_mostrado", true).apply();
+
+                                View rootView = requireActivity().findViewById(android.R.id.content);
+                                Snackbar snackbar = Snackbar.make(rootView, "Tutorial do perfil finalizado! 🎉", Snackbar.LENGTH_LONG);
+
+                                View snackbarView = snackbar.getView();
+                                snackbarView.setBackgroundColor(Color.parseColor("#4CAF50")); // Verde
+
+                                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 100);
+                                snackbarView.setLayoutParams(params);
+
+                                TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+                                textView.setTextColor(Color.WHITE);
+                                textView.setTextSize(16);
+                                textView.setCompoundDrawablePadding(16);
+
+                                snackbar.show();
+                            }
+
+                            @Override
+                            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                                // Pode deixar vazio
+                            }
+
+                            @Override
+                            public void onSequenceCanceled(TapTarget lastTarget) {
+                                Toast.makeText(requireContext(), "Tutorial cancelado.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                sequence.start();
+            }, 800);
+        }
+    }
+
     @Override
     public void onResume() {
         super.onResume();

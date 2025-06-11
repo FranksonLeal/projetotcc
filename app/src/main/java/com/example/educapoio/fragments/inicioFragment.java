@@ -3,7 +3,9 @@ package com.example.educapoio.fragments;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +23,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
@@ -34,6 +39,8 @@ import com.example.educapoio.R;
 import com.example.educapoio.ThemeHelper;
 import com.example.educapoio.WebViewActivity;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetSequence;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -132,7 +139,118 @@ public class inicioFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflando a view corretamente
         View view = inflater.inflate(R.layout.fragment_inicio, container, false);
+        SharedPreferences prefs = getActivity().getSharedPreferences("app_prefs", Context.MODE_PRIVATE);
+        boolean tutorialJaMostrado = prefs.getBoolean("tutorial_mostrado", false);
 
+        if (!tutorialJaMostrado) {
+            new Handler().postDelayed(() -> {
+                TapTargetSequence sequence = new TapTargetSequence(getActivity())
+                        .targets(
+                                TapTarget.forView(view.findViewById(R.id.imagem1),
+                                                "Seja bem-vindo(a)",
+                                                "Aqui você ficará por dentro de todas as oportunidades e notícias disponíveis.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.transparent)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .transparentTarget(true)
+                                        .tintTarget(false)
+                                        .drawShadow(false)
+                                        .cancelable(false)
+                                        .id(1),
+
+                                TapTarget.forView(view.findViewById(R.id.imageAjuda1),
+                                                "Ajuda",
+                                                "Toque aqui para abrir a central de ajuda do app.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.transparent)
+                                        .titleTextSize(20)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .descriptionTextSize(16)
+                                        .transparentTarget(true)
+                                        .tintTarget(false)
+                                        .drawShadow(false)
+                                        .cancelable(false)
+                                        .id(2),
+
+                                TapTarget.forView(view.findViewById(R.id.containerAuxilios),
+                                                "Oportunidades",
+                                                "Aqui você verá as principais oportunidades disponíveis para você.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.white)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .titleTextColor(android.R.color.white)
+                                        .descriptionTextColor(android.R.color.white)
+                                        .cancelable(false)
+                                        .tintTarget(false)
+                                        .transparentTarget(true)
+                                        .drawShadow(false)
+                                        .targetRadius(160)
+                                        .id(3),
+
+                                TapTarget.forView(view.findViewById(R.id.btn_icet),
+                                                "Acesso rápido",
+                                                "Toque nos botões para abrir a página do ICET ou ecampus.")
+                                        .outerCircleColor(R.color.purple_500)
+                                        .targetCircleColor(android.R.color.transparent)
+                                        .titleTextSize(20)
+                                        .descriptionTextSize(16)
+                                        .transparentTarget(true)
+                                        .tintTarget(false)
+                                        .drawShadow(false)
+                                        .cancelable(false)
+                                        .targetRadius(60)
+                                        .id(4)
+                        )
+                        .listener(new TapTargetSequence.Listener() {
+                            @Override
+                            public void onSequenceFinish() {
+                                // Salva que o tutorial já foi mostrado
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putBoolean("tutorial_mostrado", true);
+                                editor.apply();
+
+                                // Mostra Snackbar de sucesso
+                                View rootView = getActivity().findViewById(android.R.id.content);
+                                Snackbar snackbar = Snackbar.make(rootView, "Tutorial finalizado com sucesso 🎉!", Snackbar.LENGTH_LONG);
+
+                                View snackbarView = snackbar.getView();
+                                snackbarView.setBackgroundColor(Color.parseColor("#4CAF50")); // verde sucesso
+
+                                // Margem inferior para não ficar colado no menu
+                                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) snackbarView.getLayoutParams();
+                                params.setMargins(params.leftMargin, params.topMargin, params.rightMargin, 100);
+                                snackbarView.setLayoutParams(params);
+
+                                TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+                                textView.setTextColor(Color.WHITE);
+                                textView.setTextSize(16);
+                                textView.setCompoundDrawablePadding(16);
+
+                                snackbar.show();
+                            }
+
+                            @Override
+                            public void onSequenceStep(TapTarget lastTarget, boolean targetClicked) {
+                                if (lastTarget.id() == 3) {
+                                    ScrollView scrollView = view.findViewById(R.id.scrollViewPrincipal);
+                                    scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+                                }
+                            }
+
+                            @Override
+                            public void onSequenceCanceled(TapTarget lastTarget) {
+                                Toast.makeText(getContext(), "Tutorial cancelado.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                sequence.start();
+            }, 1000);
+        }
         shimmerLayout = view.findViewById(R.id.shimmerLayout);
         layoutSemAuxilios = view.findViewById(R.id.layoutSemAuxilios);
         recyclerViewAuxilios = view.findViewById(R.id.recyclerViewAuxilios);
@@ -180,6 +298,12 @@ public class inicioFragment extends Fragment {
         );
 
 
+
+// Pequeno delay para garantir que as views estejam renderizadas
+
+
+
+
         progressBar.setVisibility(View.VISIBLE);
         buscarAuxiliosDoFirestore();
 
@@ -200,7 +324,7 @@ public class inicioFragment extends Fragment {
         if (handler != null && runnable != null) {
             handler.removeCallbacks(runnable); // Para o slide automático
             runnable = null;
-            // NÃO zere o handler aqui
+
         }
     }
 
